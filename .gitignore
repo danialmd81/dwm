@@ -1,0 +1,6 @@
+*.o
+
+dmenu
+dmenu.*
+stest
+stest.1
