@@ -1,9 +1,15 @@
-[submodule "dwm"]
-	path = dwm
-	url = https://git.suckless.org/dwm
 [submodule "dwmblocks-async"]
 	path = dwmblocks-async
 	url = https://github.com/UtkarshVerma/dwmblocks-async.git
 [submodule "dwm-flexipatch"]
 	path = dwm-flexipatch
 	url = https://github.com/bakkeby/dwm-flexipatch.git
+[submodule "flexipatch-finalizer"]
+	path = flexipatch-finalizer
+	url = https://github.com/bakkeby/flexipatch-finalizer.git
+[submodule "dmenu-flexipatch"]
+	path = dmenu-flexipatch
+	url = https://github.com/bakkeby/dmenu-flexipatch.git
+[submodule "st-flexipatch"]
+	path = st-flexipatch
+	url = https://github.com/bakkeby/st-flexipatch.git
