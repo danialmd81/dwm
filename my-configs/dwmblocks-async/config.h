@@ -17,14 +17,14 @@
 #define TRAILING_DELIMITER 0
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
-#define BLOCKS(X)                                                              \
-  X("", "$HOME/.local/bin/statusbar/sb-nettraf", 1, 1)    /* Net */            \
-  X("", "$HOME/.local/bin/statusbar/sb-cpu", 5, 2)        /* CPU */            \
-  X("", "$HOME/.local/bin/statusbar/sb-memory", 5, 3)     /* Ram */            \
-  X("", "$HOME/.local/bin/statusbar/sb-disk", 30, 4)      /* Disk */           \
-  X("", "$HOME/.local/bin/statusbar/sb-volume", 0, 5)     /* Volume (Sig) */   \
-  X("", "$HOME/.local/bin/statusbar/sb-brightness", 0, 6) /* Brightness */     \
-  X("", "$HOME/.local/bin/statusbar/sb-battery", 5, 7)    /* Battery */        \
-  X("", "$HOME/.local/bin/statusbar/sb-clock", 30, 8)     /* Clock */
+#define BLOCKS(X)                                                            \
+    X("", "$HOME/.local/bin/statusbar/sb-nettraf", 1, 1) /* Net */           \
+    X("", "$HOME/.local/bin/statusbar/sb-cpu", 5, 2)     /* CPU */           \
+    X("", "$HOME/.local/bin/statusbar/sb-memory", 5, 3)  /* Ram */           \
+    X("", "$HOME/.local/bin/statusbar/sb-disk", 30, 4)   /* Disk */          \
+    X("", "$HOME/.local/bin/statusbar/sb-volume", 0, 5)  /* Volume (Sig) */  \
+    X("", "$HOME/.local/bin/statusbar/sb-brightness", 0, 6) /* Brightness */ \
+    X("", "$HOME/.local/bin/statusbar/sb-battery", 5, 7)    /* Battery */    \
+    X("", "$HOME/.local/bin/statusbar/sb-clock", 30, 8)     /* Clock */
 
-#endif // CONFIG_H
+#endif  // CONFIG_H
