@@ -8,6 +8,28 @@
 #include "drw.h"
 #include "util.h"
 
+#include <fribidi.h>
+
+static char fribidi_text[BUFSIZ] = "";
+
+static void
+apply_fribidi(const char *str)
+{
+	FriBidiStrIndex len = strlen(str);
+	FriBidiChar logical[BUFSIZ];
+	FriBidiChar visual[BUFSIZ];
+	FriBidiParType base = FRIBIDI_PAR_ON;
+	FriBidiCharSet charset;
+
+	fribidi_text[0] = 0;
+	if (len > 0) {
+		charset = fribidi_parse_charset("UTF-8");
+		len = fribidi_charset_to_unicode(charset, str, len, logical);
+		fribidi_log2vis(logical, len, &base, visual, NULL, NULL, NULL);
+		len = fribidi_unicode_to_charset(charset, visual, len, fribidi_text);
+	}
+}
+
 #define UTF_INVALID 0xFFFD
 
 static int
@@ -230,7 +252,7 @@ drw_rect(Drw *drw, int x, int y, unsigned int w, unsigned int h, int filled, int
 }
 
 int
-drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert, Bool markup)
+_drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert, Bool markup)
 {
 	int ty, ellipsis_x = 0;
 	unsigned int tmpw, ew, ellipsis_w = 0, ellipsis_len, hash, h0, h1;
@@ -388,6 +410,13 @@ no_match:
 		XftDrawDestroy(d);
 
 	return x + (render ? w : 0);
+}
+
+int
+drw_text(Drw *drw, int x, int y, unsigned int w, unsigned int h, unsigned int lpad, const char *text, int invert, Bool markup)
+{
+	apply_fribidi(text);
+	return _drw_text(drw, x, y, w, h, lpad, fribidi_text, invert, markup);
 }
 
 void

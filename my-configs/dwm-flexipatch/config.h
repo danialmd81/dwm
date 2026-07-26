@@ -28,7 +28,12 @@ static int tiledindicatortype            = INDICATOR_NONE;
 static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 
 /* Fonts */
-static const char *fonts[]               = { "CaskaydiaCove NerdFont:size=12:style=Bold" };
+static const char *fonts[] = {
+    "CaskaydiaCove Nerd Font:size=11:style=Bold:antialias=true:autohint=true",
+    "Vazirmatn:size=11:style=Medium:antialias=true:autohint=true",
+    "Font Awesome 5 Free Solid:size=10:antialias=true:autohint=true",
+    "Noto Color Emoji:size=10:antialias=true:autohint=true"
+};
 static const char dmenufont[]            = "CaskaydiaCove NerdFont:size=12";
 
 static char c000000[]                    = "#000000"; // placeholder value
@@ -150,6 +155,15 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask /* Super / Logo key */
+/* 
+ * TAGKEYS Macro: Generates 4 fundamental workspace actions for a given number key.
+ * Uses bitwise left-shifts (1 << TAG) to target the specific tag bitmask.
+ *
+ *   1. Super + Key            -> Focus workspace
+ *   2. Super + Ctrl + Key     -> Multi-view (toggle view of workspace alongside active ones)
+ *   3. Super + Shift + Key    -> Move active window to workspace
+ *   4. Super + Ctrl + Shift   -> Pin active window to appear on multiple workspaces
+ */
 #define TAGKEYS(KEY,TAG) \
     { MODKEY,                       KEY,      view,           {.ui = 1 << TAG} }, \
     { MODKEY|ControlMask,           KEY,      toggleview,     {.ui = 1 << TAG} }, \
@@ -193,8 +207,10 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_r,          spawn,                  SHCMD("firefox -P mk") },
     { MODKEY,                       XK_e,          spawn,                  SHCMD("/usr/bin/mailspring") },
     { MODKEY,                       XK_t,          spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
+    { MODKEY,                       XK_t,          spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
+    { MODKEY,                       XK_t,          spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
     { MODKEY,                       XK_v,          spawn,                  SHCMD("copyq toggle") },
-    { MODKEY,                       XK_Escape,     spawn,                  SHCMD("i3lock -c 000000") },
+    // { MODKEY,                       XK_Escape,     spawn,                  SHCMD("i3lock -c 000000") },
     { ControlMask|Mod1Mask,         XK_Delete,     spawn,                  SHCMD("~/.local/bin/powermenu") },
 
     /* Focus Navigation (HJKL, Arrows, Alt+Tab) */
@@ -224,9 +240,9 @@ static const Key keys[] = {
     { MODKEY,                       XK_d,          incnmaster,             {.i = -1 } },
 
     /* Layout Toggles */
-    { MODKEY|ControlMask,           XK_t,          setlayout,              {.v = &layouts[0]} }, /* Monocle */
+    { MODKEY|ControlMask,           XK_m,          setlayout,              {.v = &layouts[0]} }, /* Monocle */
     { MODKEY|ControlMask,           XK_f,          setlayout,              {.v = &layouts[1]} }, /* Float */
-    { MODKEY|ControlMask,           XK_m,          setlayout,              {.v = &layouts[2]} }, /* Tile */
+    { MODKEY|ControlMask,           XK_t,          setlayout,              {.v = &layouts[2]} }, /* Tile */
     { MODKEY|ShiftMask,             XK_space,      togglefloating,         {0} },
     { MODKEY,                       XK_F11,        togglefullscreen,       {0} },
 
@@ -237,17 +253,17 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
 
     /* Media Controls & Real-Time dwmblocks Signals */
-    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+5 dwmblocks") },
-    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+5 dwmblocks") },
-    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+5 dwmblocks") },
+    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+4 dwmblocks") },
+    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+4 dwmblocks") },
+    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+4 dwmblocks") },
     { 0, XF86XK_AudioMicMute,                      spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
     { 0, XF86XK_AudioPlay,                         spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPause,                        spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPrev,                         spawn,                  SHCMD("playerctl previous") },
     { 0, XF86XK_AudioNext,                         spawn,                  SHCMD("playerctl next") },
     { 0, XF86XK_AudioStop,                         spawn,                  SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+6 dwmblocks") },
-    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+6 dwmblocks") },
+    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+3 dwmblocks") },
+    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+3 dwmblocks") },
     { 0, XK_Print,                                 spawn,                  SHCMD("grim") },
 
     /* Workspaces (1-9) */
