@@ -1,0 +1,62 @@
+[global]
+    # Monitor & Position Setup
+    monitor = 0
+    follow = mouse
+
+    # Opaque Background Configuration
+    transparency = 0
+
+    # Geometry & Layout (Width x Height, Position Offset)
+    width = 370
+    height = 350
+    offset = 12x32
+    origin = top-right
+
+    # Padding & Spacing
+    padding = 12
+    horizontal_padding = 14
+    text_icon_padding = 10
+    frame_width = 2
+    gap_size = 6
+    corner_radius = 0
+
+    # Font & Formatting
+    font = JetBrainsMono Nerd Font 14
+    line_height = 2
+    format = "<b>%s</b>\n%b"
+    alignment = left
+    vertical_alignment = center
+    show_indicators = true
+
+    # Progress bar formatting
+    progress_bar = true
+    progress_bar_height = 6
+    progress_bar_min_width = 150
+    progress_bar_max_width = 300
+    progress_bar_frame_width = 1
+
+    # Mouse Interactions
+    mouse_left_click = close_current
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
+
+[urgency_low]
+    # Inactive / Low urgency (Mapped from normbgcolor, normfgcolor, normbordercolor)
+    background = "#222222"
+    foreground = "#bbbbbb"
+    frame_color = "#555555"
+    timeout = 3
+
+[urgency_normal]
+    # Active / Normal urgency (Mapped from normbgcolor, selfgcolor, selbordercolor)
+    background = "#222222"
+    foreground = "#eeeeee"
+    frame_color = "#005577"
+    timeout = 4
+
+[urgency_critical]
+    # Urgent / Critical (Mapped from urgbgcolor, selfgcolor, urgbordercolor)
+    background = "#222222"
+    foreground = "#eeeeee"
+    frame_color = "#ff0000"
+    timeout = 0

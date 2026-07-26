@@ -29,55 +29,63 @@ static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 
 /* Fonts */
 static const char *fonts[] = {
-    "CaskaydiaCove Nerd Font:size=11:style=Bold:antialias=true:autohint=true",
-    "Vazirmatn:size=11:style=Medium:antialias=true:autohint=true",
-    "Font Awesome 5 Free Solid:size=10:antialias=true:autohint=true",
-    "Noto Color Emoji:size=10:antialias=true:autohint=true"
+    "CaskaydiaCove Nerd Font:size=12:style=Bold:antialias=true:autohint=true",
+    "Vazirmatn:size=12:style=Medium:antialias=true:autohint=true",
+	"JetBrainsMono Nerd Font Mono:size=12:antialias=true:autohint=true",
+    "Font Awesome 5 Free Solid:size=11:antialias=true:autohint=true",
+    "Noto Color Emoji:size=11:antialias=true:autohint=true"
 };
-static const char dmenufont[]            = "CaskaydiaCove NerdFont:size=12";
 
-static char c000000[]                    = "#000000"; // placeholder value
+static char c000000[]                    = "#000000"; /* Placeholder / unused black value */
 
-/* Catppuccin Macchiato Color Palette */
-static char normfgcolor[]                = "#cdd6f4"; /* Text */
-static char normbgcolor[]                = "#1e1e2e"; /* Base background */
-static char normbordercolor[]            = "#313244"; /* Surface0 inactive border */
-static char normfloatcolor[]             = "#313244";
+/* Palette Definitions */
+/* --- Global Default / Unfocused Window Scheme --- */
+static char normfgcolor[]                = "#bbbbbb"; /* Foreground (text) color for status bar and general elements */
+static char normbgcolor[]                = "#222222"; /* Background color for status bar and unfocused elements */
+static char normbordercolor[]            = "#555555"; /* Border color for standard unfocused tiled windows */
+static char normfloatcolor[]             = "#db8fd9"; /* Border color for unfocused floating windows */
 
-static char selfgcolor[]                 = "#1e1e2e"; /* Base text on active tag */
-static char selbgcolor[]                 = "#89b4fa"; /* Blue active accent */
-static char selbordercolor[]             = "#89b4fa"; /* Blue active border */
-static char selfloatcolor[]              = "#89b4fa";
+/* --- Global Selected / Focused Window Scheme --- */
+static char selfgcolor[]                 = "#eeeeee"; /* Foreground (text) color for focused elements */
+static char selbgcolor[]                 = "#005577"; /* Accent background color for selected items */
+static char selbordercolor[]             = "#005577"; /* Border color for focused tiled windows */
+static char selfloatcolor[]              = "#005577"; /* Border color for focused floating windows */
 
-static char titlenormfgcolor[]           = "#cdd6f4";
-static char titlenormbgcolor[]           = "#1e1e2e";
-static char titlenormbordercolor[]       = "#313244";
-static char titlenormfloatcolor[]        = "#313244";
+/* --- Window Title Bar (Normal / Unfocused Window) --- */
+static char titlenormfgcolor[]           = "#bbbbbb"; /* Text color of inactive window title in top bar */
+static char titlenormbgcolor[]           = "#222222"; /* Background color behind inactive window title in bar */
+static char titlenormbordercolor[]       = "#555555"; /* Border color for inactive window title bar section */
+static char titlenormfloatcolor[]        = "#db8fd9"; /* Border color for inactive floating window title section */
 
-static char titleselfgcolor[]            = "#89b4fa";
-static char titleselbgcolor[]            = "#1e1e2e";
-static char titleselbordercolor[]        = "#89b4fa";
-static char titleselfloatcolor[]         = "#89b4fa";
+/* --- Window Title Bar (Selected / Focused Window) --- */
+static char titleselfgcolor[]            = "#eeeeee"; /* Text color of active window title in top bar */
+static char titleselbgcolor[]            = "#222222"; /* Background color behind active window title in bar */
+static char titleselbordercolor[]        = "#555555"; /* Border color for active window title bar section */
+static char titleselfloatcolor[]         = "#db8fd9"; /* Border color for active floating window title section */
 
-static char tagsnormfgcolor[]            = "#cdd6f4";
-static char tagsnormbgcolor[]            = "#1e1e2e";
-static char tagsnormbordercolor[]        = "#313244";
-static char tagsnormfloatcolor[]         = "#313244";
+/* --- Tag Bar (Normal / Unfocused Workspace Tags) --- */
+static char tagsnormfgcolor[]            = "#bbbbbb"; /* Text/icon color for inactive workspace tags */
+static char tagsnormbgcolor[]            = "#222222"; /* Background color for inactive workspace tags */
+static char tagsnormbordercolor[]        = "#555555"; /* Border color around inactive workspace tags */
+static char tagsnormfloatcolor[]         = "#db8fd9"; /* Alternative indicator color for inactive floating tags */
 
-static char tagsselfgcolor[]             = "#1e1e2e";
-static char tagsselbgcolor[]             = "#89b4fa";
-static char tagsselbordercolor[]         = "#89b4fa";
-static char tagsselfloatcolor[]          = "#89b4fa";
+/* --- Tag Bar (Selected / Active Workspace Tags) --- */
+static char tagsselfgcolor[]             = "#eeeeee"; /* Text/icon color for currently active workspace tag */
+static char tagsselbgcolor[]             = "#005577"; /* Highlight background color for active workspace tag */
+static char tagsselbordercolor[]         = "#555555"; /* Border color around active workspace tag */
+static char tagsselfloatcolor[]          = "#db8fd9"; /* Alternative indicator color for active floating tags */
 
-static char hidnormfgcolor[]             = "#45475a";
-static char hidselfgcolor[]              = "#89b4fa";
-static char hidnormbgcolor[]            = "#1e1e2e";
- static char hidselbgcolor[]              = "#1e1e2e";
+/* --- Hidden Windows (awesomebar / awesome-tab patches) --- */
+static char hidnormfgcolor[]             = "#005577"; /* Text color for hidden/minimized windows (unfocused) */
+static char hidselfgcolor[]              = "#227799"; /* Text color for hidden/minimized windows (focused) */
+static char hidnormbgcolor[]             = "#222222"; /* Background color for hidden window entries */
+static char hidselbgcolor[]              = "#222222"; /* Background color for selected hidden window entries */
 
-static char urgfgcolor[]                 = "#1e1e2e";
-static char urgbgcolor[]                 = "#f38ba8"; /* Red urgent background */
-static char urgbordercolor[]             = "#f38ba8";
-static char urgfloatcolor[]              = "#f38ba8";
+/* --- Urgent Windows (Urgency Hint / WM_HINT) --- */
+static char urgfgcolor[]                 = "#bbbbbb"; /* Text color for tags/windows requesting urgent attention */
+static char urgbgcolor[]                 = "#222222"; /* Background color for tags/windows with urgent notifications */
+static char urgbordercolor[]             = "#ff0000"; /* High-visibility border color for urgent windows */
+static char urgfloatcolor[]              = "#db8fd9"; /* Border color for urgent floating windows */
 
 static char *colors[][ColCount] = {
     /*                       fg                bg                border                float */
@@ -174,10 +182,11 @@ static const Layout layouts[] = {
 static char dmenumon[2] = "0";
 static const char *dmenucmd[] = {
     "j4-dmenu-desktop",
-    "--dmenu=dmenu -i -fn 'CaskaydiaCove NerdFont-12' -nf '#cdd6f4' -sb '#89b4fa' -sf '#11111b' -p 'Apps:'",
+    "--dmenu=dmenu -i -p 'Apps:'",
     NULL
 };
-static const char *termcmd[]  = { "tilix", NULL };
+// static const char *termcmd[]  = { "tilix", NULL };
+static const char *termcmd[]  = { "st", NULL };
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
@@ -200,15 +209,15 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_q,          quit,                   {0} }, /* Exit dwm */
 
     /* Custom Shortcuts & Applications */
-    { MODKEY,                       XK_x,          spawn,                  SHCMD("/home/danial/.local/bin/code") },
-    { MODKEY,                       XK_z,          spawn,                  SHCMD("/home/danial/.local/bin/zed") },
     { MODKEY,                       XK_c,          spawn,                  SHCMD("/opt/google/chrome/chrome") },
+    { MODKEY,                       XK_e,          spawn,                  SHCMD("/usr/bin/mailspring") },
+    { MODKEY,                       XK_f,          spawn,                  SHCMD("nautilus") },
     { MODKEY,                       XK_r,          spawn,                  SHCMD("firefox") },
     { MODKEY|ShiftMask,             XK_r,          spawn,                  SHCMD("firefox -P mk") },
-    { MODKEY,                       XK_e,          spawn,                  SHCMD("/usr/bin/mailspring") },
     { MODKEY,                       XK_t,          spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
-    { MODKEY,                       XK_t,          spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
-    { MODKEY,                       XK_t,          spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
+    { MODKEY|ShiftMask,             XK_t,          spawn,                  SHCMD("Telegram") },
+    { MODKEY,                       XK_x,          spawn,                  SHCMD("/home/danial/.local/bin/code") },
+    { MODKEY,                       XK_z,          spawn,                  SHCMD("/home/danial/.local/bin/zed") },
     { MODKEY,                       XK_v,          spawn,                  SHCMD("copyq toggle") },
     // { MODKEY,                       XK_Escape,     spawn,                  SHCMD("i3lock -c 000000") },
     { ControlMask|Mod1Mask,         XK_Delete,     spawn,                  SHCMD("~/.local/bin/powermenu") },
@@ -253,17 +262,17 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
 
     /* Media Controls & Real-Time dwmblocks Signals */
-    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+4 dwmblocks") },
-    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+4 dwmblocks") },
-    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+4 dwmblocks") },
+    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
+    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+3 dwmblocks") },
+    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+3 dwmblocks") },
     { 0, XF86XK_AudioMicMute,                      spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
     { 0, XF86XK_AudioPlay,                         spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPause,                        spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPrev,                         spawn,                  SHCMD("playerctl previous") },
     { 0, XF86XK_AudioNext,                         spawn,                  SHCMD("playerctl next") },
     { 0, XF86XK_AudioStop,                         spawn,                  SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+3 dwmblocks") },
-    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+3 dwmblocks") },
+    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+2 dwmblocks") },
+    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
     { 0, XK_Print,                                 spawn,                  SHCMD("grim") },
 
     /* Workspaces (1-9) */

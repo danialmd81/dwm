@@ -1,0 +1,78 @@
+#!/bin/sh
+
+SIGNAL=6
+STATE_FILE="/tmp/dwmblocks_mem_mode"
+CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
+
+# Helper function to spawn task manager
+spawn_monitor() {
+    for cmd in btop htop top; do
+        if command -v "$cmd" >/dev/null 2>&1; then
+            setsid -f "$TERMINAL" -e "$cmd" >/dev/null 2>&1
+            break
+        fi
+    done
+}
+
+case "$CLICK_BUTTON" in
+1) # Left click: Cycle in-place modes
+    CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "percent")
+    case "$CURRENT_MODE" in
+    "percent") echo "used" >"$STATE_FILE" ;;
+    "used") echo "avail" >"$STATE_FILE" ;;
+    *) echo "percent" >"$STATE_FILE" ;;
+    esac
+    pkill -RTMIN+"$SIGNAL" dwmblocks
+    ;;
+2) # Middle click: Launch process monitor in terminal
+    spawn_monitor
+    ;;
+3) # Right click: Notification of top RAM hogs
+    hogs=$(ps -eo comm,%mem --sort=-%mem | sed -n '2,6p' | awk '{printf "%-15s %s%%\n", $1, $2}')
+    notify-send "Top Memory Processes" "<font family='monospace'>$hogs</font>"
+    ;;
+esac
+
+# Handle CLI toggle argument: `./sb-memory toggle`
+if [ "$1" = "toggle" ]; then
+    CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "percent")
+    case "$CURRENT_MODE" in
+    "percent") echo "used" >"$STATE_FILE" ;;
+    "used") echo "avail" >"$STATE_FILE" ;;
+    *) echo "percent" >"$STATE_FILE" ;;
+    esac
+    pkill -RTMIN+"$SIGNAL" dwmblocks
+fi
+
+MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "percent")
+
+# ------------------------------------------------------------------------------
+# Data Collection & Output
+# ------------------------------------------------------------------------------
+
+icon="󰍛"
+
+mem_total=$(awk '/MemTotal:/ {print $2}' /proc/meminfo)
+mem_available=$(awk '/MemAvailable:/ {print $2}' /proc/meminfo)
+
+if [ -z "$mem_total" ] || [ "$mem_total" -eq 0 ]; then
+    echo "$icon N/A"
+    exit 0
+fi
+
+mem_used=$((mem_total - mem_available))
+
+case "$MODE" in
+"used")
+    used_gb=$(awk -v u="$mem_used" 'BEGIN { printf "%.1fG\n", u / 1048576 }')
+    echo "$icon $used_gb"
+    ;;
+"avail")
+    avail_gb=$(awk -v a="$mem_available" 'BEGIN { printf "%.1fG\n", a / 1048576 }')
+    echo "$icon $avail_gb"
+    ;;
+*)
+    mem_per=$((100 * mem_used / mem_total))
+    echo "$icon ${mem_per}%"
+    ;;
+esac

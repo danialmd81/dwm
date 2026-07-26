@@ -36,6 +36,7 @@ static void zoomabs(const Arg *);
 static void zoomreset(const Arg *);
 
 #include "patch/st_include.h"
+#include "patch/x_include.h"
 
 /* config.h for applying patches and the configuration. */
 #include "config.h"
@@ -166,6 +167,7 @@ static char *opt_title = NULL;
 static uint buttons; /* bit field of pressed buttons */
 static int cursorblinks = 0;
 
+#include "patch/x_include.c"
 
 void
 clipcopy(const Arg *dummy)
@@ -227,6 +229,7 @@ zoomabs(const Arg *arg)
 
 	xunloadfonts();
 	xloadfonts(usedfont, arg->f);
+	xloadsparefonts();
 
 	cresize(0, 0);
 	redraw();
@@ -1083,6 +1086,9 @@ xinit(int cols, int rows)
 
 	usedfont = (opt_font == NULL)? font : opt_font;
 	xloadfonts(usedfont, 0);
+
+	/* spare fonts */
+	xloadsparefonts();
 
 	/* colors */
 	xw.cmap = XDefaultColormap(xw.dpy, xw.scr);

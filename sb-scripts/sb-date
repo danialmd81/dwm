@@ -1,0 +1,42 @@
+#!/bin/sh
+
+SIGNAL=4
+STATE_FILE="/tmp/dwmblocks_date_mode"
+PYTHON_BIN="/home/danial/.local/share/statusbar-venv/bin/python"
+
+# dwmblocks-async passes button clicks in $BUTTON ($BLOCK_BUTTON as fallback)
+CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
+
+# Handle left-click or manual toggle CLI argument
+if [ "$CLICK_BUTTON" = "1" ] || [ "$1" = "toggle" ]; then
+	CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "gregorian")
+	if [ "$CURRENT_MODE" = "gregorian" ]; then
+		echo "shamsi" >"$STATE_FILE"
+	else
+		echo "gregorian" >"$STATE_FILE"
+	fi
+	# Signal dwmblocks to trigger a refresh
+	pkill -RTMIN+"$SIGNAL" dwmblocks
+fi
+
+# Read state after potential toggle
+MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "gregorian")
+
+if [ "$MODE" = "shamsi" ]; then
+	# Shamsi short month names (Far, Ord, Kho, Tir, Mor, Sha, Meh, Aba, Aza, Dey, Bah, Esf)
+	shamsi_date=$("$PYTHON_BIN" -c "
+from persiantools.jdatetime import JalaliDateTime
+short_months = ['', 'Far', 'Ord', 'Kho', 'Tir', 'Mor', 'Sha', 'Meh', 'Aba', 'Aza', 'Dey', 'Bah', 'Esf']
+now = JalaliDateTime.now()
+print(f'{now.strftime(\"%a\")} {now.strftime(\"%d\")} {short_months[now.month]} {now.strftime(\"%Y\")}')
+" 2>/dev/null)
+
+	if [ -n "$shamsi_date" ]; then
+		echo "$shamsi_date"
+	else
+		LC_TIME=C date "+%a %d %b %Y"
+	fi
+else
+	# %b gives short month name (e.g., Sun 26 Jul 2026)
+	LC_TIME=C date "+%a %d %b %Y"
+fi

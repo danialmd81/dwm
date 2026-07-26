@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Works with PipeWire (wpctl) or PulseAudio (pamixer)
+if command -v wpctl >/dev/null 2>&1; then
+	vol_info=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)
+	if echo "$vol_info" | grep -q "MUTED"; then
+		icon="󰝟"
+		vol_per="Mute"
+	else
+		vol_val=$(echo "$vol_info" | awk '{print int($2 * 100)}')
+		vol_per="${vol_val}%"
+		if [ "$vol_val" -gt 60 ]; then
+			icon="󰕾"
+		elif [ "$vol_val" -gt 20 ]; then
+			icon="󰖀"
+		else
+			icon="󰕿"
+		fi
+	fi
+else
+	icon="󰕾"
+	vol_per="N/A"
+fi
+
+echo "$icon $vol_per"

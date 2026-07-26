@@ -1,0 +1,95 @@
+#!/bin/sh
+
+SIGNAL=3
+STATE_FILE="/tmp/dwmblocks_bat_mode"
+BAT_PATH=$(ls -d /sys/class/power_supply/BAT* 2>/dev/null | head -n 1)
+
+if [ -z "$BAT_PATH" ] || [ ! -d "$BAT_PATH" ]; then
+	exit 0
+fi
+
+read -r bat_status <"$BAT_PATH/status"
+read -r bat_capacity <"$BAT_PATH/capacity"
+
+# dwmblocks-async passes button clicks in $BUTTON ($BLOCK_BUTTON as fallback)
+CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
+
+# Toggle mode on left click (Button 1) or CLI "toggle"
+if [ "$CLICK_BUTTON" = "1" ] || [ "$1" = "toggle" ]; then
+	CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "percent")
+	if [ "$CURRENT_MODE" = "percent" ]; then
+		echo "time" >"$STATE_FILE"
+	else
+		echo "percent" >"$STATE_FILE"
+	fi
+	pkill -RTMIN+"$SIGNAL" dwmblocks
+fi
+
+MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "percent")
+
+# Function to calculate remaining time
+get_time_remaining() {
+	if [ -f "$BAT_PATH/power_now" ] && [ -f "$BAT_PATH/energy_now" ] && [ -f "$BAT_PATH/energy_full" ]; then
+		read -r rate <"$BAT_PATH/power_now"
+		read -r now <"$BAT_PATH/energy_now"
+		read -r full <"$BAT_PATH/energy_full"
+	elif [ -f "$BAT_PATH/current_now" ] && [ -f "$BAT_PATH/charge_now" ] && [ -f "$BAT_PATH/charge_full" ]; then
+		read -r rate <"$BAT_PATH/current_now"
+		read -r now <"$BAT_PATH/charge_now"
+		read -r full <"$BAT_PATH/charge_full"
+	else
+		echo ""
+		return
+	fi
+
+	if [ -z "$rate" ] || [ "$rate" -eq 0 ]; then
+		echo ""
+		return
+	fi
+
+	if [ "$bat_status" = "Charging" ]; then
+		diff=$((full - now))
+		mins=$((diff * 60 / rate))
+	elif [ "$bat_status" = "Discharging" ]; then
+		mins=$((now * 60 / rate))
+	else
+		echo "Full"
+		return
+	fi
+
+	hours=$((mins / 60))
+	rem_mins=$((mins % 60))
+
+	if [ "$hours" -gt 0 ]; then
+		echo "${hours}h ${rem_mins}m"
+	else
+		echo "${rem_mins}m"
+	fi
+}
+
+# Icon selection based on status and capacity
+if [ "$bat_status" = "Charging" ]; then
+	icon="⚡"
+elif [ "$bat_capacity" -gt 80 ]; then
+	icon=""
+elif [ "$bat_capacity" -gt 60 ]; then
+	icon=""
+elif [ "$bat_capacity" -gt 40 ]; then
+	icon=""
+elif [ "$bat_capacity" -gt 20 ]; then
+	icon=""
+else
+	icon=""
+fi
+
+# Output based on active display mode
+if [ "$MODE" = "time" ]; then
+	time_est=$(get_time_remaining)
+	if [ -n "$time_est" ]; then
+		echo "$time_est"
+	else
+		echo "$icon $bat_capacity%"
+	fi
+else
+	echo "$icon $bat_capacity%"
+fi
