@@ -1,0 +1,57 @@
+#!/bin/sh
+
+SIGNAL=9
+CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
+
+# Helper function to switch keyboard layout
+toggle_layout() {
+    if command -v xkb-switch >/dev/null 2>&1; then
+        xkb-switch -n
+    else
+        # Fallback using setxkbmap if xkb-switch is unavailable
+        current=$(setxkbmap -query | awk '/layout/ {print $2}' | cut -d',' -f1)
+        if [ "$current" = "us" ]; then
+            setxkbmap -layout "ir,us"
+        else
+            setxkbmap -layout "us,ir"
+        fi
+    fi
+    pkill -RTMIN+"$SIGNAL" dwmblocks
+}
+
+case "$CLICK_BUTTON" in
+1) # Left click: Cycle to next keyboard layout
+    toggle_layout
+    ;;
+2 | 3) # Middle/Right click: Send notification of current layout details
+    if command -v setxkbmap >/dev/null 2>&1; then
+        info=$(setxkbmap -query | awk '/layout|variant/ {printf "%s: %s\n", $1, $2}')
+        notify-send "Keyboard Layout" "$info"
+    fi
+    ;;
+esac
+
+# Handle CLI toggle argument: `./sb-keyboard toggle`
+if [ "$1" = "toggle" ]; then
+    toggle_layout
+fi
+
+# ------------------------------------------------------------------------------
+# Data Collection & Output
+# ------------------------------------------------------------------------------
+
+icon="⌨"
+
+if command -v xkb-switch >/dev/null 2>&1; then
+    layout=$(xkb-switch -p)
+else
+    layout=$(setxkbmap -query | awk '/layout/ {print $2}' | cut -d',' -f1)
+fi
+
+case "$layout" in
+us) label="US" ;;
+ir) label="IR" ;;
+*) label=$(echo "$layout" | tr '[:lower:]' '[:upper:]') ;;
+esac
+
+echo "$icon $label"

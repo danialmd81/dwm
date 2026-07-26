@@ -188,6 +188,13 @@ static const char *dmenucmd[] = {
 // static const char *termcmd[]  = { "tilix", NULL };
 static const char *termcmd[]  = { "st", NULL };
 
+/* Command to cycle keyboard layout via xkb-switch and refresh signal 9 */
+static const char *togglekbdcmd[] = { 
+    "sh", "-c", 
+    "xkb-switch -n && pkill -RTMIN+9 dwmblocks", 
+    NULL 
+};
+
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
 
@@ -274,6 +281,7 @@ static const Key keys[] = {
     { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+2 dwmblocks") },
     { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
     { 0, XK_Print,                                 spawn,                  SHCMD("grim") },
+    { MODKEY, XK_space,                            spawn,                  {.v = togglekbdcmd } },
 
     /* Workspaces (1-9) */
     TAGKEYS(                        XK_1,                                  0)

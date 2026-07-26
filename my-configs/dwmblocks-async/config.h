@@ -27,6 +27,7 @@
     X("", "/home/danial/.local/bin/statusbar/sb-date", 0, 4)            /* Date */				\
     X("", "/home/danial/.local/bin/statusbar/sb-volume", 0, 3)          /* Volume */        	\
     X("", "/home/danial/.local/bin/statusbar/sb-brightness", 0, 2)      /* Brightness */    	\
+    X("", "/home/danial/.local/bin/statusbar/sb-keyboard", 0, 9)          /* Keyboard Layout */ \
     X("", "/home/danial/.local/bin/statusbar/sb-clock", 60, 1)          /* Clock */
 
 #endif  // CONFIG_H
