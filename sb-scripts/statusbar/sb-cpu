@@ -1,0 +1,102 @@
+#!/bin/sh
+
+SIGNAL=7
+STATE_FILE="/tmp/dwmblocks_cpu_mode"
+CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
+
+# Helper function to spawn task manager
+spawn_monitor() {
+	for cmd in btop htop top; do
+		if command -v "$cmd" >/dev/null 2>&1; then
+			setsid -f "$TERMINAL" -e "$cmd" >/dev/null 2>&1
+			break
+		fi
+	done
+}
+
+case "$CLICK_BUTTON" in
+1) # Left click: Cycle in-place modes
+	CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
+	case "$CURRENT_MODE" in
+	"usage") echo "temp" >"$STATE_FILE" ;;
+	"temp") echo "freq" >"$STATE_FILE" ;;
+	*) echo "usage" >"$STATE_FILE" ;;
+	esac
+	pkill -RTMIN+"$SIGNAL" dwmblocks
+	;;
+2) # Middle click: Launch process monitor in terminal
+	spawn_monitor
+	;;
+3) # Right click: Notification of top CPU hogs
+	hogs=$(ps -eo comm,%cpu --sort=-%cpu | sed -n '2,6p' | awk '{printf "%-15s %s%%\n", $1, $2}')
+	notify-send "Top CPU Processes" "<font family='monospace'>$hogs</font>"
+	;;
+esac
+
+# Handle CLI toggle argument: `./sb-cpu toggle`
+if [ "$1" = "toggle" ]; then
+	CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
+	case "$CURRENT_MODE" in
+	"usage") echo "temp" >"$STATE_FILE" ;;
+	"temp") echo "freq" >"$STATE_FILE" ;;
+	*) echo "usage" >"$STATE_FILE" ;;
+	esac
+	pkill -RTMIN+"$SIGNAL" dwmblocks
+fi
+
+MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
+
+# ------------------------------------------------------------------------------
+# Data Collection & Output
+# ------------------------------------------------------------------------------
+
+get_cpu_usage() {
+	cpu_idle=$(top -bn1 | grep "Cpu(s)" | sed "s/.*, *\([0-9.]*\)%* id.*/\1/" | awk '{print int($1)}')
+	if [ -n "$cpu_idle" ]; then
+		echo "$((100 - cpu_idle))%"
+	else
+		echo "N/A"
+	fi
+}
+
+get_cpu_temp() {
+	temp_raw=""
+	for zone in /sys/class/thermal/thermal_zone*/temp; do
+		if [ -f "$zone" ]; then
+			temp_raw=$(cat "$zone" 2>/dev/null)
+			[ -n "$temp_raw" ] && [ "$temp_raw" -gt 0 ] && break
+		fi
+	done
+
+	if [ -n "$temp_raw" ]; then
+		echo "$((temp_raw / 1000))°C"
+	else
+		echo "N/A"
+	fi
+}
+
+get_cpu_freq() {
+	freq_raw=$(cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_cur_freq 2>/dev/null)
+	if [ -n "$freq_raw" ]; then
+		awk -v freq="$freq_raw" 'BEGIN { printf "%.1fGHz\n", freq / 1000000 }'
+	else
+		echo "N/A"
+	fi
+}
+
+icon="󰻠"
+
+case "$MODE" in
+"temp")
+	val=$(get_cpu_temp)
+	echo "[$icon $val]"
+	;;
+"freq")
+	val=$(get_cpu_freq)
+	echo "[$icon $val]"
+	;;
+*)
+	val=$(get_cpu_usage)
+	echo "[$icon $val]"
+	;;
+esac

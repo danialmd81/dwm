@@ -1,0 +1,6 @@
+#!/bin/sh
+
+# LC_TIME=C forces date to output standard uppercase AM/PM
+time_str=$(LC_TIME=C date "+%I:%M %p")
+
+echo "$time_str"

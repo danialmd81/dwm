@@ -106,7 +106,8 @@ static char *colors[][ColCount] = {
 /* Workspace Tags */
 static char *tagicons[][NUMTAGS] =
 {
-    [DEFAULT_TAGS]        = { "1:Web", "2:Code", "3:Net", "4:Hub", "5:Office", "6", "7", "8", "9" },
+    /* 1:Web | 2:Code | 3:Net | 4:Hub | 5:Office | 6:Downloads | 7:Design | 8:Sys | 9:Misc */
+    [DEFAULT_TAGS]        = { "1:🌐", "2:💻", "3:💬", "4:🔀", "5:📄", "6:📥", "7:🎨", "8:⚙️", "9:📌" },
     [ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
     [ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
@@ -124,28 +125,36 @@ static const Rule rules[] = {
     RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
     RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1)
 
-    /* Workspace assigns */
+    /* Tag 1: Web (Browsers) */
     RULE(.class = "Firefox",          .tags = 1 << 0)
     RULE(.class = "Google-chrome",    .tags = 1 << 0)
 
+    /* Tag 2: Code (IDEs & Editors) */
     RULE(.class = "code",             .tags = 1 << 1)
     RULE(.class = "dev.zed.Zed",      .tags = 1 << 1)
     RULE(.class = "QtCreator",        .tags = 1 << 1)
+    RULE(.class = "draw-io",           .tags = 1 << 1)
 
+    /* Tag 3: Net & Chat (Mail, Messages, Proxies & VPNs) */
+    RULE(.class = "Mailspring",       .tags = 1 << 2)
     RULE(.class = "TelegramDesktop",  .tags = 1 << 2)
     RULE(.class = "Throne",           .tags = 1 << 2)
     RULE(.class = "nekobox",          .tags = 1 << 2)
     RULE(.class = "GUI.for.SingBox",  .tags = 1 << 2)
-    RULE(.class = "v2rayN",  .tags = 1 << 2)
-    
-    RULE(.class = "org.gnome.Nautilus",  .tags = 1 << 3)
-    RULE(.class = "smplayer",  .tags = 1 << 3)
-    RULE(.class = "Audacious",  .tags = 1 << 3)
-    RULE(.class = "Top.jtmonster.jhentai",  .tags = 1 << 3)
-    RULE(.class = "vlc",  .tags = 1 << 3)
+    RULE(.class = "v2rayN",           .tags = 1 << 2)
 
-    RULE(.class = "libreoffice", .tags = 1 << 4)
-    RULE(.class = "soffice.bin", .tags = 1 << 4)
+    /* Tag 4: Hub, Media & Gaming (Files, Media Players & Games) */
+    RULE(.class = "org.gnome.Nautilus",       .tags = 1 << 3)
+    RULE(.class = "Top.jtmonster.jhentai",    .tags = 1 << 3)
+    RULE(.class = "smplayer",                 .tags = 1 << 3)
+    RULE(.class = "Audacious",                .tags = 1 << 3)
+    RULE(.class = "vlc",                      .tags = 1 << 3)
+    RULE(.class = "steam",                    .tags = 1 << 3)
+    RULE(.class = "net.lutris.Lutris",        .tags = 1 << 3)
+
+    /* Tag 5: Office (Documents & Productivity Tools) */
+    RULE(.class = "libreoffice",                     .tags = 1 << 4)
+    RULE(.class = "soffice.bin",                     .tags = 1 << 4)
     RULE(.instance = "libreoffice-startcenter",       .tags = 1 << 4)
     RULE(.instance = "libreoffice-writer",            .tags = 1 << 4)
     RULE(.instance = "libreoffice-calc",              .tags = 1 << 4)
@@ -153,8 +162,16 @@ static const Rule rules[] = {
     RULE(.instance = "libreoffice-draw",              .tags = 1 << 4)
     RULE(.instance = "libreoffice-math",              .tags = 1 << 4)
     RULE(.instance = "libreoffice-base",              .tags = 1 << 4)
-    // RULE(.class = ,  .tags = 1 << 3)
 
+    /* Tag 6: Downloads */
+    RULE(.class = "com-abdownloadmanager-desktop-AppKt", .tags = 1 << 5)
+    RULE(.class = "org.remmina.Remmina",                 .tags = 1 << 5)
+
+    /* Tag 7: Design & Graphics */
+    RULE(.class = "Gimp",             .tags = 1 << 6)
+    RULE(.class = "Inkscape",         .tags = 1 << 6)
+
+    /* Floating Utilities */
     RULE(.class = "copyq", .isfloating = 1, .floatpos = "600W 400H 50% 50%")
 };
 
