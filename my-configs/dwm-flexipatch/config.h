@@ -31,7 +31,7 @@ static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 static const char *fonts[]               = { "CaskaydiaCove NerdFont:size=12:style=Bold" };
 static const char dmenufont[]            = "CaskaydiaCove NerdFont:size=12";
 
-static char c000000[]                    = "#000000";
+static char c000000[]                    = "#000000"; // placeholder value
 
 /* Catppuccin Macchiato Color Palette */
 static char normfgcolor[]                = "#cdd6f4"; /* Text */
@@ -90,7 +90,7 @@ static char *colors[][ColCount] = {
 /* Workspace Tags */
 static char *tagicons[][NUMTAGS] =
 {
-    [DEFAULT_TAGS]        = { "1: Web", "2: Code", "3: Net", "4: Hub", "5: Other", "6", "7", "8", "9" },
+    [DEFAULT_TAGS]        = { "1: Web", "2: Code", "3: Net", "4: Hub", "5", "6", "7", "8", "9" },
     [ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
     [ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
@@ -128,8 +128,8 @@ static const Rule rules[] = {
 static const BarRule barrules[] = {
     /* monitor   bar    alignment         widthfunc                 drawfunc                clickfunc                hoverfunc                name */
     { -1,        0,     BAR_ALIGN_LEFT,   width_tags,               draw_tags,              click_tags,              hover_tags,              "tags" },
-    {  0,        0,     BAR_ALIGN_RIGHT,  width_systray,            draw_systray,           click_systray,           NULL,                    "systray" },
     { -1,        0,     BAR_ALIGN_LEFT,   width_ltsymbol,           draw_ltsymbol,          click_ltsymbol,          NULL,                    "layout" },
+    {  0,        0,     BAR_ALIGN_RIGHT,  width_systray,            draw_systray,           click_systray,           NULL,                    "systray" },
     { statusmon, 0,     BAR_ALIGN_RIGHT,  width_status2d,           draw_status2d,          click_statuscmd,         NULL,                    "status2d" },
     { -1,        0,     BAR_ALIGN_NONE,   width_wintitle,           draw_wintitle,          click_wintitle,          NULL,                    "wintitle" },
 };
@@ -138,14 +138,14 @@ static const BarRule barrules[] = {
 static const float mfact     = 0.55; /* factor of master area size [0.05..0.95] */
 static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
-static const int lockfullscreen = 1; /* 1 will force focus on the fullscreen window */
+static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 static const int refreshrate = 144;  /* refresh rate (per second) for client move/resize */
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
-    { "[]=",      tile },    /* default tiling split */
-    { "><>",      NULL },    /* floating behavior */
     { "[M]",      monocle }, /* monocle / tabbed style */
+    { "><>",      NULL },    /* floating behavior */
+    { "[]=",      tile },    /* tiling split */
 };
 
 /* key definitions */
@@ -165,26 +165,27 @@ static const char *dmenucmd[] = {
 };
 static const char *termcmd[]  = { "tilix", NULL };
 
+/* This defines the name of the executable that handles the bar (used for signalling purposes) */
+#define STATUSBAR "dwmblocks"
+
 /* Status bar click signals (statuscmd) */
 static const StatusCmd statuscmds[] = {
     { "notify-send Volume$BUTTON", 1 },
 	{ "notify-send CPU$BUTTON", 2 },
 	{ "notify-send Battery$BUTTON", 3 },
-    // { "killall -SIGUSR1 i3status-rs", 1 },
 };
-static const char *statuscmd[] = { "/bin/sh", "-c", NULL, NULL };
 
 static const Key keys[] = {
     /* modifier                     key            function                argument */
-    /* Core Launchers & Actions */
+    /* Core Launchers & Session Actions */
     { MODKEY,                       XK_Return,     zoom,                   {0} }, /* Promote focused window to Master */
-    { MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = termcmd } }, /* Launch Tilix */
+    { MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = termcmd } }, /* Launch Terminal */
     { MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } }, /* j4-dmenu launcher */
-    { MODKEY,                       XK_q,          killclient,             {0} },
-    { MODKEY,                       XK_b,          togglebar,              {0} },
-    { MODKEY|ShiftMask,             XK_q,          quit,                   {0} },
+    { MODKEY,                       XK_q,          killclient,             {0} }, /* Close active window */
+    { MODKEY,                       XK_b,          togglebar,              {0} }, /* Toggle status bar */
+    { MODKEY|ShiftMask,             XK_q,          quit,                   {0} }, /* Exit dwm */
 
-    /* Custom App Shortcuts */
+    /* Custom Shortcuts & Applications */
     { MODKEY,                       XK_x,          spawn,                  SHCMD("/home/danial/.local/bin/code") },
     { MODKEY,                       XK_z,          spawn,                  SHCMD("/home/danial/.local/bin/zed") },
     { MODKEY,                       XK_c,          spawn,                  SHCMD("/opt/google/chrome/chrome") },
@@ -196,7 +197,7 @@ static const Key keys[] = {
     { MODKEY,                       XK_Escape,     spawn,                  SHCMD("i3lock -c 000000") },
     { ControlMask|Mod1Mask,         XK_Delete,     spawn,                  SHCMD("~/.local/bin/powermenu") },
 
-    /* Focus Navigation (HJKL & Arrows) */
+    /* Focus Navigation (HJKL, Arrows, Alt+Tab) */
     { MODKEY,                       XK_h,          focusstack,             {.i = -1 } },
     { MODKEY,                       XK_l,          focusstack,             {.i = +1 } },
     { MODKEY,                       XK_j,          focusstack,             {.i = +1 } },
@@ -223,9 +224,9 @@ static const Key keys[] = {
     { MODKEY,                       XK_d,          incnmaster,             {.i = -1 } },
 
     /* Layout Toggles */
-    { MODKEY|ControlMask,           XK_t,          setlayout,              {.v = &layouts[0]} }, /* Tile */
+    { MODKEY|ControlMask,           XK_t,          setlayout,              {.v = &layouts[0]} }, /* Monocle */
     { MODKEY|ControlMask,           XK_f,          setlayout,              {.v = &layouts[1]} }, /* Float */
-    { MODKEY|ControlMask,           XK_m,          setlayout,              {.v = &layouts[2]} }, /* Monocle */
+    { MODKEY|ControlMask,           XK_m,          setlayout,              {.v = &layouts[2]} }, /* Tile */
     { MODKEY|ShiftMask,             XK_space,      togglefloating,         {0} },
     { MODKEY,                       XK_F11,        togglefullscreen,       {0} },
 
@@ -235,18 +236,18 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_comma,      tagmon,                 {.i = -1 } },
     { MODKEY|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
 
-    /* Pipewire Audio & Media Keys */
-    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && killall -SIGUSR1 i3status-rs") },
-    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && killall -SIGUSR1 i3status-rs") },
-    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && killall -SIGUSR1 i3status-rs") },
+    /* Media Controls & Real-Time dwmblocks Signals */
+    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+5 dwmblocks") },
+    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+5 dwmblocks") },
+    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+5 dwmblocks") },
     { 0, XF86XK_AudioMicMute,                      spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
     { 0, XF86XK_AudioPlay,                         spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPause,                        spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPrev,                         spawn,                  SHCMD("playerctl previous") },
     { 0, XF86XK_AudioNext,                         spawn,                  SHCMD("playerctl next") },
     { 0, XF86XK_AudioStop,                         spawn,                  SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%-") },
-    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+") },
+    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+6 dwmblocks") },
+    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+6 dwmblocks") },
     { 0, XK_Print,                                 spawn,                  SHCMD("grim") },
 
     /* Workspaces (1-9) */
@@ -263,7 +264,7 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
 };
 
-/* button definitions */
+/* Button Definitions */
 static const Button buttons[] = {
     /* click                event mask           button          function        argument */
     { ClkLtSymbol,          0,                   Button1,        setlayout,      {0} },
@@ -271,9 +272,15 @@ static const Button buttons[] = {
     { ClkWinTitle,          0,                   Button1,        togglewin,      {0} },
     { ClkWinTitle,          0,                   Button3,        showhideclient, {0} },
     { ClkWinTitle,          0,                   Button2,        zoom,           {0} },
-    { ClkStatusText,        0,                   Button1,        spawn,          {.v = statuscmd } },
-    { ClkStatusText,        0,                   Button2,        spawn,          {.v = statuscmd } },
-    { ClkStatusText,        0,                   Button3,        spawn,          {.v = statuscmd } },
+    
+    /* Clickable status bar blocks for dwmblocks */
+    { ClkStatusText,        0,                   Button1,        sigstatusbar,   {.i = 1} },
+    { ClkStatusText,        0,                   Button2,        sigstatusbar,   {.i = 2} },
+    { ClkStatusText,        0,                   Button3,        sigstatusbar,   {.i = 3} },
+    { ClkStatusText,        0,                   Button4,        sigstatusbar,   {.i = 4} },
+    { ClkStatusText,        0,                   Button5,        sigstatusbar,   {.i = 5} },
+
+    /* Client window and Tagbar interaction */
     { ClkClientWin,         MODKEY,              Button1,        movemouse,      {0} },
     { ClkClientWin,         MODKEY,              Button2,        togglefloating, {0} },
     { ClkClientWin,         MODKEY,              Button3,        resizemouse,    {0} },

@@ -1,6 +1,9 @@
 *.o
 
+dwm
 dmenu
 dmenu.*
 stest
 stest.1
+st
+st.*
