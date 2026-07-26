@@ -233,6 +233,7 @@ typedef struct {
 	const char *wintype;
 	unsigned int tags;
 	int isfloating;
+	const char *floatpos;
 	int monitor;
 } Rule;
 
@@ -425,6 +426,9 @@ applyrules(Client *c)
 			for (m = mons; m && m->num != r->monitor; m = m->next);
 			if (m)
 				c->mon = m;
+			if (c->isfloating && r->floatpos) {
+				setfloatpos(c, r->floatpos);
+			}
 
 		}
 	}

@@ -16,7 +16,9 @@
 /* Other patches */
 #include "attachx.c"
 #include "autostart.c"
+#include "floatpos.c"
 #include "movestack.c"
+#include "tapresize.c"
 #include "togglefullscreen.c"
 /* Layouts */
 #include "layout_facts.c"

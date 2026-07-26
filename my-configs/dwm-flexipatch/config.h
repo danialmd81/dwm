@@ -17,8 +17,10 @@ static const char dwmdir[]               = "dwm";
 static const char localshare[]           = ".local/share";
 static const int showbar                 = 1;   /* 0 means no bar */
 static const int topbar                  = 1;   /* 0 means bottom bar */
+static int floatposgrid_x                = 5;  /* float grid columns */
+static int floatposgrid_y                = 5;  /* float grid rows */
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
-static const int statusmon               = 'A';
+static const int statusmon               = -1;
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int showsystray             = 1;   /* 0 means no systray */
 
@@ -134,7 +136,7 @@ static const Rule rules[] = {
     RULE(.class = "Nekobox",          .tags = 1 << 2)
     RULE(.class = "GUI.for.SingBox",  .tags = 1 << 2)
 
-    RULE(.class = "copyq",            .isfloating = 1)
+    RULE(.class = "copyq", .isfloating = 1, .floatpos = "600W 400H 50% 50%")
 };
 
 /* Bar rules */
@@ -153,6 +155,17 @@ static const int nmaster     = 1;    /* number of clients in master area */
 static const int resizehints = 0;    /* 1 means respect size hints in tiled resizals */
 static const int lockfullscreen = 0; /* 1 will force focus on the fullscreen window */
 static const int refreshrate = 144;  /* refresh rate (per second) for client move/resize */
+
+/* mouse scroll resize */
+static const int scrollsensetivity = 30; /* 1 means resize window by 1 pixel for each scroll event */
+/* resizemousescroll direction argument list */
+static const int scrollargs[][2] = {
+	/* width change         height change */
+	{ +scrollsensetivity,	0 },
+	{ -scrollsensetivity,	0 },
+	{ 0, 				  	+scrollsensetivity },
+	{ 0, 					-scrollsensetivity },
+};
 
 static const Layout layouts[] = {
     /* symbol     arrange function */
@@ -317,6 +330,10 @@ static const Button buttons[] = {
     { ClkClientWin,         MODKEY,              Button1,        movemouse,      {0} },
     { ClkClientWin,         MODKEY,              Button2,        togglefloating, {0} },
     { ClkClientWin,         MODKEY,              Button3,        resizemouse,    {0} },
+    { ClkClientWin,         MODKEY,              Button4,        resizemousescroll, {.v = &scrollargs[0]} },
+	{ ClkClientWin,         MODKEY,              Button5,        resizemousescroll, {.v = &scrollargs[1]} },
+	{ ClkClientWin,         MODKEY,              Button6,        resizemousescroll, {.v = &scrollargs[2]} },
+	{ ClkClientWin,         MODKEY,              Button7,        resizemousescroll, {.v = &scrollargs[3]} },
     { ClkTagBar,            0,                   Button1,        view,           {0} },
     { ClkTagBar,            0,                   Button3,        toggleview,     {0} },
     { ClkTagBar,            MODKEY,              Button1,        tag,            {0} },

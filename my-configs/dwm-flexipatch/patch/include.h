@@ -16,7 +16,9 @@
 /* Other patches */
 #include "attachx.h"
 #include "autostart.h"
+#include "floatpos.h"
 #include "movestack.h"
+#include "tapresize.h"
 #include "togglefullscreen.h"
 /* Layouts */
 #include "layout_monocle.h"
