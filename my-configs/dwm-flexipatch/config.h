@@ -9,20 +9,21 @@
 #define CMD(...)   { .v = (const char*[]){ __VA_ARGS__, NULL } }
 
 /* appearance */
-static const unsigned int borderpx       = 2;   /* border pixel of windows */
-static const unsigned int snap           = 32;  /* snap pixel */
+static const unsigned int borderpx       = 2; /* border pixel of windows */
+static const unsigned int snap           = 32; /* snap pixel */
 static const char autostartblocksh[]     = "autostart_blocking.sh";
 static const char autostartsh[]          = "autostart.sh";
 static const char dwmdir[]               = "dwm";
 static const char localshare[]           = ".local/share";
-static const int showbar                 = 1;   /* 0 means no bar */
-static const int topbar                  = 1;   /* 0 means bottom bar */
-static int floatposgrid_x                = 5;  /* float grid columns */
-static int floatposgrid_y                = 5;  /* float grid rows */
+static const int showbar                 = 1; /* 0 means no bar */
+static const int topbar                  = 1; /* 0 means bottom bar */
+static int floatposgrid_x                = 5; /* float grid columns */
+static int floatposgrid_y                = 5; /* float grid rows */
+
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
-static const int statusmon               = -1;
-static const unsigned int systrayspacing = 2;   /* systray spacing */
-static const int showsystray             = 1;   /* 0 means no systray */
+static const int statusmon               = -1; 
+static const unsigned int systrayspacing = 2; /* systray spacing */
+static const int showsystray             = 1; /* 0 means no systray */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
@@ -105,7 +106,7 @@ static char *colors[][ColCount] = {
 /* Workspace Tags */
 static char *tagicons[][NUMTAGS] =
 {
-    [DEFAULT_TAGS]        = { "1: Web", "2: Code", "3: Net", "4: Hub", "5", "6", "7", "8", "9" },
+    [DEFAULT_TAGS]        = { "1:Web", "2:Code", "3:Net", "4:Hub", "5:Office", "6", "7", "8", "9" },
     [ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
     [ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
@@ -118,7 +119,7 @@ static const Rule rules[] = {
      *  WM_WINDOW_ROLE(STRING) = role
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
      */
-    RULE(.wintype = WTYPE "DIALOG",  .isfloating = 1)
+    RULE(.wintype = WTYPE "DIALOG", .isfloating = 1, .floatpos = "50% 50%")
     RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
     RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
     RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1)
@@ -133,8 +134,26 @@ static const Rule rules[] = {
 
     RULE(.class = "TelegramDesktop",  .tags = 1 << 2)
     RULE(.class = "Throne",           .tags = 1 << 2)
-    RULE(.class = "Nekobox",          .tags = 1 << 2)
+    RULE(.class = "nekobox",          .tags = 1 << 2)
     RULE(.class = "GUI.for.SingBox",  .tags = 1 << 2)
+    RULE(.class = "v2rayN",  .tags = 1 << 2)
+    
+    RULE(.class = "org.gnome.Nautilus",  .tags = 1 << 3)
+    RULE(.class = "smplayer",  .tags = 1 << 3)
+    RULE(.class = "Audacious",  .tags = 1 << 3)
+    RULE(.class = "Top.jtmonster.jhentai",  .tags = 1 << 3)
+    RULE(.class = "vlc",  .tags = 1 << 3)
+
+    RULE(.class = "libreoffice", .tags = 1 << 4)
+    RULE(.class = "soffice.bin", .tags = 1 << 4)
+    RULE(.instance = "libreoffice-startcenter",       .tags = 1 << 4)
+    RULE(.instance = "libreoffice-writer",            .tags = 1 << 4)
+    RULE(.instance = "libreoffice-calc",              .tags = 1 << 4)
+    RULE(.instance = "libreoffice-impress",           .tags = 1 << 4)
+    RULE(.instance = "libreoffice-draw",              .tags = 1 << 4)
+    RULE(.instance = "libreoffice-math",              .tags = 1 << 4)
+    RULE(.instance = "libreoffice-base",              .tags = 1 << 4)
+    // RULE(.class = ,  .tags = 1 << 3)
 
     RULE(.class = "copyq", .isfloating = 1, .floatpos = "600W 400H 50% 50%")
 };
@@ -220,94 +239,115 @@ static const StatusCmd statuscmds[] = {
 
 static const Key keys[] = {
     /* modifier                     key            function                argument */
-    /* Core Launchers & Session Actions */
-    { MODKEY,                       XK_Return,     zoom,                   {0} }, /* Promote focused window to Master */
-    { MODKEY|ShiftMask,             XK_Return,     spawn,                  {.v = termcmd } }, /* Launch Terminal */
-    { MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } }, /* j4-dmenu launcher */
-    { MODKEY,                       XK_q,          killclient,             {0} }, /* Close active window */
-    { MODKEY,                       XK_b,          togglebar,              {0} }, /* Toggle status bar */
-    { MODKEY|ShiftMask,             XK_q,          quit,                   {0} }, /* Exit dwm */
+    
+    /* Dwm default keybindings */
+    /* Core Launchers & Command Menus */
+    { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+    { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+    
+    /* Bar Visibility */
+    // { MODKEY,                       XK_b,      togglebar,      {0} },
 
-    /* Custom Shortcuts & Applications */
-    { MODKEY,                       XK_c,          spawn,                  SHCMD("/opt/google/chrome/chrome") },
-    { MODKEY,                       XK_e,          spawn,                  SHCMD("/usr/bin/mailspring") },
-    { MODKEY,                       XK_f,          spawn,                  SHCMD("nautilus") },
-    { MODKEY,                       XK_r,          spawn,                  SHCMD("firefox") },
-    { MODKEY|ShiftMask,             XK_r,          spawn,                  SHCMD("firefox -P mk") },
-    { MODKEY,                       XK_t,          spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
-    { MODKEY|ShiftMask,             XK_t,          spawn,                  SHCMD("Telegram") },
-    { MODKEY,                       XK_x,          spawn,                  SHCMD("/home/danial/.local/bin/code") },
-    { MODKEY,                       XK_z,          spawn,                  SHCMD("/home/danial/.local/bin/zed") },
-    { MODKEY,                       XK_v,          spawn,                  SHCMD("copyq toggle") },
-    // { MODKEY,                       XK_Escape,     spawn,                  SHCMD("i3lock -c 000000") },
-    { ControlMask|Mod1Mask,         XK_Delete,     spawn,                  SHCMD("~/.local/bin/powermenu") },
+    /* Window Focus Navigation (Stack) */
+    { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
+    { MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
 
-    /* Focus Navigation (HJKL, Arrows, Alt+Tab) */
-    { MODKEY,                       XK_h,          focusstack,             {.i = -1 } },
-    { MODKEY,                       XK_l,          focusstack,             {.i = +1 } },
-    { MODKEY,                       XK_j,          focusstack,             {.i = +1 } },
-    { MODKEY,                       XK_k,          focusstack,             {.i = -1 } },
-    { MODKEY,                       XK_Left,       focusstack,             {.i = -1 } },
-    { MODKEY,                       XK_Right,      focusstack,             {.i = +1 } },
-    { MODKEY,                       XK_Up,         focusstack,             {.i = -1 } },
-    { MODKEY,                       XK_Down,       focusstack,             {.i = +1 } },
-    { Mod1Mask,                     XK_Tab,        focusstack,             {.i = +1 } },
-    { Mod1Mask|ShiftMask,           XK_Tab,        focusstack,             {.i = -1 } },
-    { MODKEY,                       XK_Tab,        focusstack,             {.i = +1 } },
-    { MODKEY|ShiftMask,             XK_Tab,        focusstack,             {.i = -1 } },
+    /* Master Area Window Count */
+    { MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
+    { MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
+    
+    /* Master Area Size Adjustment (HJKL) */
+    { MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
+    { MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
 
-    /* Window Reordering in Stack (movestack) */
-    { MODKEY|ShiftMask,             XK_j,          movestack,              {.i = +1 } },
-    { MODKEY|ShiftMask,             XK_k,          movestack,              {.i = -1 } },
-    { MODKEY|ShiftMask,             XK_Down,       movestack,              {.i = +1 } },
-    { MODKEY|ShiftMask,             XK_Up,         movestack,              {.i = -1 } },
-
-    /* Master Area & Window Resizing */
-    { MODKEY|ShiftMask,             XK_h,          setmfact,               {.f = -0.05} },
-    { MODKEY|ShiftMask,             XK_l,          setmfact,               {.f = +0.05} },
-    { MODKEY,                       XK_i,          incnmaster,             {.i = +1 } },
-    { MODKEY,                       XK_d,          incnmaster,             {.i = -1 } },
+    /* Window Operations & Workspace Toggle */
+    { MODKEY,                       XK_Return, zoom,           {0} },
+    { MODKEY,                       XK_Tab,    view,           {0} },
+    // { MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
 
     /* Layout Toggles */
-    { MODKEY|ControlMask,           XK_m,          setlayout,              {.v = &layouts[0]} }, /* Monocle */
-    { MODKEY|ControlMask,           XK_f,          setlayout,              {.v = &layouts[1]} }, /* Float */
-    { MODKEY|ControlMask,           XK_t,          setlayout,              {.v = &layouts[2]} }, /* Tile */
-    { MODKEY|ShiftMask,             XK_space,      togglefloating,         {0} },
-    { MODKEY,                       XK_F11,        togglefullscreen,       {0} },
+    // { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
+    // { MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
+    // { MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
+    // { MODKEY,                       XK_space,  setlayout,      {0} },
 
+    /* Floating Window Toggle */
+    { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
+
+    /* Tag/Workspace Operations (All Tags & Quit) */
+    { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
+    { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
+    
     /* Multi-Monitor Control */
-    { MODKEY,                       XK_comma,      focusmon,               {.i = -1 } },
-    { MODKEY,                       XK_period,     focusmon,               {.i = +1 } },
-    { MODKEY|ShiftMask,             XK_comma,      tagmon,                 {.i = -1 } },
-    { MODKEY|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
+    { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
+    { MODKEY,                       XK_period, focusmon,       {.i = +1 } },
+    { MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
+    { MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
+    
+    TAGKEYS(                        XK_1,                      0)
+    TAGKEYS(                        XK_2,                      1)
+    TAGKEYS(                        XK_3,                      2)
+    TAGKEYS(                        XK_4,                      3)
+    TAGKEYS(                        XK_5,                      4)
+    TAGKEYS(                        XK_6,                      5)
+    TAGKEYS(                        XK_7,                      6)
+    TAGKEYS(                        XK_8,                      7)
+    TAGKEYS(                        XK_9,                      8)
+    { MODKEY|ShiftMask,             XK_q,      quit,           {0} },
+
+    /* My custom keybindings */
+    /* Custom Shortcuts & Applications */
+    { MODKEY,                       XK_c,      spawn,                  SHCMD("/opt/google/chrome/chrome") },
+    { MODKEY,                       XK_e,      spawn,                  SHCMD("/usr/bin/mailspring") },
+    { MODKEY,                       XK_f,      spawn,                  SHCMD("nautilus") },
+    { MODKEY,                       XK_r,      spawn,                  SHCMD("firefox") },
+    { MODKEY|ShiftMask,             XK_r,      spawn,                  SHCMD("firefox -P mk") },
+    { MODKEY,                       XK_t,      spawn,                  SHCMD("/home/danial/.app/Throne/Throne") },
+    { MODKEY|ShiftMask,             XK_t,      spawn,                  SHCMD("Telegram") },
+    { MODKEY,                       XK_x,      spawn,                  SHCMD("/home/danial/.local/bin/code") },
+    { MODKEY,                       XK_z,      spawn,                  SHCMD("/home/danial/.local/bin/zed") },
+    { MODKEY,                       XK_v,      spawn,                  SHCMD("copyq toggle") },
+    // { MODKEY,                     XK_Escape, spawn,                 SHCMD("i3lock -c 000000") },
+    { ControlMask|Mod1Mask,         XK_Delete, spawn,                  SHCMD("~/.local/bin/powermenu") },
+    { MODKEY,                       XK_q,      killclient,             {0} },
+
+
+    /* Focus Navigation (Arrows, Alt+Tab) */
+    { MODKEY,                       XK_Down,   focusstack,             {.i = +1 } },
+    { MODKEY,                       XK_Up,     focusstack,             {.i = -1 } },
+    { Mod1Mask,                     XK_Tab,    focusstack,             {.i = +1 } },
+    { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,             {.i = -1 } },
+
+    /* Master Area Size Adjustment (Arrows) */
+    { MODKEY,                       XK_Left,   setmfact,               {.f = -0.05} },
+    { MODKEY,                       XK_Right,  setmfact,               {.f = +0.05} },
+
+    /* Window Reordering in Stack (movestack) */
+    { MODKEY|ShiftMask,             XK_j,      movestack,              {.i = +1 } },
+    { MODKEY|ShiftMask,             XK_k,      movestack,              {.i = -1 } },
+    { MODKEY|ShiftMask,             XK_Down,   movestack,              {.i = +1 } },
+    { MODKEY|ShiftMask,             XK_Up,     movestack,              {.i = -1 } },
+
+    /* Layout Toggles */
+    { MODKEY|ControlMask,           XK_m,      setlayout,              {.v = &layouts[0]} }, /* Monocle */
+    { MODKEY|ControlMask,           XK_f,      setlayout,              {.v = &layouts[1]} }, /* Float */
+    { MODKEY|ControlMask,           XK_t,      setlayout,              {.v = &layouts[2]} }, /* Tile */
+    { MODKEY,                       XK_F11,    togglefullscreen,       {0} },
 
     /* Media Controls & Real-Time dwmblocks Signals */
-    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
-    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+3 dwmblocks") },
-    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+3 dwmblocks") },
-    { 0, XF86XK_AudioMicMute,                      spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
-    { 0, XF86XK_AudioPlay,                         spawn,                  SHCMD("playerctl play-pause") },
-    { 0, XF86XK_AudioPause,                        spawn,                  SHCMD("playerctl play-pause") },
-    { 0, XF86XK_AudioPrev,                         spawn,                  SHCMD("playerctl previous") },
-    { 0, XF86XK_AudioNext,                         spawn,                  SHCMD("playerctl next") },
-    { 0, XF86XK_AudioStop,                         spawn,                  SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+2 dwmblocks") },
-    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
-    { 0, XK_Print,                                 spawn,                  SHCMD("grim") },
-    { MODKEY, XK_space,                            spawn,                  {.v = togglekbdcmd } },
-
-    /* Workspaces (1-9) */
-    TAGKEYS(                        XK_1,                                  0)
-    TAGKEYS(                        XK_2,                                  1)
-    TAGKEYS(                        XK_3,                                  2)
-    TAGKEYS(                        XK_4,                                  3)
-    TAGKEYS(                        XK_5,                                  4)
-    TAGKEYS(                        XK_6,                                  5)
-    TAGKEYS(                        XK_7,                                  6)
-    TAGKEYS(                        XK_8,                                  7)
-    TAGKEYS(                        XK_9,                                  8)
-    { MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
-    { MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
+    { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
+    { 0, XF86XK_AudioLowerVolume,              spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+3 dwmblocks") },
+    { 0, XF86XK_AudioRaiseVolume,              spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+3 dwmblocks") },
+    { 0, XF86XK_AudioMicMute,                  spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
+    { 0, XF86XK_AudioPlay,                     spawn,                  SHCMD("playerctl play-pause") },
+    { 0, XF86XK_AudioPause,                    spawn,                  SHCMD("playerctl play-pause") },
+    { 0, XF86XK_AudioPrev,                     spawn,                  SHCMD("playerctl previous") },
+    { 0, XF86XK_AudioNext,                     spawn,                  SHCMD("playerctl next") },
+    { 0, XF86XK_AudioStop,                     spawn,                  SHCMD("playerctl stop") },
+    { 0, XF86XK_MonBrightnessDown,             spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+2 dwmblocks") },
+    { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
+    { 0, XK_Print,                             spawn,                  SHCMD("grim") },
+    { MODKEY, XK_space,                        spawn,                  {.v = togglekbdcmd } },
 };
 
 /* Button Definitions */
