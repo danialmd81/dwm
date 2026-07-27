@@ -4,14 +4,15 @@ SIGNAL=6
 STATE_FILE="/tmp/dwmblocks_mem_mode"
 CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
 
-# Helper function to spawn task manager
+# Helper function to spawn btop sorted by Memory in kitty
 spawn_monitor() {
-    for cmd in btop htop top; do
-        if command -v "$cmd" >/dev/null 2>&1; then
-            setsid -f "$TERMINAL" -e "$cmd" >/dev/null 2>&1
-            break
-        fi
-    done
+    if command -v btop >/dev/null 2>&1; then
+        setsid -f kitty -e btop -p 2 >/dev/null 2>&1
+    elif command -v htop >/dev/null 2>&1; then
+        setsid -f kitty -e htop -s PERCENT_MEM >/dev/null 2>&1
+    elif command -v top >/dev/null 2>&1; then
+        setsid -f kitty -e top >/dev/null 2>&1
+    fi
 }
 
 case "$CLICK_BUTTON" in
@@ -24,7 +25,7 @@ case "$CLICK_BUTTON" in
     esac
     pkill -RTMIN+"$SIGNAL" dwmblocks
     ;;
-2) # Middle click: Launch process monitor in terminal
+2) # Middle click: Launch process monitor in Kitty
     spawn_monitor
     ;;
 3) # Right click: Notification of top RAM hogs
@@ -56,7 +57,7 @@ mem_total=$(awk '/MemTotal:/ {print $2}' /proc/meminfo)
 mem_available=$(awk '/MemAvailable:/ {print $2}' /proc/meminfo)
 
 if [ -z "$mem_total" ] || [ "$mem_total" -eq 0 ]; then
-    echo "$icon N/A"
+    echo "[$icon N/A]"
     exit 0
 fi
 

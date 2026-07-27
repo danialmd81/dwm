@@ -4,14 +4,15 @@ SIGNAL=10
 STATE_FILE="/tmp/dwmblocks_dgpu_mode"
 CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
 
-# Helper function to spawn task manager
+# Helper function to spawn nvtop in kitty
 spawn_monitor() {
-    for cmd in nvtop btop htop; do
-        if command -v "$cmd" >/dev/null 2>&1; then
-            setsid -f "$TERMINAL" -e "$cmd" >/dev/null 2>&1
-            break
-        fi
-    done
+    if command -v nvtop >/dev/null 2>&1; then
+        setsid -f kitty -e nvtop >/dev/null 2>&1
+    elif command -v btop >/dev/null 2>&1; then
+        setsid -f kitty -e btop >/dev/null 2>&1
+    elif command -v htop >/dev/null 2>&1; then
+        setsid -f kitty -e htop >/dev/null 2>&1
+    fi
 }
 
 case "$CLICK_BUTTON" in
@@ -24,7 +25,7 @@ case "$CLICK_BUTTON" in
     esac
     pkill -RTMIN+"$SIGNAL" dwmblocks
     ;;
-2) # Middle click: Launch process monitor in terminal
+2) # Middle click: Launch process monitor in Kitty
     spawn_monitor
     ;;
 3) # Right click: Notification of top GPU processes
@@ -103,7 +104,7 @@ if [ "$PWR_STATE" = "suspended" ]; then
     exit 0
 fi
 
-# 2. Render based on active mode using the single icon
+# 2. Render based on active mode
 case "$MODE" in
 "temp")
     val=$(get_gpu_temp)
