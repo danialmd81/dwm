@@ -1,0 +1,120 @@
+#!/bin/sh
+
+SIGNAL=10
+STATE_FILE="/tmp/dwmblocks_dgpu_mode"
+CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
+
+# Helper function to spawn task manager
+spawn_monitor() {
+    for cmd in nvtop btop htop; do
+        if command -v "$cmd" >/dev/null 2>&1; then
+            setsid -f "$TERMINAL" -e "$cmd" >/dev/null 2>&1
+            break
+        fi
+    done
+}
+
+case "$CLICK_BUTTON" in
+1) # Left click: Cycle in-place modes
+    CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
+    case "$CURRENT_MODE" in
+    "usage") echo "temp" >"$STATE_FILE" ;;
+    "temp") echo "vram" >"$STATE_FILE" ;;
+    *) echo "usage" >"$STATE_FILE" ;;
+    esac
+    pkill -RTMIN+"$SIGNAL" dwmblocks
+    ;;
+2) # Middle click: Launch process monitor in terminal
+    spawn_monitor
+    ;;
+3) # Right click: Notification of top GPU processes
+    if command -v nvidia-smi >/dev/null 2>&1; then
+        hogs=$(nvidia-smi --query-compute-apps=process_name,used_memory --format=csv,noheader 2>/dev/null | awk -F',' '{printf "%-20s %s\n", $1, $2}')
+        [ -z "$hogs" ] && hogs="No active GPU processes"
+    else
+        hogs="NVIDIA driver unavailable"
+    fi
+    notify-send "Top GPU Processes" "<font family='monospace'>$hogs</font>"
+    ;;
+esac
+
+# Handle CLI toggle argument: `./sb-dgpu toggle`
+if [ "$1" = "toggle" ]; then
+    CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
+    case "$CURRENT_MODE" in
+    "usage") echo "temp" >"$STATE_FILE" ;;
+    "temp") echo "vram" >"$STATE_FILE" ;;
+    *) echo "usage" >"$STATE_FILE" ;;
+    esac
+    pkill -RTMIN+"$SIGNAL" dwmblocks
+fi
+
+MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
+
+# ------------------------------------------------------------------------------
+# Data Collection & Output
+# ------------------------------------------------------------------------------
+
+# Helper to check if dGPU is currently suspended to avoid waking it up
+get_gpu_pwr_state() {
+    NVIDIA_PWR_FILE="/sys/bus/pci/providers/nvidia/power/runtime_status"
+    [ ! -f "$NVIDIA_PWR_FILE" ] && NVIDIA_PWR_FILE="/sys/bus/pci/devices/0000:01:00.0/power/runtime_status"
+
+    if [ -f "$NVIDIA_PWR_FILE" ]; then
+        cat "$NVIDIA_PWR_FILE"
+    else
+        echo "unknown"
+    fi
+}
+
+get_gpu_usage() {
+    usage=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null)
+    if [ -n "$usage" ]; then
+        echo "${usage}%"
+    else
+        echo "N/A"
+    fi
+}
+
+get_gpu_temp() {
+    temp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null)
+    if [ -n "$temp" ]; then
+        echo "${temp}°C"
+    else
+        echo "N/A"
+    fi
+}
+
+get_gpu_vram() {
+    vram=$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null)
+    if [ -n "$vram" ]; then
+        echo "$vram" | awk -F',' '{printf "%.1f/%.1fGiB\n", $1/1024, $2/1024}'
+    else
+        echo "N/A"
+    fi
+}
+
+icon="🎮"
+
+# 1. Check if GPU is sleeping/suspended
+PWR_STATE=$(get_gpu_pwr_state)
+if [ "$PWR_STATE" = "suspended" ]; then
+    echo "[$icon OFF]"
+    exit 0
+fi
+
+# 2. Render based on active mode using the single icon
+case "$MODE" in
+"temp")
+    val=$(get_gpu_temp)
+    echo "[$icon $val]"
+    ;;
+"vram")
+    val=$(get_gpu_vram)
+    echo "[$icon $val]"
+    ;;
+*)
+    val=$(get_gpu_usage)
+    echo "[$icon $val]"
+    ;;
+esac

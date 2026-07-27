@@ -40,8 +40,6 @@ fi
 # Data Collection & Output
 # ------------------------------------------------------------------------------
 
-icon="⌨"
-
 if command -v xkb-switch >/dev/null 2>&1; then
     layout=$(xkb-switch -p)
 else
@@ -54,4 +52,4 @@ ir) label="IR" ;;
 *) label=$(echo "$layout" | tr '[:lower:]' '[:upper:]') ;;
 esac
 
-echo "[$icon $label]"
+echo "[$label]"
