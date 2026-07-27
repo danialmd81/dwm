@@ -1,5 +1,3 @@
-// clang-format off
-
 #ifndef CONFIG_H
 #define CONFIG_H
 
@@ -19,15 +17,17 @@
 #define TRAILING_DELIMITER 0
 
 // Define blocks for the status feed as X(icon, cmd, interval, signal).
-#define BLOCKS(X)                                                                           	\
-    X("", "/home/danial/.local/bin/statusbar/sb-netspeed", 1, 8)        /* Net */           	\
-    X("", "/home/danial/.local/bin/statusbar/sb-memory", 5, 6)          /* Ram */           	\
-    X("", "/home/danial/.local/bin/statusbar/sb-cpu", 5, 7)             /* CPU */           	\
-    X("", "/home/danial/.local/bin/statusbar/sb-battery", 5, 5)         /* Battery */       	\
-    X("", "/home/danial/.local/bin/statusbar/sb-volume", 0, 3)          /* Volume */        	\
-    X("", "/home/danial/.local/bin/statusbar/sb-brightness", 0, 2)      /* Brightness */    	\
-    X("", "/home/danial/.local/bin/statusbar/sb-keyboard", 0, 9)          /* Keyboard Layout */ \
-    X("", "/home/danial/.local/bin/statusbar/sb-date", 0, 4)            /* Date */				\
-    X("", "/home/danial/.local/bin/statusbar/sb-clock", 60, 1)          /* Clock */
+#define BLOCKS(X)                                                             \
+    X("", "/home/danial/.local/bin/statusbar/sb-netspeed", 1, 8) /* Net */    \
+    X("", "/home/danial/.local/bin/statusbar/sb-memory", 5, 6)   /* Ram */    \
+    X("", "/home/danial/.local/bin/statusbar/sb-cpu", 5, 7)      /* CPU */    \
+    X("", "/home/danial/.local/bin/statusbar/sb-battery", 5, 5) /* Battery */ \
+    X("", "/home/danial/.local/bin/statusbar/sb-date", 0, 4)    /* Date */    \
+    X("", "/home/danial/.local/bin/statusbar/sb-clock", 60, 1)  /* Clock */
 
 #endif  // CONFIG_H
+
+// X("", "/home/danial/.local/bin/statusbar/sb-brightness", 0, 2)      /*
+// Brightness */ X("", "/home/danial/.local/bin/statusbar/sb-volume", 0, 3) /*
+// Volume */ X("", "/home/danial/.local/bin/statusbar/sb-keyboard", 0, 9) /*
+// Keyboard Layout */

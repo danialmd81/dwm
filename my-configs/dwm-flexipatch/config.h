@@ -237,12 +237,7 @@ static const char *dmenucmd[] = {
 // static const char *termcmd[]  = { "tilix", NULL };
 static const char *termcmd[]  = { "st", NULL };
 
-/* Command to cycle keyboard layout via xkb-switch and refresh signal 9 */
-static const char *togglekbdcmd[] = { 
-    "sh", "-c", 
-    "xkb-switch -n && pkill -RTMIN+9 dwmblocks", 
-    NULL 
-};
+static const char *slockcmd[] = { "slock", NULL };
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
@@ -323,11 +318,18 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_t,      spawn,                  SHCMD("Telegram") },
     { MODKEY,                       XK_x,      spawn,                  SHCMD("/home/danial/.local/bin/code") },
     { MODKEY,                       XK_z,      spawn,                  SHCMD("/home/danial/.local/bin/zed") },
-    { MODKEY,                       XK_v,      spawn,                  SHCMD("copyq toggle") },
-    // { MODKEY,                     XK_Escape, spawn,                 SHCMD("i3lock -c 000000") },
-    { ControlMask|Mod1Mask,         XK_Delete, spawn,                  SHCMD("~/.local/bin/powermenu") },
-    { MODKEY,                       XK_q,      killclient,             {0} },
+    
+    /* Lock Screen */
+    { MODKEY,                       XK_Escape, spawn,                  {.v = slockcmd } },
 
+    /* Clipboard Manager Toggle */
+    { MODKEY,                       XK_v,      spawn,                  SHCMD("copyq toggle") },
+
+    /* System Power Menu (Ctrl+Alt+Del) */
+    { ControlMask|Mod1Mask,         XK_Delete, spawn,                  SHCMD("~/.local/bin/powermenu") },
+
+    /* Close Focused Window */
+    { MODKEY,                       XK_q,      killclient,             {0} },
 
     /* Focus Navigation (Arrows, Alt+Tab) */
     { MODKEY,                       XK_Down,   focusstack,             {.i = +1 } },
@@ -351,20 +353,26 @@ static const Key keys[] = {
     { MODKEY|ControlMask,           XK_t,      setlayout,              {.v = &layouts[2]} }, /* Tile */
     { MODKEY,                       XK_F11,    togglefullscreen,       {0} },
 
-    /* Media Controls & Real-Time dwmblocks Signals */
-    { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
-    { 0, XF86XK_AudioLowerVolume,              spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+3 dwmblocks") },
-    { 0, XF86XK_AudioRaiseVolume,              spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+3 dwmblocks") },
-    { 0, XF86XK_AudioMicMute,                  spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
+/* Media Controls & Real-Time dwmblocks Signals */
+    // { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
+    // { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
+    // { 0, XF86XK_AudioLowerVolume,              spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+3 dwmblocks") },
+    // { 0, XF86XK_AudioRaiseVolume,              spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+3 dwmblocks") },
+    // { 0, XF86XK_AudioMicMute,                  spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
+    { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("vol-notify mute") },
+    { 0, XF86XK_AudioLowerVolume,              spawn,                  SHCMD("vol-notify down") },
+    { 0, XF86XK_AudioRaiseVolume,              spawn,                  SHCMD("vol-notify up") },
     { 0, XF86XK_AudioPlay,                     spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPause,                    spawn,                  SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPrev,                     spawn,                  SHCMD("playerctl previous") },
     { 0, XF86XK_AudioNext,                     spawn,                  SHCMD("playerctl next") },
     { 0, XF86XK_AudioStop,                     spawn,                  SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessDown,             spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+2 dwmblocks") },
-    { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
+    // { 0, XF86XK_MonBrightnessDown,             spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+2 dwmblocks") },
+    // { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
+    { 0, XF86XK_MonBrightnessDown,             spawn,                  SHCMD("bright-notify down") },
+    { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("bright-notify up") },
     { 0, XK_Print,                             spawn,                  SHCMD("grim") },
-    { MODKEY, XK_space,                        spawn,                  {.v = togglekbdcmd } },
+    { MODKEY, XK_space,                        spawn,                  SHCMD("kbd-notify") },
 };
 
 /* Button Definitions */

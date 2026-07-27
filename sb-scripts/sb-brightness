@@ -22,4 +22,4 @@ else
 	icon="󰃬" # Minimum / Dim
 fi
 
-echo "$icon ${brightness_per}%"
+echo "[$icon ${brightness_per}%]"

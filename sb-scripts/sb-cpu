@@ -89,14 +89,14 @@ icon="󰻠"
 case "$MODE" in
 "temp")
 	val=$(get_cpu_temp)
-	echo "$icon $val"
+	echo "[$icon $val]"
 	;;
 "freq")
 	val=$(get_cpu_freq)
-	echo "$icon $val"
+	echo "[$icon $val]"
 	;;
 *)
 	val=$(get_cpu_usage)
-	echo "$icon $val"
+	echo "[$icon $val]"
 	;;
 esac

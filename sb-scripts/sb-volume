@@ -1,14 +1,33 @@
 #!/bin/sh
 
-# Works with PipeWire (wpctl) or PulseAudio (pamixer)
+# Handle mouse clicks if using dwmblocks-async
+case "$BUTTON" in
+1) wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle ;;
+4) wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+ ;;
+5) wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- ;;
+esac
+
+# Query volume with fallback retry if WirePlumber is still starting up
 if command -v wpctl >/dev/null 2>&1; then
 	vol_info=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)
-	if echo "$vol_info" | grep -q "MUTED"; then
+
+	# If WirePlumber hasn't selected default sink yet, wait briefly and retry once
+	if [ -z "$vol_info" ]; then
+		sleep 0.5
+		vol_info=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null)
+	fi
+
+	if [ -z "$vol_info" ]; then
+		icon="󰖁"
+		vol_per="N/A"
+	elif echo "$vol_info" | grep -q "MUTED"; then
 		icon="󰝟"
 		vol_per="Mute"
 	else
+		# Parse volume percentage smoothly
 		vol_val=$(echo "$vol_info" | awk '{print int($2 * 100)}')
 		vol_per="${vol_val}%"
+
 		if [ "$vol_val" -gt 60 ]; then
 			icon="󰕾"
 		elif [ "$vol_val" -gt 20 ]; then
@@ -22,4 +41,4 @@ else
 	vol_per="N/A"
 fi
 
-echo "$icon $vol_per"
+echo "[$icon $vol_per]"
