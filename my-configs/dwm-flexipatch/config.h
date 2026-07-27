@@ -156,15 +156,15 @@ static const Rule rules[] = {
     RULE(.class = "net.lutris.Lutris",        .tags = 1 << 3)
 
     /* Tag 5: Office (Documents & Productivity Tools) */
-    RULE(.class = "libreoffice",                     .tags = 1 << 4)
-    RULE(.class = "soffice.bin",                     .tags = 1 << 4)
-    RULE(.instance = "libreoffice-startcenter",       .tags = 1 << 4)
-    RULE(.instance = "libreoffice-writer",            .tags = 1 << 4)
-    RULE(.instance = "libreoffice-calc",              .tags = 1 << 4)
-    RULE(.instance = "libreoffice-impress",           .tags = 1 << 4)
-    RULE(.instance = "libreoffice-draw",              .tags = 1 << 4)
-    RULE(.instance = "libreoffice-math",              .tags = 1 << 4)
-    RULE(.instance = "libreoffice-base",              .tags = 1 << 4)
+    RULE(.class = "libreoffice",                   .tags = 1 << 4)
+    RULE(.class = "soffice.bin",                   .tags = 1 << 4)
+    RULE(.class = "libreoffice-startcenter",       .tags = 1 << 4)
+    RULE(.class = "libreoffice-writer",            .tags = 1 << 4)
+    RULE(.class = "libreoffice-calc",              .tags = 1 << 4)
+    RULE(.class = "libreoffice-impress",           .tags = 1 << 4)
+    RULE(.class = "libreoffice-draw",              .tags = 1 << 4)
+    RULE(.class = "libreoffice-math",              .tags = 1 << 4)
+    RULE(.class = "libreoffice-base",              .tags = 1 << 4)
 
     /* Tag 6: Downloads */
     RULE(.class = "com-abdownloadmanager-desktop-AppKt", .tags = 1 << 5)
@@ -256,7 +256,7 @@ static const Key keys[] = {
     
     /* Dwm default keybindings */
     /* Core Launchers & Command Menus */
-    { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
+    { MODKEY,                       XK_a,      spawn,          {.v = dmenucmd } },
     { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
     
     /* Bar Visibility */
@@ -321,7 +321,7 @@ static const Key keys[] = {
     { MODKEY,                       XK_x,      spawn,                  SHCMD("/home/danial/.local/bin/code") },
     { MODKEY,                       XK_z,      spawn,                  SHCMD("/home/danial/.local/bin/zed") },
     { MODKEY,                       XK_Escape, spawn,                  {.v = slockcmd } },
-    { MODKEY|ControlMask,           XK_m,      spawn,                  SHCMD("pavucontrol") },
+    { MODKEY|ShiftMask,             XK_m,      spawn,                  SHCMD("pavucontrol") },
     { MODKEY,                       XK_v,      spawn,                  SHCMD("copyq toggle") },
     { ControlMask|Mod1Mask,         XK_Delete, spawn,                  SHCMD("~/.local/bin/powermenu") },
     { 0,                            XK_Print,  spawn,                  SHCMD("flameshot gui") },

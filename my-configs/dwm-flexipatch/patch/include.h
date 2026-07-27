@@ -18,6 +18,7 @@
 #include "autostart.h"
 #include "floatpos.h"
 #include "movestack.h"
+#include "pertag.h"
 #include "tapresize.h"
 #include "togglefullscreen.h"
 /* Layouts */

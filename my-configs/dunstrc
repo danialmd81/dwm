@@ -1,4 +1,7 @@
 [global]
+    # Play sound on every notification
+    script = ~/.local/bin/notification-sound
+    
     # Monitor & Position Setup
     monitor = 0
     follow = mouse
