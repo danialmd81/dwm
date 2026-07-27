@@ -120,10 +120,13 @@ static const Rule rules[] = {
      *  WM_WINDOW_ROLE(STRING) = role
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
      */
-    RULE(.wintype = WTYPE "DIALOG", .isfloating = 1, .floatpos = "50% 50%")
+    RULE(.wintype = WTYPE "DIALOG",  .isfloating = 1, .floatpos = "50% 50%")
     RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
     RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
     RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1)
+
+    /**/
+    RULE(.class = "flameshot", .isfloating = 1)
 
     /* Tag 1: Web (Browsers) */
     RULE(.class = "Firefox",          .tags = 1 << 0)
@@ -234,8 +237,7 @@ static const char *dmenucmd[] = {
     "--dmenu=dmenu -i -p 'Apps:'",
     NULL
 };
-// static const char *termcmd[]  = { "tilix", NULL };
-static const char *termcmd[]  = { "st", NULL };
+static const char *termcmd[]  = { "kitty", NULL };
 
 static const char *slockcmd[] = { "slock", NULL };
 
@@ -308,7 +310,7 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_q,      quit,           {0} },
 
     /* My custom keybindings */
-    /* Custom Shortcuts & Applications */
+    /* Application Shortcuts & System Utilities */
     { MODKEY,                       XK_c,      spawn,                  SHCMD("/opt/google/chrome/chrome") },
     { MODKEY,                       XK_e,      spawn,                  SHCMD("/usr/bin/mailspring") },
     { MODKEY,                       XK_f,      spawn,                  SHCMD("nautilus") },
@@ -318,15 +320,13 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_t,      spawn,                  SHCMD("Telegram") },
     { MODKEY,                       XK_x,      spawn,                  SHCMD("/home/danial/.local/bin/code") },
     { MODKEY,                       XK_z,      spawn,                  SHCMD("/home/danial/.local/bin/zed") },
-    
-    /* Lock Screen */
     { MODKEY,                       XK_Escape, spawn,                  {.v = slockcmd } },
-
-    /* Clipboard Manager Toggle */
+    { MODKEY|ControlMask,           XK_m,      spawn,                  SHCMD("pavucontrol") },
     { MODKEY,                       XK_v,      spawn,                  SHCMD("copyq toggle") },
-
-    /* System Power Menu (Ctrl+Alt+Del) */
     { ControlMask|Mod1Mask,         XK_Delete, spawn,                  SHCMD("~/.local/bin/powermenu") },
+    { 0,                            XK_Print,  spawn,                  SHCMD("flameshot gui") },
+    { ShiftMask,                    XK_Print,  spawn,                  SHCMD("flameshot full -c -p ~/Pictures/Screenshots") },
+    { MODKEY,                       XK_space,  spawn,                  SHCMD("kbd-notify") },
 
     /* Close Focused Window */
     { MODKEY,                       XK_q,      killclient,             {0} },
@@ -353,7 +353,7 @@ static const Key keys[] = {
     { MODKEY|ControlMask,           XK_t,      setlayout,              {.v = &layouts[2]} }, /* Tile */
     { MODKEY,                       XK_F11,    togglefullscreen,       {0} },
 
-/* Media Controls & Real-Time dwmblocks Signals */
+    /* Media Controls & Real-Time dwmblocks Signals */
     // { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
     // { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
     // { 0, XF86XK_AudioLowerVolume,              spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+3 dwmblocks") },
@@ -371,8 +371,6 @@ static const Key keys[] = {
     // { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
     { 0, XF86XK_MonBrightnessDown,             spawn,                  SHCMD("bright-notify down") },
     { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("bright-notify up") },
-    { 0, XK_Print,                             spawn,                  SHCMD("grim") },
-    { MODKEY, XK_space,                        spawn,                  SHCMD("kbd-notify") },
 };
 
 /* Button Definitions */
