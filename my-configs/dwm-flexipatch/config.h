@@ -107,7 +107,7 @@ static char *colors[][ColCount] = {
 static char *tagicons[][NUMTAGS] =
 {
     /* 1:Web | 2:Code | 3:Net | 4:Hub | 5:Office | 6:Downloads | 7:Design | 8:Sys | 9:Misc */
-    [DEFAULT_TAGS]        = { "1:🌐", "2:💻", "3:💬", "4:🔀", "5:📄", "6:📥", "7:🎨", "8:⚙️", "9:📌" },
+    [DEFAULT_TAGS]        = { "1:🌐", "2:💻", "3:💬", "4", "5", "6", "7", "8", "9" },
     [ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
     [ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
@@ -120,13 +120,13 @@ static const Rule rules[] = {
      *  WM_WINDOW_ROLE(STRING) = role
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
      */
-    RULE(.wintype = WTYPE "DIALOG",  .isfloating = 1, .floatpos = "50% 50%")
-    RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
-    RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
-    RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1)
+    // RULE(.wintype = WTYPE "DIALOG",  .isfloating = 1)
+    // RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
+    // RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
+    // RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1)
 
     /**/
-    RULE(.class = "flameshot", .isfloating = 1)
+    // RULE(.class = "flameshot", .isfloating = 1)
 
     /* Tag 1: Web (Browsers) */
     RULE(.class = "Firefox",          .tags = 1 << 0)
@@ -145,34 +145,6 @@ static const Rule rules[] = {
     RULE(.class = "nekobox",          .tags = 1 << 2)
     RULE(.class = "GUI.for.SingBox",  .tags = 1 << 2)
     RULE(.class = "v2rayN",           .tags = 1 << 2)
-
-    /* Tag 4: Hub, Media & Gaming (Files, Media Players & Games) */
-    RULE(.class = "org.gnome.Nautilus",       .tags = 1 << 3)
-    RULE(.class = "Top.jtmonster.jhentai",    .tags = 1 << 3)
-    RULE(.class = "smplayer",                 .tags = 1 << 3)
-    RULE(.class = "Audacious",                .tags = 1 << 3)
-    RULE(.class = "vlc",                      .tags = 1 << 3)
-    RULE(.class = "steam",                    .tags = 1 << 3)
-    RULE(.class = "net.lutris.Lutris",        .tags = 1 << 3)
-
-    /* Tag 5: Office (Documents & Productivity Tools) */
-    RULE(.class = "libreoffice",                   .tags = 1 << 4)
-    RULE(.class = "soffice.bin",                   .tags = 1 << 4)
-    RULE(.class = "libreoffice-startcenter",       .tags = 1 << 4)
-    RULE(.class = "libreoffice-writer",            .tags = 1 << 4)
-    RULE(.class = "libreoffice-calc",              .tags = 1 << 4)
-    RULE(.class = "libreoffice-impress",           .tags = 1 << 4)
-    RULE(.class = "libreoffice-draw",              .tags = 1 << 4)
-    RULE(.class = "libreoffice-math",              .tags = 1 << 4)
-    RULE(.class = "libreoffice-base",              .tags = 1 << 4)
-
-    /* Tag 6: Downloads */
-    RULE(.class = "com-abdownloadmanager-desktop-AppKt", .tags = 1 << 5)
-    RULE(.class = "org.remmina.Remmina",                 .tags = 1 << 5)
-
-    /* Tag 7: Design & Graphics */
-    RULE(.class = "Gimp",             .tags = 1 << 6)
-    RULE(.class = "Inkscape",         .tags = 1 << 6)
 
     /* Floating Utilities */
     RULE(.class = "copyq", .isfloating = 1, .floatpos = "600W 400H 50% 50%")
@@ -254,50 +226,30 @@ static const StatusCmd statuscmds[] = {
 static const Key keys[] = {
     /* modifier                     key            function                argument */
     
-    /* Dwm default keybindings */
-    /* Core Launchers & Command Menus */
-    { MODKEY,                       XK_a,      spawn,          {.v = dmenucmd } },
+    /* Dwm default keybindings (Don't change) */
+    { MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
     { MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
-    
-    /* Bar Visibility */
     // { MODKEY,                       XK_b,      togglebar,      {0} },
-
-    /* Window Focus Navigation (Stack) */
     { MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
     { MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
-
-    /* Master Area Window Count */
     { MODKEY,                       XK_i,      incnmaster,     {.i = +1 } },
     { MODKEY,                       XK_d,      incnmaster,     {.i = -1 } },
-    
-    /* Master Area Size Adjustment (HJKL) */
     { MODKEY,                       XK_h,      setmfact,       {.f = -0.05} },
     { MODKEY,                       XK_l,      setmfact,       {.f = +0.05} },
-
-    /* Window Operations & Workspace Toggle */
     { MODKEY,                       XK_Return, zoom,           {0} },
     { MODKEY,                       XK_Tab,    view,           {0} },
     // { MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
-
-    /* Layout Toggles */
     // { MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
     // { MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
     // { MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
     // { MODKEY,                       XK_space,  setlayout,      {0} },
-
-    /* Floating Window Toggle */
     { MODKEY|ShiftMask,             XK_space,  togglefloating, {0} },
-
-    /* Tag/Workspace Operations (All Tags & Quit) */
     { MODKEY,                       XK_0,      view,           {.ui = ~0 } },
     { MODKEY|ShiftMask,             XK_0,      tag,            {.ui = ~0 } },
-    
-    /* Multi-Monitor Control */
     { MODKEY,                       XK_comma,  focusmon,       {.i = -1 } },
     { MODKEY,                       XK_period, focusmon,       {.i = +1 } },
     { MODKEY|ShiftMask,             XK_comma,  tagmon,         {.i = -1 } },
     { MODKEY|ShiftMask,             XK_period, tagmon,         {.i = +1 } },
-    
     TAGKEYS(                        XK_1,                      0)
     TAGKEYS(                        XK_2,                      1)
     TAGKEYS(                        XK_3,                      2)
@@ -321,7 +273,6 @@ static const Key keys[] = {
     { MODKEY,                       XK_x,      spawn,                  SHCMD("/home/danial/.local/bin/code") },
     { MODKEY,                       XK_z,      spawn,                  SHCMD("/home/danial/.local/bin/zed") },
     { MODKEY,                       XK_Escape, spawn,                  {.v = slockcmd } },
-    { MODKEY|ShiftMask,             XK_m,      spawn,                  SHCMD("pavucontrol") },
     { MODKEY,                       XK_v,      spawn,                  SHCMD("copyq toggle") },
     { ControlMask|Mod1Mask,         XK_Delete, spawn,                  SHCMD("~/.local/bin/powermenu") },
     { 0,                            XK_Print,  spawn,                  SHCMD("flameshot gui") },
@@ -348,17 +299,13 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_Up,     movestack,              {.i = -1 } },
 
     /* Layout Toggles */
-    { MODKEY|ControlMask,           XK_m,      setlayout,              {.v = &layouts[0]} }, /* Monocle */
-    { MODKEY|ControlMask,           XK_f,      setlayout,              {.v = &layouts[1]} }, /* Float */
-    { MODKEY|ControlMask,           XK_t,      setlayout,              {.v = &layouts[2]} }, /* Tile */
+    { MODKEY|ShiftMask,             XK_m,      setlayout,              {.v = &layouts[0]} }, /* Monocle */
+    { MODKEY|ShiftMask,             XK_f,      setlayout,              {.v = &layouts[1]} }, /* Float */
+    { MODKEY|ShiftMask,             XK_t,      setlayout,              {.v = &layouts[2]} }, /* Tile */
+    { MODKEY,                       XK_s,      setlayout,              {0} },
     { MODKEY,                       XK_F11,    togglefullscreen,       {0} },
 
     /* Media Controls & Real-Time dwmblocks Signals */
-    // { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
-    // { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle && pkill -RTMIN+3 dwmblocks") },
-    // { 0, XF86XK_AudioLowerVolume,              spawn,                  SHCMD("wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%- && pkill -RTMIN+3 dwmblocks") },
-    // { 0, XF86XK_AudioRaiseVolume,              spawn,                  SHCMD("wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+ && pkill -RTMIN+3 dwmblocks") },
-    // { 0, XF86XK_AudioMicMute,                  spawn,                  SHCMD("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle") },
     { 0, XF86XK_AudioMute,                     spawn,                  SHCMD("vol-notify mute") },
     { 0, XF86XK_AudioLowerVolume,              spawn,                  SHCMD("vol-notify down") },
     { 0, XF86XK_AudioRaiseVolume,              spawn,                  SHCMD("vol-notify up") },
@@ -367,8 +314,6 @@ static const Key keys[] = {
     { 0, XF86XK_AudioPrev,                     spawn,                  SHCMD("playerctl previous") },
     { 0, XF86XK_AudioNext,                     spawn,                  SHCMD("playerctl next") },
     { 0, XF86XK_AudioStop,                     spawn,                  SHCMD("playerctl stop") },
-    // { 0, XF86XK_MonBrightnessDown,             spawn,                  SHCMD("brightnessctl set 5%- && pkill -RTMIN+2 dwmblocks") },
-    // { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("brightnessctl set 5%+ && pkill -RTMIN+2 dwmblocks") },
     { 0, XF86XK_MonBrightnessDown,             spawn,                  SHCMD("bright-notify down") },
     { 0, XF86XK_MonBrightnessUp,               spawn,                  SHCMD("bright-notify up") },
 };

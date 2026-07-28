@@ -4,7 +4,8 @@
 
 case "$1" in
     up)
-        wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
+        # Cap max volume at 100% (-l 1.0)
+        wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+
         ;;
     down)
         wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
@@ -14,8 +15,9 @@ case "$1" in
         ;;
 esac
 
-# Signal dwmblocks to update status bar immediately
+# Signal both dwmblocks and someblocks for immediate bar updates
 pkill -RTMIN+10 dwmblocks 2>/dev/null
+pkill -RTMIN+10 someblocks 2>/dev/null
 
 # Get volume percentage and mute status
 vol=$(wpctl get-volume @DEFAULT_AUDIO_SINK@)
