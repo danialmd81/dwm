@@ -4,7 +4,7 @@
 IFACE=$(ip route | awk '/default/ {print $5}' | head -n 1)
 
 if [ -z "$IFACE" ] || [ ! -d "/sys/class/net/$IFACE" ]; then
-    echo "↓ ---- ↑ ----"
+    echo "↑ ----|↓ ----"
     exit 0
 fi
 
@@ -40,9 +40,9 @@ if [ -f "$CACHE_FILE" ]; then
     down_str=$(format_speed "$rx_kb")
     up_str=$(format_speed "$tx_kb")
 
-    echo "[↓ $down_str|↑ $up_str]"
+    echo "[↑ $up_str|↓ $down_str]"
 else
-    echo "[↓  ...|↑  ...]"
+    echo "[↑ ...|↓ ...]"
 fi
 
 # Save current readings for next update interval

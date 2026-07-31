@@ -44,11 +44,11 @@ run xss-lock --transfer-sleep-lock -- slock
 # - Restores brightness if activity is detected before locking
 # - Activates xss-lock to handle slock cleanly at 10 mins
 run xautolock \
-  -time 10 \
-  -notify 30 \
-  -notifier "brightnessctl -s set 20%" \
-  -reset "brightnessctl -r" \
-  -locker "xset s activate"
+    -time 10 \
+    -notify 30 \
+    -notifier "brightnessctl -s set 20%" \
+    -reset "brightnessctl -r" \
+    -locker "xset s activate"
 
 # ------------------------------------------------------------------------------
 # System Daemons & Services
@@ -79,6 +79,8 @@ run nm-applet
 run blueman-applet
 run pasystray
 run flameshot
+run fan
+run lock-monitor
 run /home/danial/.local/ABDownloadManager/bin/ABDownloadManager --background
 # Give D-Bus & Secret Service 2 seconds to register on the session bus
 # (sleep 2 && run mailspring --password-store="gnome-libsecret" --background) &
