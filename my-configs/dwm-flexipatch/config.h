@@ -27,6 +27,14 @@ static const int statusmon               = -1;
 static const unsigned int systrayspacing = 5; /* systray spacing */
 static const int showsystray             = 1; /* 0 means no systray */
 
+/* alt-tab configuration */
+static const unsigned int tabmodkey        = 0x40; /* (Alt) when this key is held down the alt-tab functionality stays active. Must be the same modifier as used to run alttabstart */
+static const unsigned int tabcyclekey      = 0x17; /* (Tab) when this key is hit the menu moves one position forward in client stack. Must be the same key as used to run alttabstart */
+static const unsigned int tabposy          = 1;    /* tab position on Y axis, 0 = top, 1 = center, 2 = bottom */
+static const unsigned int tabposx          = 1;    /* tab position on X axis, 0 = left, 1 = center, 2 = right */
+static const unsigned int maxwtab          = 600;  /* tab menu width */
+static const unsigned int maxhtab          = 200;  /* tab menu height */
+
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
 static int tiledindicatortype            = INDICATOR_NONE;
@@ -128,7 +136,7 @@ static const Rule rules[] = {
     RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1)
 
     /* Tag 1: Web (Browsers) */
-    RULE(.class = "Firefox",          .tags = 1 << 0)
+    // RULE(.class = "Firefox",          .tags = 1 << 0)
     RULE(.class = "Google-chrome",    .tags = 1 << 0)
 
     /* Tag 2: Code (IDEs & Editors) */
@@ -146,7 +154,7 @@ static const Rule rules[] = {
     RULE(.class = "v2rayN",           .tags = 1 << 2)
 
     /* Floating Utilities */
-    RULE(.class = "copyq", .isfloating = 1, .floatpos = "600W 400H 50% 50%")
+    RULE(.class = "copyq", .isfloating = 1, .floatpos = "400W 400H 50% 50%")
 };
 
 /* Bar rules */
@@ -228,8 +236,8 @@ static const Key keys[] = {
     { MODKEY,                       XK_p,      spawn,               {.v = dmenucmd } },
     // { MODKEY|ShiftMask,             XK_Return, spawn,               {.v = termcmd } },
     // { MODKEY,                       XK_b,      togglebar,           {0} },
-    { MODKEY,                       XK_j,      focusstack,          {.i = +1 } },
-    { MODKEY,                       XK_k,      focusstack,          {.i = -1 } },
+    { MODKEY,                       XK_j,      focusstack,          {.i = +2 } },
+    { MODKEY,                       XK_k,      focusstack,          {.i = -2 } },
     { MODKEY,                       XK_i,      incnmaster,          {.i = +1 } },
     { MODKEY,                       XK_d,      incnmaster,          {.i = -1 } },
     { MODKEY,                       XK_h,      setmfact,            {.f = -0.05} },
@@ -257,6 +265,7 @@ static const Key keys[] = {
     TAGKEYS(                        XK_7,                           6)
     TAGKEYS(                        XK_8,                           7)
     TAGKEYS(                        XK_9,                           8)
+    { MODKEY,                       XK_h,      showhideclient,      {0} },
     { MODKEY|ShiftMask,             XK_q,      quit,                {0} },
 
     /* My custom keybindings */
@@ -282,8 +291,9 @@ static const Key keys[] = {
     { MODKEY,                       XK_q,      killclient,          {0} },
 
     /* Window Reordering in Stack */
-    { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +1 } },
-    { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -1 } },
+   	{ Mod1Mask,                     XK_Tab,    alttabstart,         {0} },
+    // { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +2 } },
+    // { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -2 } },
     { MODKEY|ShiftMask,             XK_j,      movestack,           {.i = +1 } },
     { MODKEY|ShiftMask,             XK_k,      movestack,           {.i = -1 } },
 

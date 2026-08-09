@@ -14,6 +14,7 @@
 #include "bar_wintitleactions.c"
 
 /* Other patches */
+#include "alttab.c"
 #include "attachx.c"
 #include "autostart.c"
 #include "floatpos.c"
