@@ -1,4 +1,0 @@
-/* Patches */
-
-#include "message.c"
-

@@ -4,7 +4,7 @@
 IFACE=$(ip route | awk '/default/ {print $5}' | head -n 1)
 
 if [ -z "$IFACE" ] || [ ! -d "/sys/class/net/$IFACE" ]; then
-    echo "↑ ----|↓ ----"
+    echo ""
     exit 0
 fi
 

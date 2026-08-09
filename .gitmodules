@@ -10,6 +10,3 @@
 [submodule "dmenu-flexipatch"]
 	path = dmenu-flexipatch
 	url = https://github.com/bakkeby/dmenu-flexipatch.git
-[submodule "slock-flexipatch"]
-	path = slock-flexipatch
-	url = https://github.com/bakkeby/slock-flexipatch.git

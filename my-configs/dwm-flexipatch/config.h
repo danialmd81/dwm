@@ -171,10 +171,10 @@ static const int scrollsensetivity = 10; /* 1 means resize window by 1 pixel for
 /* resizemousescroll direction argument list */
 static const int scrollargs[][2] = {
 	/* width change         height change */
-	{ +scrollsensetivity,	0 },
 	{ -scrollsensetivity,	0 },
-	{ 0, 				  	+scrollsensetivity },
-	{ 0, 					-scrollsensetivity },
+	{ +scrollsensetivity,	0 },
+	{ 0, 				  	-scrollsensetivity },
+	{ 0, 					+scrollsensetivity },
 };
 
 static const Layout layouts[] = {
@@ -209,7 +209,7 @@ static const char *dmenucmd[] = {
     NULL
 };
 static const char *termcmd[]  = { "kitty", NULL };
-static const char *slockcmd[] = { "slock", NULL };
+static const char *lockcmd[] = { "xsecurelock", NULL };
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
@@ -237,9 +237,9 @@ static const Key keys[] = {
     // { MODKEY,                       XK_Return, zoom,                {0} },
     { MODKEY,                       XK_Tab,    view,                {0} },
     // { MODKEY|ShiftMask,             XK_c,      killclient,          {0} },
-    // { MODKEY,                       XK_t,      setlayout,           {.v = &layouts[0]} },
+    // { MODKEY,                       XK_m,      setlayout,           {.v = &layouts[0]} },
     // { MODKEY,                       XK_f,      setlayout,           {.v = &layouts[1]} },
-    // { MODKEY,                       XK_m,      setlayout,           {.v = &layouts[2]} },
+    // { MODKEY,                       XK_t,      setlayout,           {.v = &layouts[2]} },
     // { MODKEY,                       XK_space,  setlayout,           {0} },
     { MODKEY|ShiftMask,             XK_space,  togglefloating,      {0} },
     { MODKEY,                       XK_0,      view,                {.ui = ~0 } },
@@ -274,7 +274,7 @@ static const Key keys[] = {
     { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
     { MODKEY,                       XK_Delete, spawn,               SHCMD("~/.local/bin/powermenu") },
     { MODKEY,                       XK_space,  spawn,               SHCMD("kbd-notify") },
-    { MODKEY,                       XK_Escape, spawn,               {.v = slockcmd } },
+    { MODKEY,                       XK_Escape, spawn,               {.v = lockcmd } },
     { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p ~/Pictures/Screenshots") },
     { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
 
@@ -282,13 +282,15 @@ static const Key keys[] = {
     { MODKEY,                       XK_q,      killclient,          {0} },
 
     /* Window Reordering in Stack */
+    { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +1 } },
+    { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -1 } },
     { MODKEY|ShiftMask,             XK_j,      movestack,           {.i = +1 } },
     { MODKEY|ShiftMask,             XK_k,      movestack,           {.i = -1 } },
 
     /* Layout Toggles */
-    { MODKEY|ShiftMask,             XK_t,      setlayout,           {.v = &layouts[0]} },
+    { MODKEY|ShiftMask,             XK_m,      setlayout,           {.v = &layouts[0]} },
     { MODKEY|ShiftMask,             XK_f,      setlayout,           {.v = &layouts[1]} },
-    { MODKEY|ShiftMask,             XK_m,      setlayout,           {.v = &layouts[2]} },
+    { MODKEY|ShiftMask,             XK_t,      setlayout,           {.v = &layouts[2]} },
     { MODKEY,                       XK_s,      setlayout,           {0} },
     { MODKEY,                       XK_F11,    togglefullscreen,    {0} },
 
