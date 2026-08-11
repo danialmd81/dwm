@@ -130,19 +130,24 @@ static const Rule rules[] = {
      *  WM_WINDOW_ROLE(STRING) = role
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
      */
-    RULE(.wintype = WTYPE "DIALOG",  .isfloating = 1)
-    RULE(.wintype = WTYPE "UTILITY", .isfloating = 1)
-    RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1)
-    RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1)
+
+    /* EWMH Dialog & Popup Types */
+    RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1)
+    RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1)
+    RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1)
+    RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1)
+    RULE(.wintype = WTYPE "NOTIFICATION", .isfloating = 1)
+    RULE(.wintype = WTYPE "POPUP_MENU",    .isfloating = 1)
+    RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1)
 
     /* Tag 1: Web (Browsers) */
-    // RULE(.class = "Firefox",          .tags = 1 << 0)
+    RULE(.class = "Firefox",          .tags = 1 << 0)
     RULE(.class = "Google-chrome",    .tags = 1 << 0)
 
     /* Tag 2: Code (IDEs & Editors) */
-    // RULE(.class = "code",             .tags = 1 << 1)
-    // RULE(.class = "dev.zed.Zed",      .tags = 1 << 1)
-    // RULE(.class = "QtCreator",        .tags = 1 << 1)
+    RULE(.class = "code",             .tags = 1 << 1)
+    RULE(.class = "dev.zed.Zed",      .tags = 1 << 1)
+    RULE(.class = "QtCreator",        .tags = 1 << 1)
     // RULE(.class = "draw-io",           .tags = 1 << 1)
 
     /* Tag 3: Net & Chat (Mail, Messages, Proxies & VPNs) */
@@ -189,7 +194,6 @@ static const Layout layouts[] = {
     /* symbol     arrange function */
     { "[M]",      monocle }, /* monocle / tabbed style */
     { "><>",      NULL },    /* floating behavior */
-    { "[]=",      tile },    /* tiling split */
 };
 
 /* key definitions */
@@ -231,86 +235,59 @@ static const StatusCmd statuscmds[] = {
 
 static const Key keys[] = {
     /* modifier                     key            function                argument */
-    
-    /* Dwm default keybindings */
     { MODKEY,                       XK_p,      spawn,               {.v = dmenucmd } },
-    // { MODKEY|ShiftMask,             XK_Return, spawn,               {.v = termcmd } },
-    // { MODKEY,                       XK_b,      togglebar,           {0} },
+    { MODKEY,                       XK_b,      togglebar,           {0} },
+    // { MODKEY,                       XK_F11,    fullscreen,          {0} },
     { MODKEY,                       XK_j,      focusstack,          {.i = +2 } },
     { MODKEY,                       XK_k,      focusstack,          {.i = -2 } },
-    { MODKEY,                       XK_i,      incnmaster,          {.i = +1 } },
-    { MODKEY,                       XK_d,      incnmaster,          {.i = -1 } },
-    { MODKEY,                       XK_h,      setmfact,            {.f = -0.05} },
-    { MODKEY,                       XK_l,      setmfact,            {.f = +0.05} },
     // { MODKEY,                       XK_Return, zoom,                {0} },
     { MODKEY,                       XK_Tab,    view,                {0} },
-    // { MODKEY|ShiftMask,             XK_c,      killclient,          {0} },
-    // { MODKEY,                       XK_m,      setlayout,           {.v = &layouts[0]} },
-    // { MODKEY,                       XK_f,      setlayout,           {.v = &layouts[1]} },
-    // { MODKEY,                       XK_t,      setlayout,           {.v = &layouts[2]} },
-    // { MODKEY,                       XK_space,  setlayout,           {0} },
     { MODKEY|ShiftMask,             XK_space,  togglefloating,      {0} },
     { MODKEY,                       XK_0,      view,                {.ui = ~0 } },
-    { MODKEY|ShiftMask,             XK_0,      tag,                 {.ui = ~0 } },
+    // { MODKEY|ShiftMask,             XK_0,      tag,                 {.ui = ~0 } },
     { MODKEY,                       XK_comma,  focusmon,            {.i = -1 } },
     { MODKEY,                       XK_period, focusmon,            {.i = +1 } },
     { MODKEY|ShiftMask,             XK_comma,  tagmon,              {.i = -1 } },
     { MODKEY|ShiftMask,             XK_period, tagmon,              {.i = +1 } },
-    TAGKEYS(                        XK_1,                           0)
-    TAGKEYS(                        XK_2,                           1)
-    TAGKEYS(                        XK_3,                           2)
-    TAGKEYS(                        XK_4,                           3)
-    TAGKEYS(                        XK_5,                           4)
-    TAGKEYS(                        XK_6,                           5)
-    TAGKEYS(                        XK_7,                           6)
-    TAGKEYS(                        XK_8,                           7)
-    TAGKEYS(                        XK_9,                           8)
     { MODKEY,                       XK_h,      showhideclient,      {0} },
     { MODKEY|ShiftMask,             XK_q,      quit,                {0} },
-
-    /* My custom keybindings */
-    /* Application Shortcuts & System Utilities */
-    { MODKEY,                       XK_Return, spawn,               {.v = termcmd } },
-    { MODKEY,                       XK_c,      spawn,               SHCMD("/opt/google/chrome/chrome") },
-    { MODKEY,                       XK_e,      spawn,               SHCMD("/usr/bin/mailspring") },
-    { MODKEY,                       XK_f,      spawn,               SHCMD("nautilus") },
-    { MODKEY,                       XK_r,      spawn,               SHCMD("firefox") },
-    { MODKEY|ControlMask,           XK_r,      spawn,               SHCMD("firefox -P mk") },
-    { MODKEY,                       XK_t,      spawn,               SHCMD("/home/danial/.app/Throne/Throne") },
-    { MODKEY|ControlMask,           XK_t,      spawn,               SHCMD("Telegram") },
-    { MODKEY,                       XK_x,      spawn,               SHCMD("/usr/bin/code") },
-    { MODKEY,                       XK_z,      spawn,               SHCMD("/home/danial/.local/bin/zed") },
-    { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
-    { MODKEY,                       XK_Delete, spawn,               SHCMD("~/.local/bin/powermenu") },
-    { MODKEY,                       XK_space,  spawn,               SHCMD("kbd-notify") },
-    { MODKEY,                       XK_Escape, spawn,               {.v = lockcmd } },
-    { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p ~/Pictures/Screenshots") },
-    { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
-
-    /* Close Focused Window */
     { MODKEY,                       XK_q,      killclient,          {0} },
 
-    /* Window Reordering in Stack */
+    { MODKEY,                       XK_Return, spawn,               {.v = termcmd } },
+    { MODKEY,                       XK_Escape, spawn,               {.v = lockcmd } },
+    { MODKEY,                       XK_e,      spawn,               SHCMD("mailspring") },
+    { MODKEY,                       XK_f,      spawn,               SHCMD("nautilus") },
+    { MODKEY,                       XK_c,      spawn,               SHCMD("google-chrome-stable") },
+    { MODKEY,                       XK_r,      spawn,               SHCMD("firefox") },
+    { MODKEY|ControlMask,           XK_r,      spawn,               SHCMD("firefox -P mk") },
+    { MODKEY,                       XK_t,      spawn,               SHCMD("$HOME/.app/Throne/Throne") },
+    { MODKEY|ControlMask,           XK_t,      spawn,               SHCMD("Telegram") },
+    { MODKEY,                       XK_x,      spawn,               SHCMD("code") },
+    { MODKEY,                       XK_z,      spawn,               SHCMD("$HOME/.local/bin/zed") },
+    { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
+    { MODKEY,                       XK_Delete, spawn,               SHCMD("$HOME/.local/bin/powermenu") },
+    { MODKEY,                       XK_space,  spawn,               SHCMD("kbd-notify") },
+    { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
+    { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
+
    	{ Mod1Mask,                     XK_Tab,    alttabstart,         {0} },
     // { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +2 } },
     // { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -2 } },
-    { MODKEY|ShiftMask,             XK_j,      movestack,           {.i = +1 } },
-    { MODKEY|ShiftMask,             XK_k,      movestack,           {.i = -1 } },
 
-    /* Layout Toggles */
     { MODKEY|ShiftMask,             XK_m,      setlayout,           {.v = &layouts[0]} },
     { MODKEY|ShiftMask,             XK_f,      setlayout,           {.v = &layouts[1]} },
-    { MODKEY|ShiftMask,             XK_t,      setlayout,           {.v = &layouts[2]} },
     { MODKEY,                       XK_s,      setlayout,           {0} },
-    { MODKEY,                       XK_F11,    fullscreen,          {0} },
     { MODKEY|ControlMask|ShiftMask, XK_h,      togglehorizontalmax, {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_l,      togglehorizontalmax, {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_j,      toggleverticalmax,   {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_k,      toggleverticalmax,   {0} },
+    { MODKEY,                       XK_m,      togglemax,           {0} },
+    { MODKEY|ShiftMask,             XK_Left,   floatpos,            {.v = "-20w 0h"} },
+    { MODKEY|ShiftMask,             XK_Right,  floatpos,            {.v = "20w 0h"} },
+    { MODKEY|ShiftMask,             XK_Down,   floatpos,            {.v = "0w -20h"} },
+    { MODKEY|ShiftMask,             XK_Up,     floatpos,            {.v = "0w 20h"} },
 
-    { MODKEY|ControlMask,           XK_m,      togglemax,           {0} },
-
-    /* Media Controls & Real-Time dwmblocks Signals */
+    /* Media Controls */
     { 0, XF86XK_AudioMute,                     spawn,               SHCMD("vol-notify mute") },
     { 0, XF86XK_AudioLowerVolume,              spawn,               SHCMD("vol-notify down") },
     { 0, XF86XK_AudioRaiseVolume,              spawn,               SHCMD("vol-notify up") },
@@ -321,13 +298,23 @@ static const Key keys[] = {
     { 0, XF86XK_AudioStop,                     spawn,               SHCMD("playerctl stop") },
     { 0, XF86XK_MonBrightnessDown,             spawn,               SHCMD("bright-notify down") },
     { 0, XF86XK_MonBrightnessUp,               spawn,               SHCMD("bright-notify up") },
+
+    TAGKEYS(                        XK_1,                           0)
+    TAGKEYS(                        XK_2,                           1)
+    TAGKEYS(                        XK_3,                           2)
+    TAGKEYS(                        XK_4,                           3)
+    TAGKEYS(                        XK_5,                           4)
+    TAGKEYS(                        XK_6,                           5)
+    TAGKEYS(                        XK_7,                           6)
+    TAGKEYS(                        XK_8,                           7)
+    TAGKEYS(                        XK_9,                           8)
 };
 
 /* Button Definitions */
 static const Button buttons[] = {
     /* click                event mask           button          function               argument */
     { ClkLtSymbol,          0,                   Button1,        setlayout,             {0} },
-    { ClkLtSymbol,          0,                   Button3,        setlayout,             {.v = &layouts[2]} },
+    { ClkLtSymbol,          0,                   Button3,        setlayout,             {.v = &layouts[1]} },
     { ClkWinTitle,          0,                   Button1,        togglewin,             {0} },
     { ClkWinTitle,          0,                   Button3,        showhideclient,        {0} },
     { ClkWinTitle,          0,                   Button2,        zoom,                  {0} },
