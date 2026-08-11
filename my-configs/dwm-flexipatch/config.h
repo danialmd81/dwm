@@ -33,7 +33,7 @@ static const unsigned int tabcyclekey      = 0x17; /* (Tab) when this key is hit
 static const unsigned int tabposy          = 1;    /* tab position on Y axis, 0 = top, 1 = center, 2 = bottom */
 static const unsigned int tabposx          = 1;    /* tab position on X axis, 0 = left, 1 = center, 2 = right */
 static const unsigned int maxwtab          = 600;  /* tab menu width */
-static const unsigned int maxhtab          = 200;  /* tab menu height */
+static const unsigned int maxhtab          = 100;  /* tab menu height */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
@@ -278,7 +278,7 @@ static const Key keys[] = {
     { MODKEY|ControlMask,           XK_r,      spawn,               SHCMD("firefox -P mk") },
     { MODKEY,                       XK_t,      spawn,               SHCMD("/home/danial/.app/Throne/Throne") },
     { MODKEY|ControlMask,           XK_t,      spawn,               SHCMD("Telegram") },
-    { MODKEY,                       XK_x,      spawn,               SHCMD("/home/danial/.local/bin/code") },
+    { MODKEY,                       XK_x,      spawn,               SHCMD("/usr/bin/code") },
     { MODKEY,                       XK_z,      spawn,               SHCMD("/home/danial/.local/bin/zed") },
     { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
     { MODKEY,                       XK_Delete, spawn,               SHCMD("~/.local/bin/powermenu") },
@@ -302,7 +302,13 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_f,      setlayout,           {.v = &layouts[1]} },
     { MODKEY|ShiftMask,             XK_t,      setlayout,           {.v = &layouts[2]} },
     { MODKEY,                       XK_s,      setlayout,           {0} },
-    { MODKEY,                       XK_F11,    togglefullscreen,    {0} },
+    { MODKEY,                       XK_F11,    fullscreen,          {0} },
+    { MODKEY|ControlMask|ShiftMask, XK_h,      togglehorizontalmax, {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_l,      togglehorizontalmax, {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_j,      toggleverticalmax,   {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_k,      toggleverticalmax,   {0} },
+
+    { MODKEY|ControlMask,           XK_m,      togglemax,           {0} },
 
     /* Media Controls & Real-Time dwmblocks Signals */
     { 0, XF86XK_AudioMute,                     spawn,               SHCMD("vol-notify mute") },

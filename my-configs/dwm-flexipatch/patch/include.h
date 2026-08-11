@@ -18,6 +18,8 @@
 #include "attachx.h"
 #include "autostart.h"
 #include "floatpos.h"
+#include "fullscreen.h"
+#include "maximize.h"
 #include "movestack.h"
 #include "pertag.h"
 #include "tapresize.h"

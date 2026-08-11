@@ -18,6 +18,8 @@
 #include "attachx.c"
 #include "autostart.c"
 #include "floatpos.c"
+#include "fullscreen.c"
+#include "maximize.c"
 #include "movestack.c"
 #include "pertag.c"
 #include "tapresize.c"
