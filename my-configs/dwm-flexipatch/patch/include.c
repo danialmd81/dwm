@@ -14,16 +14,10 @@
 #include "bar_wintitleactions.c"
 
 /* Other patches */
-#include "alttab.c"
-#include "attachx.c"
 #include "autostart.c"
 #include "floatpos.c"
-#include "fullscreen.c"
 #include "maximize.c"
-#include "movestack.c"
-#include "pertag.c"
 #include "tapresize.c"
-#include "togglefullscreen.c"
 /* Layouts */
 #include "layout_facts.c"
 #include "layout_monocle.c"

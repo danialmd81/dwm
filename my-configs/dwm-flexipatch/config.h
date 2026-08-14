@@ -19,7 +19,6 @@ static const char localshare[]           = ".local/share";
 static const int showbar                 = 1; /* 0 means no bar */
 static const int topbar                  = 1; /* 0 means bottom bar */
 static const int bar_height              = 24; /* 0 means derive from font, >= 1 explicit height */
-static const int focusonwheel            = 0;
 static int floatposgrid_x                = 5; /* float grid columns */
 static int floatposgrid_y                = 5; /* float grid rows */
 
@@ -27,14 +26,6 @@ static int floatposgrid_y                = 5; /* float grid rows */
 static const int statusmon               = -1; 
 static const unsigned int systrayspacing = 6; /* systray spacing */
 static const int showsystray             = 1; /* 0 means no systray */
-
-/* alt-tab configuration */
-static const unsigned int tabmodkey        = 0x40; /* (Alt) when this key is held down the alt-tab functionality stays active. Must be the same modifier as used to run alttabstart */
-static const unsigned int tabcyclekey      = 0x17; /* (Tab) when this key is hit the menu moves one position forward in client stack. Must be the same key as used to run alttabstart */
-static const unsigned int tabposy          = 1;    /* tab position on Y axis, 0 = top, 1 = center, 2 = bottom */
-static const unsigned int tabposx          = 1;    /* tab position on X axis, 0 = left, 1 = center, 2 = right */
-static const unsigned int maxwtab          = 600;  /* tab menu width */
-static const unsigned int maxhtab          = 100;  /* tab menu height */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
@@ -239,7 +230,6 @@ static const StatusCmd statuscmds[] = {
 static const Key keys[] = {
     /* modifier                     key            function                argument */
     { MODKEY,                       XK_b,      togglebar,           {0} },
-    // { MODKEY,                       XK_F11,    fullscreen,          {0} },
     { MODKEY,                       XK_j,      focusstack,          {.i = +2 } },
     { MODKEY,                       XK_k,      focusstack,          {.i = -2 } },
     // { MODKEY,                       XK_Return, zoom,                {0} },
@@ -274,12 +264,10 @@ static const Key keys[] = {
     { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
     { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
 
-   	// { Mod1Mask,                     XK_Tab,    alttabstart,         {0} },
     // { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +2 } },
     // { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -2 } },
 
-    // { MODKEY|ShiftMask,             XK_m,      setlayout,           {.v = &layouts[0]} },
-    // { MODKEY|ShiftMask,             XK_f,      setlayout,           {.v = &layouts[1]} },
+    // { MODKEY,                       XK_y,      togglefullscreen,    {0} },
     { MODKEY,                       XK_s,      setlayout,           {0} },
     { MODKEY|ControlMask|ShiftMask, XK_h,      togglehorizontalmax, {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_l,      togglehorizontalmax, {0} },

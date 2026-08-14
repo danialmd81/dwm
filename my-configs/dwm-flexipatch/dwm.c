@@ -56,8 +56,7 @@
 #define CLEANMASK(mask)         (mask & ~(numlockmask|LockMask) & (ShiftMask|ControlMask|Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask))
 #define INTERSECT(x,y,w,h,m)    (MAX(0, MIN((x)+(w),(m)->wx+(m)->ww) - MAX((x),(m)->wx)) \
                                * MAX(0, MIN((y)+(h),(m)->wy+(m)->wh) - MAX((y),(m)->wy)))
-#define ISVISIBLEONTAG(C, T)    ((C->tags & T))
-#define ISVISIBLE(C)            ISVISIBLEONTAG(C, C->mon->tagset[C->mon->seltags])
+#define ISVISIBLE(C)            ((C->tags & C->mon->tagset[C->mon->seltags]))
 #define MOUSEMASK               (BUTTONMASK|PointerMotionMask)
 #define WIDTH(X)                ((X)->w + 2 * (X)->bw)
 #define HEIGHT(X)               ((X)->h + 2 * (X)->bw)
@@ -208,7 +207,6 @@ typedef struct {
 	void (*arrange)(Monitor *);
 } Layout;
 
-typedef struct Pertag Pertag;
 struct Monitor {
 	char ltsymbol[16];
 	float mfact;
@@ -226,7 +224,6 @@ struct Monitor {
 	Monitor *next;
 	Bar *bar;
 	const Layout *lt[2];
-	Pertag *pertag;
 };
 
 typedef struct {
@@ -274,6 +271,7 @@ static Monitor *dirtomon(int dir);
 static void drawbar(Monitor *m);
 static void drawbars(void);
 static void drawbarwin(Bar *bar);
+static void enternotify(XEvent *e);
 static void expose(XEvent *e);
 static void focus(Client *c);
 static void focusin(XEvent *e);
@@ -368,6 +366,7 @@ static void (*handler[LASTEvent]) (XEvent *) = {
 	[ConfigureRequest] = configurerequest,
 	[ConfigureNotify] = configurenotify,
 	[DestroyNotify] = destroynotify,
+	[EnterNotify] = enternotify,
 	[Expose] = expose,
 	[FocusIn] = focusin,
 	[KeyPress] = keypress,
@@ -559,7 +558,6 @@ buttonpress(XEvent *e)
 
 	/* focus monitor if necessary */
 	if ((m = wintomon(ev->window)) && m != selmon
-		&& (focusonwheel || (ev->button != Button4 && ev->button != Button5))
 	) {
 		unfocus(selmon->sel, 1, NULL);
 		selmon = m;
@@ -590,10 +588,8 @@ buttonpress(XEvent *e)
 	}
 
 	if (click == ClkRootWin && (c = wintoclient(ev->window))) {
-		if (focusonwheel || (ev->button != Button4 && ev->button != Button5)) {
-			focus(c);
-			restack(c->mon);
-		}
+		focus(c);
+		restack(selmon);
 		XAllowEvents(dpy, ReplayPointer, CurrentTime);
 		click = ClkClientWin;
 	}
@@ -629,8 +625,6 @@ cleanup(void)
 	Monitor *m;
 	Layout foo = { "", NULL };
 	size_t i;
-
-	alttabend();
 
 	selmon->lt[selmon->sellt] = &foo;
 	for (m = mons; m; m = m->next)
@@ -683,7 +677,6 @@ cleanupmon(Monitor *mon)
 			systray->bar = NULL;
 		free(bar);
 	}
-	free(mon->pertag);
 	free(mon);
 }
 
@@ -908,24 +901,6 @@ createmon(void)
 		bar->borderpx = 0;
 		bar->bh = bh + bar->borderpx * 2;
 		bar->borderscheme = SchemeNorm;
-	}
-
-	if (!(m->pertag = (Pertag *)calloc(1, sizeof(Pertag))))
-		die("fatal: could not malloc() %u bytes\n", sizeof(Pertag));
-	m->pertag->curtag = 1;
-	for (i = 0; i <= NUMTAGS; i++) {
-
-		/* init nmaster */
-		m->pertag->nmasters[i] = m->nmaster;
-
-		/* init mfacts */
-		m->pertag->mfacts[i] = m->mfact;
-
-		/* init layouts */
-		m->pertag->ltidxs[i][0] = m->lt[0];
-		m->pertag->ltidxs[i][1] = m->lt[1];
-		m->pertag->sellts[i] = m->sellt;
-
 	}
 
 	return m;
@@ -1156,6 +1131,25 @@ skip_bar_rule(Bar *bar, const BarRule *br)
 }
 
 void
+enternotify(XEvent *e)
+{
+	Client *c;
+	Monitor *m;
+	XCrossingEvent *ev = &e->xcrossing;
+
+	if ((ev->mode != NotifyNormal || ev->detail == NotifyInferior) && ev->window != root)
+		return;
+	c = wintoclient(ev->window);
+	m = c ? c->mon : wintomon(ev->window);
+	if (m != selmon) {
+		unfocus(selmon->sel, 1, c);
+		selmon = m;
+	} else if (!c || c == selmon->sel)
+		return;
+	focus(c);
+}
+
+void
 expose(XEvent *e)
 {
 	Monitor *m;
@@ -1186,13 +1180,13 @@ focus(Client *c)
 		else
 			XSetWindowBorder(dpy, c->win, scheme[SchemeSel][ColBorder].pixel);
 		setfocus(c);
+		XRaiseWindow(dpy, c->win);
 	} else {
 		XSetInputFocus(dpy, root, RevertToPointerRoot, CurrentTime);
 		XDeleteProperty(dpy, root, netatom[NetActiveWindow]);
 	}
 	selmon->sel = c;
 	drawbars();
-
 }
 
 /* there are some broken focus acquiring clients needing extra handling */
@@ -1209,15 +1203,13 @@ void
 focusmon(const Arg *arg)
 {
 	Monitor *m;
-	Client *sel;
 
 	if (!mons->next)
 		return;
 	if ((m = dirtomon(arg->i)) == selmon)
 		return;
-	sel = selmon->sel;
+	unfocus(selmon->sel, 0, NULL);
 	selmon = m;
-	unfocus(sel, 0, NULL);
 	focus(NULL);
 }
 
@@ -1226,7 +1218,7 @@ focusstack(const Arg *arg)
 {
 	Client *c = NULL, *i;
 
-	if (!selmon->sel)
+	if (!selmon->sel || (selmon->sel->isfullscreen && lockfullscreen))
 		return;
 	if (arg->i > 0) {
 		for (c = selmon->sel->next; c && (!ISVISIBLE(c) || (arg->i == 1 && HIDDEN(c))); c = c->next);
@@ -1375,7 +1367,7 @@ grabkeys(void)
 void
 incnmaster(const Arg *arg)
 {
-	selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag] = MAX(selmon->nmaster + arg->i, 0);
+	selmon->nmaster = MAX(selmon->nmaster + arg->i, 0);
 	arrange(selmon);
 }
 
@@ -1484,7 +1476,7 @@ manage(Window w, XWindowAttributes *wa)
 		XRaiseWindow(dpy, c->win);
 		XSetWindowBorder(dpy, w, scheme[SchemeNorm][ColFloat].pixel);
 	}
-	attachx(c);
+	attach(c);
 	attachstack(c);
 	XChangeProperty(dpy, root, netatom[NetClientList], XA_WINDOW, 32, PropModeAppend,
 		(unsigned char *) &(c->win), 1);
@@ -1533,6 +1525,8 @@ maprequest(XEvent *e)
 void
 motionnotify(XEvent *e)
 {
+	static Monitor *mon = NULL;
+	Monitor *m;
 	Bar *bar;
 	XMotionEvent *ev = &e->xmotion;
 
@@ -1541,6 +1535,14 @@ motionnotify(XEvent *e)
 		return;
 	}
 
+	if (ev->window != root)
+		return;
+	if ((m = recttomon(ev->x_root, ev->y_root, 1, 1)) != mon && mon) {
+		unfocus(selmon->sel, 1, NULL);
+		selmon = m;
+		focus(NULL);
+	}
+	mon = m;
 }
 
 void
@@ -1857,7 +1859,7 @@ sendmon(Client *c, Monitor *m)
 	detachstack(c);
 	c->mon = m;
 	c->tags = m->tagset[m->seltags]; /* assign tags of target monitor */
-	attachx(c);
+	attach(c);
 	attachstack(c);
 	if (c->isfullscreen)
 		resizeclient(c, m->mx, m->my, m->mw, m->mh);
@@ -1958,12 +1960,10 @@ void
 setlayout(const Arg *arg)
 {
 	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt]) {
-		selmon->pertag->sellts[selmon->pertag->curtag] ^= 1;
-		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
+		selmon->sellt ^= 1;
 	}
 	if (arg && arg->v)
-		selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt] = (Layout *)arg->v;
-	selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
+		selmon->lt[selmon->sellt] = (Layout *)arg->v;
 
 	strncpy(selmon->ltsymbol, selmon->lt[selmon->sellt]->symbol, sizeof selmon->ltsymbol);
 	if (selmon->sel)
@@ -1983,7 +1983,7 @@ setmfact(const Arg *arg)
 	f = arg->f < 1.0 ? arg->f + selmon->mfact : arg->f - 1.0;
 	if (f < 0.05 || f > 0.95)
 		return;
-	selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag] = f;
+	selmon->mfact = f;
 	arrange(selmon);
 }
 
@@ -2212,27 +2212,10 @@ void
 toggleview(const Arg *arg)
 {
 	unsigned int newtagset = selmon->tagset[selmon->seltags] ^ (arg->ui & TAGMASK);;
-	int i;
 
 	if (newtagset) {
 		selmon->tagset[selmon->seltags] = newtagset;
 
-		if (newtagset == ~0)
-		{
-			selmon->pertag->curtag = 0;
-		}
-		/* test if the user did not select the same tag */
-		if (!(newtagset & 1 << (selmon->pertag->curtag - 1))) {
-			for (i = 0; !(newtagset & 1 << i); i++) ;
-			selmon->pertag->curtag = i + 1;
-		}
-
-		/* apply settings for this view */
-		selmon->nmaster = selmon->pertag->nmasters[selmon->pertag->curtag];
-		selmon->mfact = selmon->pertag->mfacts[selmon->pertag->curtag];
-		selmon->sellt = selmon->pertag->sellts[selmon->pertag->curtag];
-		selmon->lt[selmon->sellt] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt];
-		selmon->lt[selmon->sellt^1] = selmon->pertag->ltidxs[selmon->pertag->curtag][selmon->sellt^1];
 		arrange(selmon);
 		focus(NULL);
 	}
@@ -2244,9 +2227,6 @@ unfocus(Client *c, int setfocus, Client *nextfocus)
 	if (!c)
 		return;
 
-	if (c->isfullscreen && ISVISIBLE(c) && c->mon == selmon && nextfocus && !nextfocus->isfloating) {
-		setfullscreen(c, 0);
-	}
 	grabbuttons(c, 0);
 	if (c->isfloating)
 		XSetWindowBorder(dpy, c->win, scheme[SchemeNorm][ColFloat].pixel);
@@ -2578,7 +2558,6 @@ view(const Arg *arg)
 	selmon->seltags ^= 1; /* toggle sel tagset */
 	if (arg->ui & TAGMASK)
 		selmon->tagset[selmon->seltags] = arg->ui & TAGMASK;
-	pertagview(arg);
 	arrange(selmon);
 	focus(NULL);
 }

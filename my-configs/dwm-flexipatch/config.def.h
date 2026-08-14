@@ -14,21 +14,12 @@ static const char localshare[]           = ".local/share";
 static const int showbar                 = 1;   /* 0 means no bar */
 static const int topbar                  = 1;   /* 0 means bottom bar */
 static const int bar_height              = 0;   /* 0 means derive from font, >= 1 explicit height */
-static const int focusonwheel            = 0;
 static int floatposgrid_x                = 5;  /* float grid columns */
 static int floatposgrid_y                = 5;  /* float grid rows */
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
 static const int statusmon               = 'A';
 static const unsigned int systrayspacing = 2;   /* systray spacing */
 static const int showsystray             = 1;   /* 0 means no systray */
-
-/* alt-tab configuration */
-static const unsigned int tabmodkey        = 0x40; /* (Alt) when this key is held down the alt-tab functionality stays active. Must be the same modifier as used to run alttabstart */
-static const unsigned int tabcyclekey      = 0x17; /* (Tab) when this key is hit the menu moves one position forward in client stack. Must be the same key as used to run alttabstart */
-static const unsigned int tabposy          = 1;    /* tab position on Y axis, 0 = top, 1 = center, 2 = bottom */
-static const unsigned int tabposx          = 1;    /* tab position on X axis, 0 = left, 1 = center, 2 = right */
-static const unsigned int maxwtab          = 600;  /* tab menu width */
-static const unsigned int maxhtab          = 200;  /* tab menu height */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
@@ -241,10 +232,8 @@ static const Key keys[] = {
 	{ MODKEY,                       XK_d,          incnmaster,             {.i = -1 } },
 	{ MODKEY,                       XK_h,          setmfact,               {.f = -0.05} },
 	{ MODKEY,                       XK_l,          setmfact,               {.f = +0.05} },
-	{ MODKEY|ShiftMask,             XK_j,          movestack,              {.i = +1 } },
-	{ MODKEY|ShiftMask,             XK_k,          movestack,              {.i = -1 } },
 	{ MODKEY,                       XK_Return,     zoom,                   {0} },
-	{ Mod1Mask,                     XK_Tab,        alttabstart,            {0} },
+	{ MODKEY,                       XK_Tab,        view,                   {0} },
 	{ MODKEY|ControlMask,           XK_z,          showhideclient,         {0} },
 	{ MODKEY|ControlMask,           XK_s,          unhideall,              {0} },
 	{ MODKEY|Mod1Mask,              XK_j,          focusstack,             {.i = +2 } }, // The +/-2 allows focusstack to also focus on hidden
@@ -261,8 +250,6 @@ static const Key keys[] = {
 	{ MODKEY|ControlMask|ShiftMask, XK_j,          toggleverticalmax,      {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_k,          toggleverticalmax,      {0} },
 	{ MODKEY|ControlMask,           XK_m,          togglemax,              {0} },
-	{ MODKEY,                       XK_y,          togglefullscreen,       {0} },
-	{ MODKEY|ShiftMask,             XK_f,          fullscreen,             {0} },
 	{ MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
 	{ MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
 	{ MODKEY,                       XK_comma,      focusmon,               {.i = -1 } },
