@@ -18,13 +18,14 @@ static const char dwmdir[]               = "dwm";
 static const char localshare[]           = ".local/share";
 static const int showbar                 = 1; /* 0 means no bar */
 static const int topbar                  = 1; /* 0 means bottom bar */
+static const int bar_height              = 24; /* 0 means derive from font, >= 1 explicit height */
 static const int focusonwheel            = 0;
 static int floatposgrid_x                = 5; /* float grid columns */
 static int floatposgrid_y                = 5; /* float grid rows */
 
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
 static const int statusmon               = -1; 
-static const unsigned int systrayspacing = 5; /* systray spacing */
+static const unsigned int systrayspacing = 6; /* systray spacing */
 static const int showsystray             = 1; /* 0 means no systray */
 
 /* alt-tab configuration */
@@ -42,9 +43,9 @@ static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 
 /* Fonts */
 static const char *fonts[] = {
-    "CaskaydiaCove Nerd Font:size=12:style=Bold:antialias=true:autohint=true",
-    "Vazirmatn:size=12:style=Medium:antialias=true:autohint=true",
-	"JetBrainsMono Nerd Font Mono:size=12:antialias=true:autohint=true",
+    "CaskaydiaCove Nerd Font:size=11:style=Bold:antialias=true:autohint=true",
+    "Vazirmatn:size=11:style=Medium:antialias=true:autohint=true",
+	"JetBrainsMono Nerd Font Mono:size=11:antialias=true:autohint=true",
     "Font Awesome 5 Free Solid:size=11:antialias=true:autohint=true",
     "Noto Color Emoji:size=11:antialias=true:autohint=true"
 };
@@ -222,6 +223,8 @@ static const char *dmenucmd[] = {
 };
 static const char *termcmd[]  = { "kitty", NULL };
 static const char *lockcmd[] = { "xsecurelock", NULL };
+static const char *windowcmd[] = { "/home/danial/.local/bin/window_switcher", NULL };
+static const char *powercmd[] = { "/home/danial/.local/bin/powermenu", NULL };
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
@@ -235,15 +238,14 @@ static const StatusCmd statuscmds[] = {
 
 static const Key keys[] = {
     /* modifier                     key            function                argument */
-    { MODKEY,                       XK_p,      spawn,               {.v = dmenucmd } },
     { MODKEY,                       XK_b,      togglebar,           {0} },
     // { MODKEY,                       XK_F11,    fullscreen,          {0} },
     { MODKEY,                       XK_j,      focusstack,          {.i = +2 } },
     { MODKEY,                       XK_k,      focusstack,          {.i = -2 } },
     // { MODKEY,                       XK_Return, zoom,                {0} },
-    { MODKEY,                       XK_Tab,    view,                {0} },
+    // { MODKEY,                       XK_Tab,    view,                {0} },
     { MODKEY|ShiftMask,             XK_space,  togglefloating,      {0} },
-    { MODKEY,                       XK_0,      view,                {.ui = ~0 } },
+    // { MODKEY,                       XK_0,      view,                {.ui = ~0 } },
     // { MODKEY|ShiftMask,             XK_0,      tag,                 {.ui = ~0 } },
     { MODKEY,                       XK_comma,  focusmon,            {.i = -1 } },
     { MODKEY,                       XK_period, focusmon,            {.i = +1 } },
@@ -252,9 +254,12 @@ static const Key keys[] = {
     { MODKEY,                       XK_h,      showhideclient,      {0} },
     { MODKEY|ShiftMask,             XK_q,      quit,                {0} },
     { MODKEY,                       XK_q,      killclient,          {0} },
-
+    
+    { MODKEY,                       XK_p,      spawn,               {.v = dmenucmd } },
+    { MODKEY,                       XK_w,      spawn,               {.v = windowcmd } },
     { MODKEY,                       XK_Return, spawn,               {.v = termcmd } },
     { MODKEY,                       XK_Escape, spawn,               {.v = lockcmd } },
+    { MODKEY,                       XK_Delete, spawn,               {.v = powercmd } },
     { MODKEY,                       XK_e,      spawn,               SHCMD("mailspring") },
     { MODKEY,                       XK_f,      spawn,               SHCMD("nautilus") },
     { MODKEY,                       XK_c,      spawn,               SHCMD("google-chrome-stable") },
@@ -265,17 +270,16 @@ static const Key keys[] = {
     { MODKEY,                       XK_x,      spawn,               SHCMD("code") },
     { MODKEY,                       XK_z,      spawn,               SHCMD("$HOME/.local/bin/zed") },
     { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
-    { MODKEY,                       XK_Delete, spawn,               SHCMD("$HOME/.local/bin/powermenu") },
     { MODKEY,                       XK_space,  spawn,               SHCMD("kbd-notify") },
     { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
     { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
 
-   	{ Mod1Mask,                     XK_Tab,    alttabstart,         {0} },
+   	// { Mod1Mask,                     XK_Tab,    alttabstart,         {0} },
     // { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +2 } },
     // { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -2 } },
 
-    { MODKEY|ShiftMask,             XK_m,      setlayout,           {.v = &layouts[0]} },
-    { MODKEY|ShiftMask,             XK_f,      setlayout,           {.v = &layouts[1]} },
+    // { MODKEY|ShiftMask,             XK_m,      setlayout,           {.v = &layouts[0]} },
+    // { MODKEY|ShiftMask,             XK_f,      setlayout,           {.v = &layouts[1]} },
     { MODKEY,                       XK_s,      setlayout,           {0} },
     { MODKEY|ControlMask|ShiftMask, XK_h,      togglehorizontalmax, {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_l,      togglehorizontalmax, {0} },

@@ -2,19 +2,19 @@
 
 # Select sound based on dunst's urgency level ($DUNST_URGENCY)
 case "$DUNST_URGENCY" in
-    "LOW")
-        # Subtle alert (Freedesktop service/chat alert)
-        SOUND="/usr/share/sounds/freedesktop/stereo/message.oga"
-        
-        ;;
-    "CRITICAL")
-        # Loud alarm (Freedesktop elapsed alarm / error sound)
-        SOUND="/usr/share/sounds/freedesktop/stereo/suspend-error.oga"
-        ;;
-    *)
-        # Standard notification chime (Freedesktop message sound)
-        SOUND="/usr/share/sounds/freedesktop/stereo/bell.oga"
-        ;;
+"LOW")
+    # Subtle alert (Freedesktop service/chat alert)
+    SOUND="/usr/share/sounds/freedesktop/stereo/message.oga"
+
+    ;;
+"CRITICAL")
+    # Loud alarm (Freedesktop elapsed alarm / error sound)
+    SOUND="/usr/share/sounds/freedesktop/stereo/suspend-error.oga"
+    ;;
+*)
+    # Standard notification chime (Freedesktop message sound)
+    SOUND="/usr/share/sounds/freedesktop/stereo/bell.oga"
+    ;;
 esac
 
 # Fallback if the specific sound file isn't available

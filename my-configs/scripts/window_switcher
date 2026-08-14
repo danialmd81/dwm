@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Get window list with wmctrl
+windows=$(wmctrl -l | awk '{$1=""; $2=""; $3=""; print substr($0,4)}' | sort -u)
+
+if [ -z "$windows" ]; then
+    notify-send "No windows found"
+    exit 1
+fi
+
+# Show in dmenu
+selected=$(echo "$windows" | dmenu -i -p 'Windows:')
+
+if [ -n "$selected" ]; then
+    # Focus the window using wmctrl
+    wmctrl -a "$selected" 2>/dev/null
+fi

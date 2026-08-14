@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Show power menu options in dmenu
+CHOSEN=$(printf "Shutdown\nReboot\nLogout\nLock" | dmenu -i -p "Power:")
+
+case "$CHOSEN" in
+Shutdown)
+	loginctl poweroff 2>/dev/null || doas poweroff 2>/dev/null || sudo poweroff
+	;;
+Reboot)
+	loginctl reboot 2>/dev/null || doas reboot 2>/dev/null || sudo reboot
+	;;
+Logout)
+	# Gracefully terminates dwm loop
+	pkill -TERM dwm
+	;;
+Lock)
+	# Triggers xss-lock or runs i3lock directly
+	loginctl lock-session
+	;;
+*)
+	exit 0
+	;;
+esac

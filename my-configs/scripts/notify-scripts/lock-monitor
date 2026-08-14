@@ -1,0 +1,38 @@
+#!/bin/sh
+
+# Prevent multiple instances
+pgrep -x -f "$0" | grep -v $$ && exit 1
+
+LAST_CAPS=""
+LAST_NUM=""
+
+while true; do
+    # Query X11 keyboard status
+    XSET_OUT=$(xset q)
+
+    CAPS=$(echo "$XSET_OUT" | awk '/Caps Lock:/ {print $4}')
+    NUM=$(echo "$XSET_OUT" | awk '/Num Lock:/ {print $8}')
+
+    # Check Caps Lock change (skip initial loop run)
+    if [ -n "$LAST_CAPS" ] && [ "$CAPS" != "$LAST_CAPS" ]; then
+        if [ "$CAPS" = "on" ]; then
+            notify-send -h string:x-canonical-private-synchronous:caps -u low -t 1000 "Caps Lock" "ON"
+        else
+            notify-send -h string:x-canonical-private-synchronous:caps -u low -t 1000 "Caps Lock" "OFF"
+        fi
+    fi
+
+    # Check Num Lock change
+    if [ -n "$LAST_NUM" ] && [ "$NUM" != "$LAST_NUM" ]; then
+        if [ "$NUM" = "on" ]; then
+            notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "ON"
+        else
+            notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "OFF"
+        fi
+    fi
+
+    LAST_CAPS="$CAPS"
+    LAST_NUM="$NUM"
+
+    sleep 0.2
+done

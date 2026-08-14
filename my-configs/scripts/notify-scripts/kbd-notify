@@ -26,4 +26,4 @@ label=$(echo "$layout" | tr '[:lower:]' '[:upper:]')
 
 # Send single-line notification using stack-tag to prevent overlap
 notify-send -h string:x-dunst-stack-tag:keyboard \
-            -t 1000 "Keyboard: ${label}" ""
+    -t 1000 "Keyboard: ${label}" ""
