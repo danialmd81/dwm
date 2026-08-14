@@ -1,5 +1,4 @@
 /* See LICENSE file for copyright and license details. */
-// clang-format off
 
 #include <X11/X.h>
 #include <X11/XF86keysym.h>
@@ -23,9 +22,9 @@ static int floatposgrid_x                = 5; /* float grid columns */
 static int floatposgrid_y                = 5; /* float grid rows */
 
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
-static const int statusmon               = -1; 
-static const unsigned int systrayspacing = 6; /* systray spacing */
-static const int showsystray             = 1; /* 0 means no systray */
+static const int statusmon               = 'A';
+static const unsigned int systrayspacing = 10;   /* systray spacing */
+static const int showsystray             = 1;   /* 0 means no systray */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
@@ -93,16 +92,16 @@ static char urgbordercolor[]             = "#ff0000"; /* High-visibility border 
 static char urgfloatcolor[]              = "#db8fd9"; /* Border color for urgent floating windows */
 
 static char *colors[][ColCount] = {
-    /*                       fg                bg                border                float */
-    [SchemeNorm]         = { normfgcolor,      normbgcolor,      normbordercolor,      normfloatcolor },
-    [SchemeSel]          = { selfgcolor,       selbgcolor,       selbordercolor,       selfloatcolor },
-    [SchemeTitleNorm]    = { titlenormfgcolor, titlenormbgcolor, titlenormbordercolor, titlenormfloatcolor },
-    [SchemeTitleSel]     = { titleselfgcolor,  titleselbgcolor,  titleselbordercolor,  titleselfloatcolor },
-    [SchemeTagsNorm]     = { tagsnormfgcolor,  tagsnormbgcolor,  tagsnormbordercolor,  tagsnormfloatcolor },
-    [SchemeTagsSel]      = { tagsselfgcolor,   tagsselbgcolor,   tagsselbordercolor,   tagsselfloatcolor },
-    [SchemeHidNorm]      = { hidnormfgcolor,   hidnormbgcolor,   c000000,              c000000 },
-    [SchemeHidSel]       = { hidselfgcolor,    hidselbgcolor,    c000000,              c000000 },
-    [SchemeUrg]          = { urgfgcolor,       urgbgcolor,       urgbordercolor,       urgfloatcolor },
+	/*                       fg                bg                border                float */
+	[SchemeNorm]         = { normfgcolor,      normbgcolor,      normbordercolor,      normfloatcolor },
+	[SchemeSel]          = { selfgcolor,       selbgcolor,       selbordercolor,       selfloatcolor },
+	[SchemeTitleNorm]    = { titlenormfgcolor, titlenormbgcolor, titlenormbordercolor, titlenormfloatcolor },
+	[SchemeTitleSel]     = { titleselfgcolor,  titleselbgcolor,  titleselbordercolor,  titleselfloatcolor },
+	[SchemeTagsNorm]     = { tagsnormfgcolor,  tagsnormbgcolor,  tagsnormbordercolor,  tagsnormfloatcolor },
+	[SchemeTagsSel]      = { tagsselfgcolor,   tagsselbgcolor,   tagsselbordercolor,   tagsselfloatcolor },
+	[SchemeHidNorm]      = { hidnormfgcolor,   hidnormbgcolor,   c000000,              c000000 },
+	[SchemeHidSel]       = { hidselfgcolor,    hidselbgcolor,    c000000,              c000000 },
+	[SchemeUrg]          = { urgfgcolor,       urgbgcolor,       urgbordercolor,       urgfloatcolor },
 };
 
 /* Workspace Tags */
@@ -110,18 +109,18 @@ static char *tagicons[][NUMTAGS] =
 {
     /* 1:Web | 2:Code | 3:Net | 4:Hub | 5:Office | 6:Downloads | 7:Design | 8:Sys | 9:Misc */
     [DEFAULT_TAGS]        = { "1:🌐", "2:💻", "3:💬", "4", "5", "6", "7", "8", "9" },
-    [ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
-    [ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
+	[ALTERNATIVE_TAGS]    = { "A", "B", "C", "D", "E", "F", "G", "H", "I" },
+	[ALT_TAGS_DECORATION] = { "<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>" },
 };
 
 /* Window Rules */
 static const Rule rules[] = {
-    /* xprop(1):
+	/* xprop(1):
      *  WM_CLASS(STRING) = instance, class
      *  WM_NAME(STRING) = title
      *  WM_WINDOW_ROLE(STRING) = role
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
-     */
+	 */
 
     /* EWMH Dialog & Popup Types */
     RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1)
@@ -156,12 +155,12 @@ static const Rule rules[] = {
 
 /* Bar rules */
 static const BarRule barrules[] = {
-    /* monitor   bar    alignment         widthfunc                 drawfunc                clickfunc                hoverfunc                name */
-    { -1,        0,     BAR_ALIGN_LEFT,   width_tags,               draw_tags,              click_tags,              hover_tags,              "tags" },
-    { -1,        0,     BAR_ALIGN_LEFT,   width_ltsymbol,           draw_ltsymbol,          click_ltsymbol,          NULL,                    "layout" },
-    {  0,        0,     BAR_ALIGN_RIGHT,  width_systray,            draw_systray,           click_systray,           NULL,                    "systray" },
-    { statusmon, 0,     BAR_ALIGN_RIGHT,  width_status2d,           draw_status2d,          click_statuscmd,         NULL,                    "status2d" },
-    { -1,        0,     BAR_ALIGN_NONE,   width_wintitle,           draw_wintitle,          click_wintitle,          NULL,                    "wintitle" },
+	/* monitor   bar    alignment         widthfunc                 drawfunc                clickfunc                hoverfunc                name */
+	{ -1,        0,     BAR_ALIGN_LEFT,   width_tags,               draw_tags,              click_tags,              hover_tags,              "tags" },
+	{  0,        0,     BAR_ALIGN_RIGHT,  width_systray,            draw_systray,           click_systray,           NULL,                    "systray" },
+	{ -1,        0,     BAR_ALIGN_LEFT,   width_ltsymbol,           draw_ltsymbol,          click_ltsymbol,          NULL,                    "layout" },
+	{ statusmon, 0,     BAR_ALIGN_RIGHT,  width_status2d,           draw_status2d,          click_statuscmd,         NULL,                    "status2d" },
+	{ -1,        0,     BAR_ALIGN_NONE,   width_wintitle,           draw_wintitle,          click_wintitle,          NULL,                    "wintitle" },
 };
 
 /* layout(s) */
@@ -183,7 +182,7 @@ static const int scrollargs[][2] = {
 };
 
 static const Layout layouts[] = {
-    /* symbol     arrange function */
+	/* symbol     arrange function */
     { "[M]",      monocle }, /* monocle / tabbed style */
     { "><>",      NULL },    /* floating behavior */
 };
@@ -210,7 +209,7 @@ static char dmenumon[2] = "0";
 static const char *dmenucmd[] = {
     "j4-dmenu-desktop",
     "--dmenu=dmenu -i -p 'Apps:'",
-    NULL
+	NULL
 };
 static const char *termcmd[]  = { "kitty", NULL };
 static const char *lockcmd[] = { "xsecurelock", NULL };
@@ -228,7 +227,7 @@ static const StatusCmd statuscmds[] = {
 };
 
 static const Key keys[] = {
-    /* modifier                     key            function                argument */
+	/* modifier                     key            function                argument */
     { MODKEY,                       XK_b,      togglebar,           {0} },
     { MODKEY,                       XK_j,      focusstack,          {.i = +2 } },
     { MODKEY,                       XK_k,      focusstack,          {.i = -2 } },
