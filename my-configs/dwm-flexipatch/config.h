@@ -18,13 +18,18 @@ static const char localshare[]           = ".local/share";
 static const int showbar                 = 1; /* 0 means no bar */
 static const int topbar                  = 1; /* 0 means bottom bar */
 static const int bar_height              = 24; /* 0 means derive from font, >= 1 explicit height */
+static const int focusonwheel            = 0;
 static int floatposgrid_x                = 5; /* float grid columns */
 static int floatposgrid_y                = 5; /* float grid rows */
 
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
 static const int statusmon               = 'A';
-static const unsigned int systrayspacing = 10;   /* systray spacing */
+static const unsigned int systrayspacing = 12;   /* systray spacing */
 static const int showsystray             = 1;   /* 0 means no systray */
+
+/* alt-tab configuration */
+static const unsigned int tabmodkey        = 0x40; /* (Alt) when this key is held down the alt-tab functionality stays active. Must be the same modifier as used to run alttabstart */
+static const unsigned int tabcyclekey      = 0x17; /* (Tab) when this key is hit the menu moves one position forward in client stack. Must be the same key as used to run alttabstart */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
@@ -122,32 +127,32 @@ static const Rule rules[] = {
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
 	 */
 
-    /* EWMH Dialog & Popup Types */
-    RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1)
-    RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1)
-    RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1)
-    RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1)
-    RULE(.wintype = WTYPE "NOTIFICATION", .isfloating = 1)
-    RULE(.wintype = WTYPE "POPUP_MENU",    .isfloating = 1)
-    RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1)
+    // /* EWMH Dialog & Popup Types */
+    // RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1)
+    // RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1)
+    // RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1)
+    // RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1)
+    // RULE(.wintype = WTYPE "NOTIFICATION", .isfloating = 1)
+    // RULE(.wintype = WTYPE "POPUP_MENU",    .isfloating = 1)
+    // RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1)
 
     /* Tag 1: Web (Browsers) */
     RULE(.class = "Firefox",          .tags = 1 << 0)
     RULE(.class = "Google-chrome",    .tags = 1 << 0)
 
     /* Tag 2: Code (IDEs & Editors) */
-    RULE(.class = "code",             .tags = 1 << 1)
-    RULE(.class = "dev.zed.Zed",      .tags = 1 << 1)
-    RULE(.class = "QtCreator",        .tags = 1 << 1)
+    // RULE(.class = "code",             .tags = 1 << 1)
+    // RULE(.class = "dev.zed.Zed",      .tags = 1 << 1)
+    // RULE(.class = "QtCreator",        .tags = 1 << 1)
     // RULE(.class = "draw-io",           .tags = 1 << 1)
 
     /* Tag 3: Net & Chat (Mail, Messages, Proxies & VPNs) */
-    RULE(.class = "Mailspring",       .tags = 1 << 2)
-    RULE(.class = "TelegramDesktop",  .tags = 1 << 2)
-    RULE(.class = "Throne",           .tags = 1 << 2)
-    RULE(.class = "nekobox",          .tags = 1 << 2)
-    RULE(.class = "GUI.for.SingBox",  .tags = 1 << 2)
-    RULE(.class = "v2rayN",           .tags = 1 << 2)
+    // RULE(.class = "Mailspring",       .tags = 1 << 2)
+    // RULE(.class = "TelegramDesktop",  .tags = 1 << 2)
+    // RULE(.class = "Throne",           .tags = 1 << 2)
+    // RULE(.class = "nekobox",          .tags = 1 << 2)
+    // RULE(.class = "GUI.for.SingBox",  .tags = 1 << 2)
+    // RULE(.class = "v2rayN",           .tags = 1 << 2)
 
     /* Floating Utilities */
     RULE(.class = "copyq", .isfloating = 1, .floatpos = "400W 400H 50% 50%")
@@ -262,6 +267,8 @@ static const Key keys[] = {
     { MODKEY,                       XK_space,  spawn,               SHCMD("kbd-notify") },
     { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
     { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
+
+    { Mod1Mask,                     XK_Tab,    alttabstart,         {.i = +2 } },
 
     // { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +2 } },
     // { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -2 } },
