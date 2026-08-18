@@ -1,0 +1,14 @@
+#!/bin/bash
+
+dmenu_args=(-i -p "window:")
+
+# Get selected window title
+selected=$(wmctrl -l | sed 's/  / /' | cut -d " " -f 4- | sed -r 's/^([ 0-9]+)[ \t]*(.*)$/\1 - \2/' | dmenu "${dmenu_args[@]}")
+
+[[ -z "$selected" ]] && exit
+
+# Extract the window title (everything after the dash)
+win_title=$(echo "$selected" | cut -d '-' -f2- | sed 's/^ //')
+
+# Find and raise window by title
+wmctrl -a "$win_title"

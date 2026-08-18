@@ -52,4 +52,4 @@ ir) label="IR" ;;
 *) label=$(echo "$layout" | tr '[:lower:]' '[:upper:]') ;;
 esac
 
-echo "[$label]"
+echo "$label"

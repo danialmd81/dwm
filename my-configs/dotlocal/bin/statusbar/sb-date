@@ -32,11 +32,11 @@ print(f'{now.strftime(\"%a\")} {now.strftime(\"%d\")} {short_months[now.month]} 
 " 2>/dev/null)
 
 	if [ -n "$shamsi_date" ]; then
-		echo "[$shamsi_date]"
+		echo "$shamsi_date"
 	else
-		echo "[$(LC_TIME=C date "+%a %d %b %Y")]"
+		echo "$(LC_TIME=C date "+%a %d %b %Y")"
 	fi
 else
 	# %b gives short month name (e.g., Sun 26 Jul 2026)
-	echo "[$(LC_TIME=C date "+%a %d %b %Y")]"
+	echo "$(LC_TIME=C date "+%a %d %b %Y")"
 fi

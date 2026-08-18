@@ -109,7 +109,7 @@ icon="🎮"
 # Check if GPU is sleeping/suspended (Hybrid Mode D3cold)
 PWR_STATE=$(get_gpu_pwr_state)
 if [ "$PWR_STATE" = "suspended" ]; then
-    echo "[$icon OFF]"
+    echo "$icon OFF"
     exit 0
 fi
 
@@ -117,14 +117,14 @@ fi
 case "$MODE" in
 "temp")
     val=$(get_gpu_temp) || exit 0
-    echo "[$icon $val]"
+    echo "$icon $val"
     ;;
 "vram")
     val=$(get_gpu_vram) || exit 0
-    echo "[$icon $val]"
+    echo "$icon $val"
     ;;
 *)
     val=$(get_gpu_usage) || exit 0
-    echo "[$icon $val]"
+    echo "$icon $val"
     ;;
 esac

@@ -26,25 +26,22 @@ elif [ -f /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ]; then
     run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 fi
 
-# ------------------------------------------------------------------------------
-# Input & Display Settings
-# ------------------------------------------------------------------------------
-setxkbmap -layout "us,ir"
-
-xset s 600 600
-xset dpms 600 600 600
+# # ------------------------------------------------------------------------------
+# # Input & Display Settings
+# # ------------------------------------------------------------------------------
+# setxkbmap -layout "us,ir"
 
 # ------------------------------------------------------------------------------
 # Screen Locking & Idle Management
 # ------------------------------------------------------------------------------
-run xss-lock --transfer-sleep-lock -- slock
+# Helper script to restore brightness upon unlocking
+LOCK_WRAPPER='sh -c "xsecurelock; brightnessctl -r"'
 
-run xautolock \
-    -time 10 \
-    -notify 30 \
-    -notifier "brightnessctl -s set 20%" \
-    -reset "brightnessctl -r" \
-    -locker "xset s activate"
+# # xss-lock listens for logind/sleep events and manual lock triggers
+# run xss-lock --transfer-sleep-lock -- sh -c "$LOCK_WRAPPER"
+
+# # Idle configuration:
+# run xautolock -time 20 -notify 10 -notifier "/home/danial/.local/share/dwm/notify-dim.sh" -locker "$LOCK_WRAPPER" -corners "----"
 
 # ------------------------------------------------------------------------------
 # Audio Daemon (PipeWire)
@@ -60,27 +57,31 @@ fi
 
 pipewire &
 
+# ------------------------------------------------------------------------------
+# System Tray Applets & Applications
+# ------------------------------------------------------------------------------
 run picom -b
 run dunst
 
 # ------------------------------------------------------------------------------
 # System Tray Applets & Applications
 # ------------------------------------------------------------------------------
-run udiskie --tray
-run copyq
 run nm-applet
-run blueman-applet
 run pasystray
+run udiskie --tray
+run blueman-applet
+run copyq
 run flameshot
-run fan
-run lock-monitor
-run /home/danial/.local/ABDownloadManager/bin/ABDownloadManager --background
+run monitor-fan
+run monitor-caps-num-lock
+run /home/danial/.app/Throne/Throne -tray
 run mailspring --password-store="gnome-libsecret" --background
 run Telegram -autostart
-run /home/danial/.app/Throne/Throne -tray
+run /home/danial/.local/ABDownloadManager/bin/ABDownloadManager --background
 
 # Local AI Proxy
-run sh -c "cd /home/danial/.npm-global/lib/node_modules/9router/app && PORT=20128 node server.js"
+run sh -c "node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray"
+# run sh -c "node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray"
 
 # ------------------------------------------------------------------------------
 # Status Bar

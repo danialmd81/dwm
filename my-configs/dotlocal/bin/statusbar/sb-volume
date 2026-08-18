@@ -41,4 +41,4 @@ else
 	vol_per="N/A"
 fi
 
-echo "[$icon $vol_per]"
+echo "$icon $vol_per"

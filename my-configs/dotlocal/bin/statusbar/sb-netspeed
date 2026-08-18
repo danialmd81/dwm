@@ -40,9 +40,9 @@ if [ -f "$CACHE_FILE" ]; then
     down_str=$(format_speed "$rx_kb")
     up_str=$(format_speed "$tx_kb")
 
-    echo "[↑ $up_str|↓ $down_str]"
+    echo "↑ $up_str|↓ $down_str"
 else
-    echo "[↑ ...|↓ ...]"
+    echo "↑ ... | ↓ ..."
 fi
 
 # Save current readings for next update interval

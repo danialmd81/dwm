@@ -30,6 +30,10 @@ static const int showsystray             = 1;   /* 0 means no systray */
 /* alt-tab configuration */
 static const unsigned int tabmodkey        = 0x40; /* (Alt) when this key is held down the alt-tab functionality stays active. Must be the same modifier as used to run alttabstart */
 static const unsigned int tabcyclekey      = 0x17; /* (Tab) when this key is hit the menu moves one position forward in client stack. Must be the same key as used to run alttabstart */
+static const unsigned int tabposy          = 1;    /* tab position on Y axis, 0 = top, 1 = center, 2 = bottom */
+static const unsigned int tabposx          = 1;    /* tab position on X axis, 0 = left, 1 = center, 2 = right */
+static const unsigned int maxwtab          = 600;  /* tab menu width */
+static const unsigned int htabitem         = 40;   /* tab menu item height */
 
 /* Indicators: see patch/bar_indicators.h for options */
 static int tagindicatortype              = INDICATOR_TOP_LEFT_SQUARE;
@@ -137,7 +141,7 @@ static const Rule rules[] = {
     // RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1)
 
     /* Tag 1: Web (Browsers) */
-    RULE(.class = "Firefox",          .tags = 1 << 0)
+    // RULE(.class = "Firefox",          .tags = 1 << 0)
     RULE(.class = "Google-chrome",    .tags = 1 << 0)
 
     /* Tag 2: Code (IDEs & Editors) */
@@ -264,7 +268,7 @@ static const Key keys[] = {
     { MODKEY,                       XK_x,      spawn,               SHCMD("code") },
     { MODKEY,                       XK_z,      spawn,               SHCMD("$HOME/.local/bin/zed") },
     { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
-    { MODKEY,                       XK_space,  spawn,               SHCMD("kbd-notify") },
+    { MODKEY,                       XK_space,  spawn,               SHCMD("notify-kbd") },
     { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
     { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
 
@@ -286,16 +290,16 @@ static const Key keys[] = {
     { MODKEY|ShiftMask,             XK_Up,     floatpos,            {.v = "0w 20h"} },
 
     /* Media Controls */
-    { 0, XF86XK_AudioMute,                     spawn,               SHCMD("vol-notify mute") },
-    { 0, XF86XK_AudioLowerVolume,              spawn,               SHCMD("vol-notify down") },
-    { 0, XF86XK_AudioRaiseVolume,              spawn,               SHCMD("vol-notify up") },
+    { 0, XF86XK_AudioMute,                     spawn,               SHCMD("notify-vol mute") },
+    { 0, XF86XK_AudioLowerVolume,              spawn,               SHCMD("notify-vol down") },
+    { 0, XF86XK_AudioRaiseVolume,              spawn,               SHCMD("notify-vol up") },
     { 0, XF86XK_AudioPlay,                     spawn,               SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPause,                    spawn,               SHCMD("playerctl play-pause") },
     { 0, XF86XK_AudioPrev,                     spawn,               SHCMD("playerctl previous") },
     { 0, XF86XK_AudioNext,                     spawn,               SHCMD("playerctl next") },
     { 0, XF86XK_AudioStop,                     spawn,               SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessDown,             spawn,               SHCMD("bright-notify down") },
-    { 0, XF86XK_MonBrightnessUp,               spawn,               SHCMD("bright-notify up") },
+    { 0, XF86XK_MonBrightnessDown,             spawn,               SHCMD("notify-bright down") },
+    { 0, XF86XK_MonBrightnessUp,               spawn,               SHCMD("notify-bright up") },
 
     TAGKEYS(                        XK_1,                           0)
     TAGKEYS(                        XK_2,                           1)

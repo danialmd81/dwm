@@ -86,10 +86,10 @@ fi
 if [ "$MODE" = "time" ]; then
 	time_est=$(get_time_remaining)
 	if [ -n "$time_est" ]; then
-		echo "[$time_est]"
+		echo "$time_est"
 	else
-		echo "[$icon $bat_capacity%]"
+		echo "$icon $bat_capacity%"
 	fi
 else
-	echo "[$icon $bat_capacity%]"
+	echo "$icon $bat_capacity%"
 fi

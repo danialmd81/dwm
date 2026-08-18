@@ -9,16 +9,21 @@ alttab()
 {
 	Monitor *m = selmon;
 
-	XRaiseWindow(dpy, alttabwin);
+	if (!alttabwin || !m->sel || ntabs <= 0)
+		return;
 
 	/* move to next window */
-	if (m->sel && m->sel->snext) {
-		alttabn++;
-		if (alttabn >= ntabs)
-			alttabn = 0;
+	alttabn++;
+	if (alttabn >= ntabs)
+		alttabn = 0;
 
+	if (altsnext[alttabn]) {
 		focus(altsnext[alttabn]);
 	}
+
+	/* redraw tab */
+	XRaiseWindow(dpy, alttabwin);
+	drawalttab(ntabs, 0, m);
 }
 
 void
@@ -32,7 +37,7 @@ alttabend()
 		return;
 
 	/* Reorder the MRU list in memory – no visual updates */
-	if (ntabs > 1) {
+	if (ntabs > 1 && altsnext) {
 		if (alttabn != 0) {
 			buff = altsnext[alttabn];
 			if (alttabn > 1)
@@ -43,17 +48,85 @@ alttabend()
 			altsnext[0] = buff;
 		}
 		free(altsnext);
+		altsnext = NULL;
 	}
 
 	/* destroy the popup window */
 	isalt = 0;
 	ntabs = 0;
-	XUnmapWindow(dpy, alttabwin);
-	XDestroyWindow(dpy, alttabwin);
+	if (alttabwin) {
+		XUnmapWindow(dpy, alttabwin);
+		XDestroyWindow(dpy, alttabwin);
+		alttabwin = 0;
+	}
 
 	/* Focus the selected window and restack ONCE – this is the only restack */
 	focus(m->sel);
 	restack(m);
+}
+
+void
+drawalttab(int nwins, int first, Monitor *m)
+{
+	Client *c;
+	int i, h;
+	int y = 0;
+	int totalheight;
+	int px = m->mx;
+	int py = m->my;
+
+	if (first) {
+		XSetWindowAttributes wa = {
+			.override_redirect = True,
+			.background_pixmap = ParentRelative,
+			.event_mask = ButtonPressMask|ExposureMask
+		};
+
+		/* calculate total height based on number of items */
+		totalheight = ntabs * htabitem;
+
+		/* decide position of tabwin */
+		if (tabposx == 1)
+			px = m->mx + (m->mw / 2) - (maxwtab / 2);
+		else if (tabposx == 2)
+			px = m->mx + m->mw - maxwtab;
+
+		if (tabposy == 1)
+			py = m->my + (m->mh / 2) - (totalheight / 2);
+		else if (tabposy == 2)
+			py = m->my + m->mh - totalheight;
+
+		alttabwin = XCreateWindow(dpy, root, px, py, maxwtab, totalheight, 2, DefaultDepth(dpy, screen),
+		                             CopyFromParent, DefaultVisual(dpy, screen),
+		                             CWOverrideRedirect|CWBackPixmap|CWEventMask, &wa);
+
+		XDefineCursor(dpy, alttabwin, cursor[CurNormal]->cursor);
+		XMapRaised(dpy, alttabwin);
+	}
+
+	if (!alttabwin)
+		return;
+
+	/* Clear the window before drawing */
+	XClearWindow(dpy, alttabwin);
+
+	if (ntabs > 0) {
+		h = htabitem;  /* use htabitem for each item height */
+
+		for (i = 0; i < ntabs; i++) {
+			c = altsnext[i];
+			if (!c || !ISVISIBLE(c))
+				continue;
+
+			/* highlight the currently selected client */
+			drw_setscheme(drw, scheme[c == m->sel ? SchemeSel : SchemeNorm]);
+			drw_text(drw, 0, y, maxwtab, h, 0, c->name, 0, 0);
+			y += h;
+		}
+	}
+
+	drw_setscheme(drw, scheme[SchemeNorm]);
+	drw_map(drw, alttabwin, 0, 0, maxwtab, ntabs * htabitem);
 }
 
 void
@@ -77,6 +150,7 @@ alttabstart(const Arg *arg)
 	alttabn = 0;
 	ntabs = 0;
 
+	/* count visible clients */
 	for (c = m->clients; c; c = c->next) {
 		if (!ISVISIBLE(c))
 			continue;
@@ -88,8 +162,14 @@ alttabstart(const Arg *arg)
 		return;
 	}
 
+	/* allocate client array */
 	altsnext = (Client **) malloc(ntabs * sizeof(Client *));
+	if (!altsnext) {
+		alttabend();
+		return;
+	}
 
+	/* fill array from stack (MRU order) */
 	for (i = 0, c = m->stack; c; c = c->snext) {
 		if (!ISVISIBLE(c))
 			continue;
@@ -97,9 +177,19 @@ alttabstart(const Arg *arg)
 		i++;
 	}
 
-	struct timespec ts = { .tv_sec = 0, .tv_nsec = 1000000 };
+	/* find current selection index */
+	for (i = 0; i < ntabs; i++) {
+		if (altsnext[i] == m->sel) {
+			alttabn = i;
+			break;
+		}
+	}
+
+	/* create and draw the alttab window */
+	drawalttab(ntabs, 1, m);
 
 	/* grab keyboard */
+	struct timespec ts = { .tv_sec = 0, .tv_nsec = 1000000 };
 	grabbed = 1;
 	for (i = 0; i < 1000; i++) {
 		if (XGrabKeyboard(dpy, root, True, GrabModeAsync, GrabModeAsync, CurrentTime) == GrabSuccess)
@@ -109,31 +199,45 @@ alttabstart(const Arg *arg)
 			grabbed = 0;
 	}
 
-	XEvent event;
-	alttab();
-
 	if (grabbed == 0) {
 		alttabend();
 		return;
 	}
 
+	/* move to the next window */
+	if (ntabs > 1) {
+		alttabn++;
+		if (alttabn >= ntabs)
+			alttabn = 0;
+		
+		c = altsnext[alttabn];
+		if (c) {
+			focus(c);
+			/* redraw with updated selection */
+			drawalttab(ntabs, 0, m);
+			XRaiseWindow(dpy, alttabwin);
+		}
+	}
+
+	/* event loop */
+	XEvent event;
 	while (grabbed) {
 		XNextEvent(dpy, &event);
+		
 		if (event.type == KeyPress || event.type == KeyRelease) {
-			if (event.type == KeyRelease && event.xkey.keycode == tabmodkey)
+			/* release Alt key to exit */
+			if (event.type == KeyRelease && event.xkey.keycode == tabmodkey) {
 				break;
+			}
 
-			if (event.type == KeyPress) {
-				if (event.xkey.keycode == tabcyclekey) {
-					alttab();
-				}
+			/* press Tab key to cycle further */
+			if (event.type == KeyPress && event.xkey.keycode == tabcyclekey) {
+				alttab();
 			}
 		}
 	}
 
-	/* FINAL FIX: alttabend() already focuses and restacks once.
-	   Do NOT call focus(c) or restack(m) here – they cause flicker. */
+	/* cleanup */
 	alttabend();
 	XUngrabKeyboard(dpy, CurrentTime);
-	/* focus(c); restack(m);   <-- REMOVED */
 }

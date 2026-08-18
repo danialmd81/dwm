@@ -3,12 +3,12 @@
 # Usage: bright-notify up | down
 
 case "$1" in
-up)
-    brightnessctl set 5%+ >/dev/null 2>&1
-    ;;
-down)
-    brightnessctl set 5%- >/dev/null 2>&1
-    ;;
+    up)
+        brightnessctl set 5%+ >/dev/null 2>&1
+        ;;
+    down)
+        brightnessctl set 5%- >/dev/null 2>&1
+        ;;
 esac
 
 # Signal dwmblocks to update status bar immediately (adjust signal number if needed)
@@ -19,5 +19,5 @@ bright_num=$(brightnessctl i | awk -F'[(%)]' '/Current/ {print $2}')
 
 # Send single-line notification
 notify-send -h string:x-dunst-stack-tag:brightness \
-    -h int:value:"$bright_num" \
-    -t 1000 "Brightness: ${bright_num}%" ""
+            -h int:value:"$bright_num" \
+            -t 1000 "Brightness: ${bright_num}%" ""

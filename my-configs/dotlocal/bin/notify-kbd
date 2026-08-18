@@ -1,0 +1,20 @@
+#!/bin/sh
+
+current=$(setxkbmap -query | awk '/layout/ {print $2}' | cut -d',' -f1)
+if [ "$current" = "us" ]; then
+    setxkbmap -layout "ir,us"
+else
+    setxkbmap -layout "us,ir"
+fi
+
+# # Signal dwmblocks to update status bar immediately
+# pkill -RTMIN+9 dwmblocks 2>/dev/null
+
+# Get new current layout
+layout=$(xkb-switch -p)
+
+label=$(echo "$layout" | tr '[:lower:]' '[:upper:]')
+
+# Send single-line notification using stack-tag to prevent overlap
+notify-send -h string:x-dunst-stack-tag:keyboard \
+    -t 1000 "Keyboard: ${label}" ""
