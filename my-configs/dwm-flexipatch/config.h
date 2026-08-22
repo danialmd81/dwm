@@ -132,13 +132,13 @@ static const Rule rules[] = {
 	 */
 
     // /* EWMH Dialog & Popup Types */
-    // RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1)
-    // RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1)
-    // RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1)
-    // RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1)
-    // RULE(.wintype = WTYPE "NOTIFICATION", .isfloating = 1)
-    // RULE(.wintype = WTYPE "POPUP_MENU",    .isfloating = 1)
-    // RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1)
+    RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "NOTIFICATION", .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "POPUP_MENU",    .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1, .floatpos = "-1x -1y")
 
     /* Tag 1: Web (Browsers) */
     // RULE(.class = "Firefox",          .tags = 1 << 0)
@@ -159,7 +159,7 @@ static const Rule rules[] = {
     // RULE(.class = "v2rayN",           .tags = 1 << 2)
 
     /* Floating Utilities */
-    RULE(.class = "copyq", .isfloating = 1, .floatpos = "400W 400H 50% 50%")
+    RULE(.class = "copyq", .isfloating = 1, .floatpos = "1520X 2X 400W 500H")
 };
 
 /* Bar rules */
