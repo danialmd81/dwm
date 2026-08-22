@@ -268,9 +268,8 @@ static const Key keys[] = {
     { MODKEY,                       XK_x,      spawn,               SHCMD("code") },
     { MODKEY,                       XK_z,      spawn,               SHCMD("$HOME/.local/bin/zed") },
     { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
-    { MODKEY,                       XK_space,  spawn,               SHCMD("notify-kbd") },
     { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
-    { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") },
+    { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") }, 
 
     { Mod1Mask,                     XK_Tab,    alttabstart,         {.i = +2 } },
 

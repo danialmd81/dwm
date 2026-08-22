@@ -1,0 +1,14 @@
+#!/bin/sh
+
+# Listen for XKB layout change events
+xkb-switch -W | while read -r layout; do
+    case "$layout" in
+        us) label="English (US)" ;;
+        ir) label="Persian (IR)" ;;
+        *)  label="$layout" ;;
+    esac
+
+    # Send notification replacing the previous one (id 9991)
+    dunstify -r 9991 -t 1200 -a "Keyboard" "Keyboard Layout" "$label" \
+    || notify-send -t 1200 -a "Keyboard" "Keyboard Layout: $label"
+done
