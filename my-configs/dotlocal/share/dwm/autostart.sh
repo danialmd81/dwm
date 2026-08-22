@@ -15,8 +15,8 @@ run() {
 # ------------------------------------------------------------------------------
 # Session & D-Bus Environment Setup
 # ------------------------------------------------------------------------------
-if command -v dbus-update-activation-environment >/dev/null 2>&1; then
-    dbus-update-activation-environment --all
+if command -v dbus-update--environment >/dev/null 2>&1; then
+    dbus-update--environment --all
 fi
 
 # Polkit authentication agent
@@ -26,16 +26,16 @@ elif [ -f /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ]; then
     run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 fi
 
-# # ------------------------------------------------------------------------------
-# # Input & Display Settings
-# # ------------------------------------------------------------------------------
-# setxkbmap -layout "us,ir"
+# ------------------------------------------------------------------------------
+# Input & Display Settings
+# ------------------------------------------------------------------------------
+setxkbmap -layout "us,ir" -option "" -option "grp:alt_shift_toggle" -option "grp:win_space_toggle"
 
-# ------------------------------------------------------------------------------
-# Screen Locking & Idle Management
-# ------------------------------------------------------------------------------
-# Helper script to restore brightness upon unlocking
-LOCK_WRAPPER='sh -c "xsecurelock; brightnessctl -r"'
+# # ------------------------------------------------------------------------------
+# # Screen Locking & Idle Management
+# # ------------------------------------------------------------------------------
+# # Helper script to restore brightness upon unlocking
+# LOCK_WRAPPER='sh -c "xsecurelock; brightnessctl -r"'
 
 # # xss-lock listens for logind/sleep events and manual lock triggers
 # run xss-lock --transfer-sleep-lock -- sh -c "$LOCK_WRAPPER"
@@ -74,6 +74,7 @@ run copyq
 run flameshot
 run monitor-fan
 run monitor-caps-num-lock
+run monitor-kbd-layout
 run /home/danial/.app/Throne/Throne -tray
 run mailspring --password-store="gnome-libsecret" --background
 run Telegram -autostart

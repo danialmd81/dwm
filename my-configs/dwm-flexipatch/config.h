@@ -23,7 +23,7 @@ static int floatposgrid_x                = 5; /* float grid columns */
 static int floatposgrid_y                = 5; /* float grid rows */
 
 /* Status is to be shown on: -1 (all monitors), 0 (a specific monitor by index), 'A' (active monitor) */
-static const int statusmon               = 'A';
+static const int statusmon               = -1;
 static const unsigned int systrayspacing = 12;   /* systray spacing */
 static const int showsystray             = 1;   /* 0 means no systray */
 
@@ -42,11 +42,11 @@ static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 
 /* Fonts */
 static const char *fonts[] = {
+    "JetBrainsMono Nerd Font:size=11:style=Bold:antialias=true:autohint=true",
     "CaskaydiaCove Nerd Font:size=11:style=Bold:antialias=true:autohint=true",
-    "Vazirmatn:size=11:style=Medium:antialias=true:autohint=true",
-	"JetBrainsMono Nerd Font Mono:size=11:antialias=true:autohint=true",
+    "Noto Color Emoji:size=11:antialias=true:autohint=true",
     "Font Awesome 5 Free Solid:size=11:antialias=true:autohint=true",
-    "Noto Color Emoji:size=11:antialias=true:autohint=true"
+    "Vazirmatn:size=11:style=Bold:antialias=true:autohint=true",
 };
 
 static char c000000[]                    = "#000000"; /* Placeholder / unused black value */
@@ -258,7 +258,7 @@ static const Key keys[] = {
     { MODKEY,                       XK_Return, spawn,               {.v = termcmd } },
     { MODKEY,                       XK_Escape, spawn,               {.v = lockcmd } },
     { MODKEY,                       XK_Delete, spawn,               {.v = powercmd } },
-    { MODKEY,                       XK_e,      spawn,               SHCMD("mailspring") },
+    { MODKEY,                       XK_e,      spawn,               SHCMD("mailspring --password-store=\"gnome-libsecret\"") },
     { MODKEY,                       XK_f,      spawn,               SHCMD("nautilus") },
     { MODKEY,                       XK_c,      spawn,               SHCMD("google-chrome-stable") },
     { MODKEY,                       XK_r,      spawn,               SHCMD("firefox") },

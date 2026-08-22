@@ -52,6 +52,7 @@ MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "percent")
 # ------------------------------------------------------------------------------
 
 icon="🧠"
+# icon="RAM"
 
 mem_total=$(awk '/MemTotal:/ {print $2}' /proc/meminfo)
 mem_available=$(awk '/MemAvailable:/ {print $2}' /proc/meminfo)
@@ -65,15 +66,15 @@ mem_used=$((mem_total - mem_available))
 
 case "$MODE" in
 "used")
-    used_gb=$(awk -v u="$mem_used" 'BEGIN { printf "%.1fG\n", u / 1048576 }')
-    echo "$icon $used_gb"
+    val=$(awk -v u="$mem_used" 'BEGIN { printf "%.1fG\n", u / 1048576 }')
+    echo "$icon:$val"
     ;;
 "avail")
-    avail_gb=$(awk -v a="$mem_available" 'BEGIN { printf "%.1fG\n", a / 1048576 }')
-    echo "$icon $avail_gb"
+    val=$(awk -v a="$mem_available" 'BEGIN { printf "%.1fG\n", a / 1048576 }')
+    echo "$icon:$val"
     ;;
 *)
-    mem_per=$((100 * mem_used / mem_total))
-    echo "$icon ${mem_per}%"
+    val=$((100 * mem_used / mem_total))
+    echo "$icon:${val}%"
     ;;
 esac

@@ -69,18 +69,13 @@ get_time_remaining() {
 
 # Icon selection based on status and capacity
 if [ "$bat_status" = "Charging" ]; then
-	icon="⚡"
-elif [ "$bat_capacity" -gt 80 ]; then
-	icon=""
-elif [ "$bat_capacity" -gt 60 ]; then
-	icon=""
-elif [ "$bat_capacity" -gt 40 ]; then
-	icon=""
-elif [ "$bat_capacity" -gt 20 ]; then
-	icon=""
+    icon="⚡️"
+elif [ "$bat_capacity" -gt 50 ]; then
+    icon="🔋"
 else
-	icon=""
+    icon="🪫"
 fi
+
 
 # Output based on active display mode
 if [ "$MODE" = "time" ]; then
@@ -88,8 +83,8 @@ if [ "$MODE" = "time" ]; then
 	if [ -n "$time_est" ]; then
 		echo "$time_est"
 	else
-		echo "$icon $bat_capacity%"
+		echo "$icon:$bat_capacity%"
 	fi
 else
-	echo "$icon $bat_capacity%"
+	echo "$icon:$bat_capacity%"
 fi
