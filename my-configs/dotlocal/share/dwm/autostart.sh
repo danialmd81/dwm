@@ -3,91 +3,117 @@
 # ------------------------------------------------------------------------------
 # Helper Functions
 # ------------------------------------------------------------------------------
-# Launch process in background only if an instance isn't already running
 run() {
-    local bin_name
     bin_name="$(basename "$1")"
     if ! pgrep -u "$USER" -x "$bin_name" >/dev/null 2>&1; then
         "$@" &
     fi
 }
 
-# ------------------------------------------------------------------------------
-# Session & D-Bus Environment Setup
-# ------------------------------------------------------------------------------
-if command -v dbus-update--environment >/dev/null 2>&1; then
-    dbus-update--environment --all
-fi
-
-# Polkit authentication agent
-if [ -f /usr/libexec/polkit-gnome-authentication-agent-1 ]; then
-    run /usr/libexec/polkit-gnome-authentication-agent-1
-elif [ -f /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 ]; then
-    run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-fi
+wait_for_stop() {
+    name="$1"
+    max="${2:-50}"   # default ~5s timeout
+    i=0
+    while pgrep -u "$USER" -x "$name" >/dev/null 2>&1; do
+        i=$((i + 1))
+        if [ "$i" -ge "$max" ]; then
+            echo "autostart: timed out waiting for '$name' to stop" >&2
+            break
+        fi
+        sleep 0.1
+    done
+}
 
 # ------------------------------------------------------------------------------
 # Input & Display Settings
 # ------------------------------------------------------------------------------
-setxkbmap -layout "us,ir" -option "" -option "grp:alt_shift_toggle" -option "grp:win_space_toggle"
+# Keyboard layout
+setxkbmap -layout "us,ir" \
+    -option "grp:alt_shift_toggle" \
+    -option "grp:win_space_toggle"
 
-# # ------------------------------------------------------------------------------
-# # Screen Locking & Idle Management
-# # ------------------------------------------------------------------------------
-# # Helper script to restore brightness upon unlocking
+# ------------------------------------------------------------------------------
+# Polkit authentication agent
+# ------------------------------------------------------------------------------
+for agent in \
+    /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 \
+    /usr/libexec/polkit-gnome-authentication-agent-1 \
+    /usr/lib/polkit-kde-authentication-agent-1 \
+    /usr/bin/lxqt-policykit-agent \
+    /usr/bin/lxpolkit; do
+    if [ -x "$agent" ]; then
+        run "$agent"
+        break
+    fi
+done
+
+# ------------------------------------------------------------------------------
+# Screen Locking & Idle Management
+# ------------------------------------------------------------------------------
 # LOCK_WRAPPER='sh -c "xsecurelock; brightnessctl -r"'
-
-# # xss-lock listens for logind/sleep events and manual lock triggers
 # run xss-lock --transfer-sleep-lock -- sh -c "$LOCK_WRAPPER"
-
-# # Idle configuration:
-# run xautolock -time 20 -notify 10 -notifier "/home/danial/.local/share/dwm/notify-dim.sh" -locker "$LOCK_WRAPPER" -corners "----"
+# run xautolock -time 20 -notify 10 \
+#     -notifier "/home/danial/.local/share/dwm/notify-dim.sh" \
+#     -locker "$LOCK_WRAPPER" -corners "----"
 
 # ------------------------------------------------------------------------------
 # Audio Daemon (PipeWire)
 # ------------------------------------------------------------------------------
 if pgrep -u "$USER" -x "pipewire" >/dev/null 2>&1; then
     pkill -9 -u "$USER" -x "pipewire|pipewire-pulse|wireplumber" 2>/dev/null
-    while pgrep -u "$USER" -x "pipewire" >/dev/null 2>&1; do sleep 0.1; done
+    wait_for_stop pipewire
 fi
 
 if [ -n "$XDG_RUNTIME_DIR" ]; then
-    rm -f "$XDG_RUNTIME_DIR"/pipewire* "$XDG_RUNTIME_DIR"/pulse*
+    find "$XDG_RUNTIME_DIR" -maxdepth 1 \
+        \( -name 'pipewire*' -o -name 'pulse*' \) \
+        -exec rm -rf {} + 2>/dev/null
 fi
 
 pipewire &
 
 # ------------------------------------------------------------------------------
-# System Tray Applets & Applications
+# Desktop services
 # ------------------------------------------------------------------------------
-run picom -b
+run picom
 run dunst
 
 # ------------------------------------------------------------------------------
-# System Tray Applets & Applications
+# System tray applications
 # ------------------------------------------------------------------------------
 run nm-applet
 run pasystray
 run udiskie --tray
 run blueman-applet
+
 run copyq
 run flameshot
+
 run monitor-fan
 run monitor-caps-num-lock
 run monitor-kbd-layout
+
+# ------------------------------------------------------------------------------
+# Applications
+# ------------------------------------------------------------------------------
 run /home/danial/.app/Throne/Throne -tray
 run mailspring --password-store="gnome-libsecret" --background
 run Telegram -autostart
 run /home/danial/.local/ABDownloadManager/bin/ABDownloadManager --background
 
+# ------------------------------------------------------------------------------
 # Local AI Proxy
-run sh -c "node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray"
-# run sh -c "node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray"
+# ------------------------------------------------------------------------------
+# node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
+# node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
+node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
+  serve --no-open --tray --host 127.0.0.1 &
+
 
 # ------------------------------------------------------------------------------
 # Status Bar
 # ------------------------------------------------------------------------------
-pkill -9 -u "$USER" -x dwmblocks 2>/dev/null
-while pgrep -u "$USER" -x dwmblocks >/dev/null 2>&1; do sleep 0.1; done
+pkill -u "$USER" -x dwmblocks 2>/dev/null
+wait_for_stop dwmblocks
 
 dwmblocks &
