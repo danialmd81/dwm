@@ -29,7 +29,6 @@ wait_for_stop() {
 # ------------------------------------------------------------------------------
 # Keyboard layout
 setxkbmap -layout "us,ir" \
-    -option "grp:alt_shift_toggle" \
     -option "grp:win_space_toggle"
 
 # ------------------------------------------------------------------------------
@@ -90,15 +89,15 @@ run copyq
 run flameshot
 
 run monitor-fan
-run monitor-caps-num-lock
 run monitor-kbd-layout
+run monitor-caps-num-lock
 
 # ------------------------------------------------------------------------------
 # Applications
 # ------------------------------------------------------------------------------
+run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
 run mailspring --password-store="gnome-libsecret" --background
-run Telegram -autostart
 run /home/danial/.local/ABDownloadManager/bin/ABDownloadManager --background
 
 # ------------------------------------------------------------------------------
@@ -107,7 +106,7 @@ run /home/danial/.local/ABDownloadManager/bin/ABDownloadManager --background
 # node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
 # node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
 node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
-  serve --no-open --tray --host 127.0.0.1 &
+  serve --no-open --tray --host 127.0.0.1
 
 
 # ------------------------------------------------------------------------------

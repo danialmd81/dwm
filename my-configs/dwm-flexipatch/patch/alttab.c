@@ -19,6 +19,7 @@ alttab()
 
 	if (altsnext[alttabn]) {
 		focus(altsnext[alttabn]);
+		restack(m);
 	}
 
 	/* redraw tab */

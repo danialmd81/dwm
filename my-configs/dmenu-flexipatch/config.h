@@ -7,9 +7,10 @@ static int topbar = 1;                      /* -b  option; if 0, dmenu appears a
 static int fuzzy = 1;                       /* -F  option; if 0, dmenu doesn't use fuzzy matching */
 /* -fn option overrides fonts[0]; default X11 font or font set */
 static const char *fonts[] = {
-	"CaskaydiaCove Nerd Font Mono:size=12:antialias=true:autohint=true",
-	"JetBrainsMono Nerd Font Mono:size=12:antialias=true:autohint=true",
-	"monospace:size=10"
+    "JetBrainsMono NFM:size=11:style=Bold:antialias=true:autohint=true",
+    "CaskaydiaCove NFM:size=11:style=Bold:antialias=true:autohint=true",
+    "Noto Color Emoji:size=11:style=Bold:antialias=true:autohint=true",
+    "Vazirmatn:size=11:style=Bold:antialias=true:autohint=true",
 };
 static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
 
