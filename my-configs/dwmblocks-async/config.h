@@ -20,9 +20,7 @@
 #define BLOCKS(X)                                                             \
     X("", "/home/danial/.local/bin/statusbar/sb-netspeed", 1, 8) /* Net */    \
     X("", "/home/danial/.local/bin/statusbar/sb-memory", 5, 6)   /* Ram */    \
-    X("", "/home/danial/.local/bin/statusbar/sb-dgpu", 5, 10)    /* dGPU */   \
     X("", "/home/danial/.local/bin/statusbar/sb-cpu", 5, 7)      /* CPU */    \
-    X("", "/home/danial/.local/bin/statusbar/sb-battery", 5, 5) /* Battery */ \
     X("", "/home/danial/.local/bin/statusbar/sb-date", 0, 4)    /* Date */    \
     X("", "/home/danial/.local/bin/statusbar/sb-clock", 60, 1)  /* Clock */
 

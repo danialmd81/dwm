@@ -44,8 +44,8 @@ static int floatindicatortype            = INDICATOR_TOP_LEFT_SQUARE;
 static const char *fonts[] = {
     "JetBrainsMono NFM:size=11:style=Bold:antialias=true:autohint=true",
     "CaskaydiaCove NFM:size=11:style=Bold:antialias=true:autohint=true",
-    "Noto Color Emoji:size=11:style=Bold:antialias=true:autohint=true",
     "Vazirmatn:size=11:style=Bold:antialias=true:autohint=true",
+    "Noto Color Emoji:size=11:antialias=true:autohint=true",
 };
 
 static char c000000[]                    = "#000000"; /* Placeholder / unused black value */
