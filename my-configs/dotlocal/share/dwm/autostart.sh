@@ -98,7 +98,7 @@ run monitor-caps-num-lock
 run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
 run /home/danial/.local/bin/ABDownloadManager --background
-run mailspring --password-store="gnome-libsecret" --background
+run mailspring --background
 
 # ------------------------------------------------------------------------------
 # Status Bar
@@ -113,5 +113,6 @@ dwmblocks &
 # ------------------------------------------------------------------------------
 # node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
 # node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
+
 node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
-    serve --no-open --tray --host 127.0.0.1
+  serve --no-open --tray --host 127.0.0.1 &
