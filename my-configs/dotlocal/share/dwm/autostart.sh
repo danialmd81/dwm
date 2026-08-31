@@ -12,7 +12,7 @@ run() {
 
 wait_for_stop() {
     name="$1"
-    max="${2:-50}"   # default ~5s timeout
+    max="${2:-50}" # default ~5s timeout
     i=0
     while pgrep -u "$USER" -x "$name" >/dev/null 2>&1; do
         i=$((i + 1))
@@ -83,31 +83,21 @@ run dunst
 run nm-applet
 run pasystray
 run udiskie --tray
-run blueman-applet
+# run blueman-applet
 
 run copyq
 run flameshot
 
-run monitor-fan
-run monitor-kbd-layout
 run monitor-caps-num-lock
+run monitor-kbd-layout
 
 # ------------------------------------------------------------------------------
 # Applications
 # ------------------------------------------------------------------------------
 run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
-run mailspring --password-store="gnome-libsecret" --background
-run /home/danial/.local/ABDownloadManager/bin/ABDownloadManager --background
-
-# ------------------------------------------------------------------------------
-# Local AI Proxy
-# ------------------------------------------------------------------------------
-# node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
-# node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
-node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
-  serve --no-open --tray --host 127.0.0.1
-
+run /home/danial/.local/bin/ABDownloadManager --background
+run mailspring --background
 
 # ------------------------------------------------------------------------------
 # Status Bar
@@ -116,3 +106,12 @@ pkill -u "$USER" -x dwmblocks 2>/dev/null
 wait_for_stop dwmblocks
 
 dwmblocks &
+
+# ------------------------------------------------------------------------------
+# Local AI Proxy
+# ------------------------------------------------------------------------------
+# node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
+# node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
+
+# node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
+#   serve --no-open --tray --host 127.0.0.1 &

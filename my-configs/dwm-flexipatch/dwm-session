@@ -1,3 +1,11 @@
 #!/bin/sh
 
-exec /usr/local/bin/dwm > /tmp/dwm.log 2>&1
+# Initialize GNOME Keyring daemon environment (secrets, ssh, pkcs11)
+eval $(gnome-keyring-daemon --start --components=secrets,ssh,pkcs11)
+export SSH_AUTH_SOCK
+
+# Force all Chromium / Electron apps to use gnome-libsecret globally
+export CHROMIUM_USER_FLAGS="--password-store=gnome-libsecret"
+export ELECTRON_FLAGS="--password-store=gnome-libsecret"
+
+exec /usr/local/bin/dwm >/tmp/dwm.log 2>&1
