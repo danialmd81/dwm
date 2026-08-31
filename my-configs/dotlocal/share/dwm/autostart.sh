@@ -97,7 +97,7 @@ run monitor-kbd-layout
 run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
 run /home/danial/.local/bin/ABDownloadManager --background
-run mailspring --background
+run mailspring --password-store="gnome-libsecret" --background
 
 # ------------------------------------------------------------------------------
 # Status Bar
