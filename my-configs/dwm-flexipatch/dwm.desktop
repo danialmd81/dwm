@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Dwm
 Comment=Dynamic window manager
-Exec=dbus-run-session /usr/local/bin/dwm-session
+Exec=/usr/local/bin/dwm-session
 Icon=dwm
 Type=XSession
