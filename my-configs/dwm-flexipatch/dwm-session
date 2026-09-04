@@ -1,3 +1,3 @@
 #!/bin/sh
 
-exec dbus-run-session -- /usr/local/bin/dwm >/tmp/dwm.log 2>&1
+exec /usr/local/bin/dwm >/tmp/dwm.log 2>&1
