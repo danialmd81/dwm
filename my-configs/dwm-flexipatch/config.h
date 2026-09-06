@@ -135,7 +135,7 @@ static const Rule rules[] = {
     RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1, .floatpos = "-1x -1y")
     RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1, .floatpos = "-1x -1y")
     RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1, .floatpos = "-1x -1y")
-    RULE(.wintype = WTYPE "NOTIFICATION", .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "NOTIFICATION",  .isfloating = 1, .floatpos = "-1x -1y")
     RULE(.wintype = WTYPE "POPUP_MENU",    .isfloating = 1, .floatpos = "-1x -1y")
     RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1, .floatpos = "-1x -1y")
 
@@ -158,7 +158,7 @@ static const Rule rules[] = {
     // RULE(.class = "v2rayN",           .tags = 1 << 2)
 
     /* Floating Utilities */
-    RULE(.class = "copyq", .isfloating = 1, .floatpos = "1520X 2X 400W 500H")
+    RULE(.class = "copyq", .isfloating = 1, .floatpos = "1400X 2X 520W 500H")
 };
 
 /* Bar rules */
