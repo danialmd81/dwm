@@ -1,3 +1,5 @@
 #!/bin/sh
 
+dbus-update-activation-environment --all DISPLAY XAUTHORITY
+
 exec /usr/local/bin/dwm >/tmp/dwm.log 2>&1
