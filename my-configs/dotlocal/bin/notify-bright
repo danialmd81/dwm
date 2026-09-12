@@ -11,8 +11,8 @@ case "$1" in
         ;;
 esac
 
-# Signal dwmblocks to update status bar immediately (adjust signal number if needed)
-pkill -RTMIN+11 dwmblocks 2>/dev/null
+## Signal dwmblocks to update status bar immediately (adjust signal number if needed)
+# pkill -RTMIN+11 dwmblocks 2>/dev/null
 
 # Get current brightness percentage
 bright_num=$(brightnessctl i | awk -F'[(%)]' '/Current/ {print $2}')
