@@ -1,38 +1,54 @@
 #!/bin/bash
 
-# Specify the path to the fan_boost_mode file
-fan_boost_mode_file="/sys/devices/platform/asus-nb-wmi/throttle_thermal_policy"
+# Standard kernel ACPI platform profile node
+platform_profile_file="/sys/firmware/acpi/platform_profile"
 
-# Variable to store the previous fan boost mode
+# Variable to store the previous mode
 previous_mode=""
 
-# Function to get the label for a given mode
+# Notification replace ID and tag
+NOTIF_ID=9992
+NOTIF_TAG="fan_mode"
+NOTIF_TIMEOUT=1500
+
+# Function to get a friendly label for the profile string
 get_mode_label() {
-	case $1 in
-	0) echo "Normal Mode" ;;
-	1) echo "OverBoost" ;;
-	2) echo "Silent Mode" ;;
-	*) echo "Unknown Mode" ;;
-	esac
+    case "$1" in
+        "balanced")    echo "Balanced" ;;
+        "performance") echo "Performance" ;;
+        "quiet")       echo "Quiet" ;;
+        *)             echo "Unknown ($1)" ;;
+    esac
 }
 
-# Function to check and send a notification if the mode has changed
+# Function to check and send a notification if the profile has changed
 check_and_send_notification() {
-	current_mode=$(cat $fan_boost_mode_file)
-	current_label=$(get_mode_label $current_mode)
+    if [ ! -r "$platform_profile_file" ]; then
+        return
+    fi
 
-	if [ "$current_mode" != "$previous_mode" ]; then
-		icon_path="$(dirname "$(readlink -f "$0")")/fan.jpg" # Replace with the path to your image
-		notify-send -i "$icon_path" "Fan Boost Mode Changed" "New mode: $current_label"
-		previous_mode="$current_mode"
-	fi
+    current_mode=$(cat "$platform_profile_file")
+    current_label=$(get_mode_label "$current_mode")
+
+    if [ "$current_mode" != "$previous_mode" ]; then
+        icon_path="$(dirname "$(readlink -f "$0")")/fan.jpg"
+
+        # Send notification replacing the previous one (id 9992)
+        dunstify -r "$NOTIF_ID" -t "$NOTIF_TIMEOUT" -a "PowerProfile" -i "$icon_path" \
+            "Fan Boost Mode Changed" "New mode: $current_label" 2>/dev/null || \
+        notify-send -t "$NOTIF_TIMEOUT" -a "PowerProfile" \
+            -h "string:x-canonical-private-synchronous:$NOTIF_TAG" \
+            -i "$icon_path" "Fan Boost Mode Changed" "New mode: $current_label"
+
+        previous_mode="$current_mode"
+    fi
 }
 
 # Initial check
 check_and_send_notification
 
-# Monitor for changes in the fan_boost_mode file
+# Monitor for changes in the platform profile
 while true; do
-	inotifywait -e modify $fan_boost_mode_file
-	check_and_send_notification
+    inotifywait -q -e modify "$platform_profile_file"
+    check_and_send_notification
 done
