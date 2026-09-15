@@ -274,7 +274,6 @@ static const Key keys[] = {
     // { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +2 } },
     // { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -2 } },
 
-    // { MODKEY,                       XK_y,      togglefullscreen,    {0} },
     { MODKEY,                       XK_s,      setlayout,           {0} },
     { MODKEY|ControlMask|ShiftMask, XK_h,      togglehorizontalmax, {0} },
 	{ MODKEY|ControlMask|ShiftMask, XK_l,      togglehorizontalmax, {0} },
