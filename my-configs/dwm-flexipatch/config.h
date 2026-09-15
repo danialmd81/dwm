@@ -130,14 +130,10 @@ static const Rule rules[] = {
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
 	 */
 
-    // /* EWMH Dialog & Popup Types */
     RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1, .floatpos = "-1x -1y")
     RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1, .floatpos = "-1x -1y")
     RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1, .floatpos = "-1x -1y")
     RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1, .floatpos = "-1x -1y")
-    RULE(.wintype = WTYPE "NOTIFICATION",  .isfloating = 1, .floatpos = "-1x -1y")
-    RULE(.wintype = WTYPE "POPUP_MENU",    .isfloating = 1, .floatpos = "-1x -1y")
-    RULE(.wintype = WTYPE "PROMPT",        .isfloating = 1, .floatpos = "-1x -1y")
 
     /* Tag 1: Web (Browsers) */
     // RULE(.class = "Firefox",          .tags = 1 << 0)
@@ -164,11 +160,11 @@ static const Rule rules[] = {
 /* Bar rules */
 static const BarRule barrules[] = {
 	/* monitor   bar    alignment         widthfunc                 drawfunc                clickfunc                hoverfunc                name */
-	{ -1,        0,     BAR_ALIGN_LEFT,   width_tags,               draw_tags,              click_tags,              hover_tags,              "tags" },
-	{  0,        0,     BAR_ALIGN_RIGHT,  width_systray,            draw_systray,           click_systray,           NULL,                    "systray" },
-	{ -1,        0,     BAR_ALIGN_LEFT,   width_ltsymbol,           draw_ltsymbol,          click_ltsymbol,          NULL,                    "layout" },
+	{ statusmon, 0,     BAR_ALIGN_LEFT,   width_tags,               draw_tags,              click_tags,              hover_tags,              "tags" },
+	{ statusmon, 0,     BAR_ALIGN_RIGHT,  width_systray,            draw_systray,           click_systray,           NULL,                    "systray" },
+	{ statusmon, 0,     BAR_ALIGN_LEFT,   width_ltsymbol,           draw_ltsymbol,          click_ltsymbol,          NULL,                    "layout" },
 	{ statusmon, 0,     BAR_ALIGN_RIGHT,  width_status2d,           draw_status2d,          click_statuscmd,         NULL,                    "status2d" },
-	{ -1,        0,     BAR_ALIGN_NONE,   width_wintitle,           draw_wintitle,          click_wintitle,          NULL,                    "wintitle" },
+	{ statusmon, 0,     BAR_ALIGN_NONE,   width_wintitle,           draw_wintitle,          click_wintitle,          NULL,                    "wintitle" },
 };
 
 /* layout(s) */
@@ -214,15 +210,11 @@ static const Layout layouts[] = {
 
 /* commands */
 static char dmenumon[2] = "0";
-static const char *dmenucmd[] = {
-    "j4-dmenu-desktop",
-    "--dmenu=dmenu -i -p 'Apps:'",
-	NULL
-};
-static const char *termcmd[]  = { "kitty", NULL };
+static const char *dmenucmd[] = { "j4-dmenu-desktop", "--dmenu=dmenu -i -p 'Apps:'", NULL };
+static const char *termcmd[] = { "kitty", NULL };
 static const char *lockcmd[] = { "xsecurelock", NULL };
-static const char *windowcmd[] = { "/home/danial/.local/bin/window_switcher", NULL };
 static const char *powercmd[] = { "/home/danial/.local/bin/powermenu", NULL };
+static const char *windowcmd[] = { "/home/danial/.local/bin/window_switcher", NULL };
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
@@ -236,76 +228,76 @@ static const StatusCmd statuscmds[] = {
 
 static const Key keys[] = {
 	/* modifier                     key            function                argument */
-    { MODKEY,                       XK_b,      togglebar,           {0} },
-    { MODKEY,                       XK_j,      focusstack,          {.i = +2 } },
-    { MODKEY,                       XK_k,      focusstack,          {.i = -2 } },
-    // { MODKEY,                       XK_Return, zoom,                {0} },
-    // { MODKEY,                       XK_Tab,    view,                {0} },
-    // { MODKEY,                       XK_0,      view,                {.ui = ~0 } },
-    // { MODKEY|ShiftMask,             XK_0,      tag,                 {.ui = ~0 } },
-    { MODKEY,                       XK_comma,  focusmon,            {.i = -1 } },
-    { MODKEY,                       XK_period, focusmon,            {.i = +1 } },
-    { MODKEY|ShiftMask,             XK_comma,  tagmon,              {.i = -1 } },
-    { MODKEY|ShiftMask,             XK_period, tagmon,              {.i = +1 } },
-    { MODKEY,                       XK_h,      showhideclient,      {0} },
-    { MODKEY|ShiftMask,             XK_q,      quit,                {0} },
-    { MODKEY,                       XK_q,      killclient,          {0} },
+    { MODKEY,                       XK_b,          togglebar,              {0} },
+    { MODKEY,                       XK_j,          focusstack,             {.i = +2 } },
+    { MODKEY,                       XK_k,          focusstack,             {.i = -2 } },
+    // { MODKEY,                       XK_Return,     zoom,                   {0} },
+    // { MODKEY,                       XK_Tab,        view,                   {0} },
+    // { MODKEY,                       XK_0,          view,                   {.ui = ~0 } },
+    // { MODKEY|ShiftMask,             XK_0,          tag,                    {.ui = ~0 } },
+    { MODKEY,                       XK_comma,      focusmon,               {.i = -1 } },
+    { MODKEY,                       XK_period,     focusmon,               {.i = +1 } },
+    { MODKEY|ShiftMask,             XK_comma,      tagmon,                 {.i = -1 } },
+    { MODKEY|ShiftMask,             XK_period,     tagmon,                 {.i = +1 } },
+    { MODKEY,                       XK_h,          showhideclient,         {0} },
+    { MODKEY|ShiftMask,             XK_q,          quit,                   {0} },
+    { MODKEY,                       XK_q,          killclient,             {0} },
     
-    { MODKEY,                       XK_p,      spawn,               {.v = dmenucmd } },
-    { MODKEY,                       XK_w,      spawn,               {.v = windowcmd } },
-    { MODKEY,                       XK_Return, spawn,               {.v = termcmd } },
-    { MODKEY,                       XK_Escape, spawn,               {.v = lockcmd } },
-    { MODKEY,                       XK_Delete, spawn,               {.v = powercmd } },
-    { MODKEY,                       XK_e,      spawn,               SHCMD("mailspring --password-store=\"gnome-libsecret\"") },
-    { MODKEY,                       XK_f,      spawn,               SHCMD("nautilus") },
-    { MODKEY,                       XK_c,      spawn,               SHCMD("google-chrome-stable") },
-    { MODKEY,                       XK_r,      spawn,               SHCMD("firefox") },
-    { MODKEY|ControlMask,           XK_r,      spawn,               SHCMD("firefox -P mk") },
-    { MODKEY,                       XK_t,      spawn,               SHCMD("$HOME/.app/Throne/Throne") },
-    { MODKEY|ControlMask,           XK_t,      spawn,               SHCMD("Telegram") },
-    { MODKEY,                       XK_x,      spawn,               SHCMD("code") },
-    { MODKEY,                       XK_z,      spawn,               SHCMD("$HOME/.local/bin/zed") },
-    { MODKEY,                       XK_v,      spawn,               SHCMD("copyq toggle") },
-    { ShiftMask,                    XK_Print,  spawn,               SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
-    { 0,                            XK_Print,  spawn,               SHCMD("flameshot gui") }, 
+    { MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } },
+    { MODKEY,                       XK_w,          spawn,                  {.v = windowcmd } },
+    { MODKEY,                       XK_Return,     spawn,                  {.v = termcmd } },
+    { MODKEY,                       XK_Escape,     spawn,                  {.v = lockcmd } },
+    { MODKEY,                       XK_Delete,     spawn,                  {.v = powercmd } },
+    { MODKEY,                       XK_e,          spawn,                  SHCMD("mailspring --password-store=\"gnome-libsecret\"") },
+    { MODKEY,                       XK_f,          spawn,                  SHCMD("nautilus") },
+    { MODKEY,                       XK_c,          spawn,                  SHCMD("google-chrome-stable") },
+    { MODKEY,                       XK_r,          spawn,                  SHCMD("firefox") },
+    { MODKEY|ControlMask,           XK_r,          spawn,                  SHCMD("firefox -P mk") },
+    { MODKEY,                       XK_t,          spawn,                  SHCMD("$HOME/.app/Throne/Throne") },
+    { MODKEY|ControlMask,           XK_t,          spawn,                  SHCMD("Telegram") },
+    { MODKEY,                       XK_x,          spawn,                  SHCMD("code") },
+    { MODKEY,                       XK_z,          spawn,                  SHCMD("$HOME/.local/bin/zed") },
+    { MODKEY,                       XK_v,          spawn,                  SHCMD("copyq toggle") },
+    { ShiftMask,                    XK_Print,      spawn,                  SHCMD("flameshot full -c -p $HOME/Pictures/Screenshots") },
+    { 0,                            XK_Print,      spawn,                  SHCMD("flameshot gui") }, 
 
-    { Mod1Mask,                     XK_Tab,    alttabstart,         {.i = +2 } },
+    { Mod1Mask,                     XK_Tab,        alttabstart,            {.i = +2 } },
 
-    // { Mod1Mask,                     XK_Tab,    focusstack,          {.i = +2 } },
-    // { Mod1Mask|ShiftMask,           XK_Tab,    focusstack,          {.i = -2 } },
+    // { Mod1Mask,                     XK_Tab,        focusstack,             {.i = +2 } },
+    // { Mod1Mask|ShiftMask,           XK_Tab,        focusstack,             {.i = -2 } },
 
-    { MODKEY,                       XK_s,      setlayout,           {0} },
-    { MODKEY|ControlMask|ShiftMask, XK_h,      togglehorizontalmax, {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_l,      togglehorizontalmax, {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_j,      toggleverticalmax,   {0} },
-	{ MODKEY|ControlMask|ShiftMask, XK_k,      toggleverticalmax,   {0} },
-    { MODKEY,                       XK_m,      togglemax,           {0} },
-    { MODKEY|ShiftMask,             XK_Left,   floatpos,            {.v = "-20w 0h"} },
-    { MODKEY|ShiftMask,             XK_Right,  floatpos,            {.v = "20w 0h"} },
-    { MODKEY|ShiftMask,             XK_Down,   floatpos,            {.v = "0w -20h"} },
-    { MODKEY|ShiftMask,             XK_Up,     floatpos,            {.v = "0w 20h"} },
+    { MODKEY,                       XK_s,          setlayout,              {0} },
+    { MODKEY|ControlMask|ShiftMask, XK_h,          togglehorizontalmax,    {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_l,          togglehorizontalmax,    {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_j,          toggleverticalmax,      {0} },
+	{ MODKEY|ControlMask|ShiftMask, XK_k,          toggleverticalmax,      {0} },
+    { MODKEY,                       XK_m,          togglemax,              {0} },
+    { MODKEY|ShiftMask,             XK_Left,       floatpos,               {.v = "-20w 0h"} },
+    { MODKEY|ShiftMask,             XK_Right,      floatpos,               {.v = "20w 0h"} },
+    { MODKEY|ShiftMask,             XK_Down,       floatpos,               {.v = "0w -20h"} },
+    { MODKEY|ShiftMask,             XK_Up,         floatpos,               {.v = "0w 20h"} },
 
     /* Media Controls */
-    { 0, XF86XK_AudioMute,                     spawn,               SHCMD("notify-vol mute") },
-    { 0, XF86XK_AudioLowerVolume,              spawn,               SHCMD("notify-vol down") },
-    { 0, XF86XK_AudioRaiseVolume,              spawn,               SHCMD("notify-vol up") },
-    { 0, XF86XK_AudioPlay,                     spawn,               SHCMD("playerctl play-pause") },
-    { 0, XF86XK_AudioPause,                    spawn,               SHCMD("playerctl play-pause") },
-    { 0, XF86XK_AudioPrev,                     spawn,               SHCMD("playerctl previous") },
-    { 0, XF86XK_AudioNext,                     spawn,               SHCMD("playerctl next") },
-    { 0, XF86XK_AudioStop,                     spawn,               SHCMD("playerctl stop") },
-    { 0, XF86XK_MonBrightnessDown,             spawn,               SHCMD("notify-bright down") },
-    { 0, XF86XK_MonBrightnessUp,               spawn,               SHCMD("notify-bright up") },
+    { 0, XF86XK_AudioMute,                         spawn,                  SHCMD("notify-vol mute") },
+    { 0, XF86XK_AudioLowerVolume,                  spawn,                  SHCMD("notify-vol down") },
+    { 0, XF86XK_AudioRaiseVolume,                  spawn,                  SHCMD("notify-vol up") },
+    { 0, XF86XK_AudioPlay,                         spawn,                  SHCMD("playerctl play-pause") },
+    { 0, XF86XK_AudioPause,                        spawn,                  SHCMD("playerctl play-pause") },
+    { 0, XF86XK_AudioPrev,                         spawn,                  SHCMD("playerctl previous") },
+    { 0, XF86XK_AudioNext,                         spawn,                  SHCMD("playerctl next") },
+    { 0, XF86XK_AudioStop,                         spawn,                  SHCMD("playerctl stop") },
+    { 0, XF86XK_MonBrightnessDown,                 spawn,                  SHCMD("notify-bright down") },
+    { 0, XF86XK_MonBrightnessUp,                   spawn,                  SHCMD("notify-bright up") },
 
-    TAGKEYS(                        XK_1,                           0)
-    TAGKEYS(                        XK_2,                           1)
-    TAGKEYS(                        XK_3,                           2)
-    TAGKEYS(                        XK_4,                           3)
-    TAGKEYS(                        XK_5,                           4)
-    TAGKEYS(                        XK_6,                           5)
-    TAGKEYS(                        XK_7,                           6)
-    TAGKEYS(                        XK_8,                           7)
-    TAGKEYS(                        XK_9,                           8)
+    TAGKEYS(                        XK_1,                                  0)
+    TAGKEYS(                        XK_2,                                  1)
+    TAGKEYS(                        XK_3,                                  2)
+    TAGKEYS(                        XK_4,                                  3)
+    TAGKEYS(                        XK_5,                                  4)
+    TAGKEYS(                        XK_6,                                  5)
+    TAGKEYS(                        XK_7,                                  6)
+    TAGKEYS(                        XK_8,                                  7)
+    TAGKEYS(                        XK_9,                                  8)
 };
 
 /* Button Definitions */

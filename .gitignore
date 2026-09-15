@@ -1,2 +1,4 @@
 my-configs/dwm-flexipatch/dwm
 my-configs/dwm-flexipatch/dwm.o
+my-configs/dwm-flexipatch/drw.o
+my-configs/dwm-flexipatch/util.o
