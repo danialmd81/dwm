@@ -94,7 +94,7 @@ run monitor-kbd-layout
 # ------------------------------------------------------------------------------
 # Applications
 # ------------------------------------------------------------------------------
-run Telegram -autostart
+# run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
 run /home/danial/.local/bin/ABDownloadManager --background
 run mailspring --password-store="gnome-libsecret" --background

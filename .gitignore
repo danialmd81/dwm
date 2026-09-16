@@ -1,0 +1,11 @@
+my-configs/dwm-flexipatch/dwm
+my-configs/dwm-flexipatch/dwm.o
+my-configs/dwm-flexipatch/drw.o
+my-configs/dwm-flexipatch/util.o
+
+my-configs/dmenu-flexipatch/dmenu
+my-configs/dmenu-flexipatch/dmenu.o
+my-configs/dmenu-flexipatch/drw.o
+my-configs/dmenu-flexipatch/util.o
+my-configs/dmenu-flexipatch/stest
+my-configs/dmenu-flexipatch/stest.o

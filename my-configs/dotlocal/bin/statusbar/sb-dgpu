@@ -3,129 +3,77 @@
 SIGNAL=10
 STATE_FILE="/tmp/dwmblocks_dgpu_mode"
 CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
+GPU_PCI="0000:01:00.0"
+PWR_FILE="/sys/bus/pci/devices/$GPU_PCI/power/runtime_status"
 
-# 0. Check if NVIDIA driver module is loaded
+# 0. Check if driver module exists
 if [ ! -d "/sys/module/nvidia" ]; then
-    # In Integrated Mode: Output empty string so dwmblocks hides the block
-    if [ "$CLICK_BUTTON" = "1" ] || [ "$CLICK_BUTTON" = "3" ]; then
-        notify-send "GPU Status" "Intel iGPU Active (NVIDIA driver unloaded)."
-    fi
+    [ -n "$CLICK_BUTTON" ] && notify-send "GPU Status" "Intel iGPU Active (NVIDIA driver unloaded)."
     exit 0
 fi
 
-# 1. Check if NVML / nvidia-smi is working properly.
-# If NVML initialization fails, echo nothing and exit so dwmblocks hides the block.
-if ! nvidia-smi >/dev/null 2>&1; then
-    if [ "$CLICK_BUTTON" = "1" ] || [ "$CLICK_BUTTON" = "3" ]; then
-        notify-send "GPU Status" "NVIDIA GPU unavailable or NVML failed to initialize."
-    fi
-    exit 0
-fi
+# 1. Read sysfs directly (safe, zero bus wake)
+PWR_STATE=$(cat "$PWR_FILE" 2>/dev/null || echo "unknown")
 
-# Helper function to spawn nvtop in kitty
+# Helper to spawn process monitor
 spawn_monitor() {
     if command -v nvtop >/dev/null 2>&1; then
         setsid -f kitty -e nvtop >/dev/null 2>&1
     elif command -v btop >/dev/null 2>&1; then
         setsid -f kitty -e btop >/dev/null 2>&1
-    elif command -v htop >/dev/null 2>&1; then
-        setsid -f kitty -e htop >/dev/null 2>&1
     fi
 }
 
+# 2. Handle button clicks
 case "$CLICK_BUTTON" in
-1) # Left click: Cycle in-place modes
+1) # Cycle metrics mode
     CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
     case "$CURRENT_MODE" in
     "usage") echo "temp" >"$STATE_FILE" ;;
     "temp") echo "vram" >"$STATE_FILE" ;;
     *) echo "usage" >"$STATE_FILE" ;;
     esac
-    pkill -RTMIN+"$SIGNAL" dwmblocks
     ;;
-2) # Middle click: Launch process monitor in Kitty
+2) # Open monitor
     spawn_monitor
     ;;
-3) # Right click: Notification of top GPU processes
-    if command -v nvidia-smi >/dev/null 2>&1; then
-        hogs=$(nvidia-smi --query-compute-apps=process_name,used_memory --format=csv,noheader 2>/dev/null | awk -F',' '{printf "%-20s %s\n", $1, $2}')
-        [ -z "$hogs" ] && hogs="No active GPU processes"
+3) # Status notification
+    if [ "$PWR_STATE" != "active" ]; then
+        notify-send "GPU Status" "NVIDIA dGPU is in D3cold (0W Suspended)."
     else
-        hogs="NVIDIA driver unavailable"
+        hogs=$(nvidia-smi --query-compute-apps=process_name,used_memory --format=csv,noheader 2>/dev/null | awk -F',' '{printf "%-20s %s\n", $1, $2}')
+        [ -z "$hogs" ] && hogs="No active compute processes"
+        notify-send "Top GPU Processes" "<font family='monospace'>$hogs</font>"
     fi
-    notify-send "Top GPU Processes" "<font family='monospace'>$hogs</font>"
     ;;
 esac
 
-# Handle CLI toggle argument
-if [ "$1" = "toggle" ]; then
-    CURRENT_MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
-    case "$CURRENT_MODE" in
-    "usage") echo "temp" >"$STATE_FILE" ;;
-    "temp") echo "vram" >"$STATE_FILE" ;;
-    *) echo "usage" >"$STATE_FILE" ;;
-    esac
-    pkill -RTMIN+"$SIGNAL" dwmblocks
-fi
-
-MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
-
-# ------------------------------------------------------------------------------
-# Data Collection & Output
-# ------------------------------------------------------------------------------
-
-get_gpu_pwr_state() {
-    pwr_file=$(readlink -f /sys/module/nvidia/drivers/pci:nvidia/* 2>/dev/null | head -n 1)/power/runtime_status
-
-    if [ -f "$pwr_file" ]; then
-        cat "$pwr_file"
-    else
-        pwr_file=$(find /sys/bus/pci/devices/ -name "runtime_status" 2>/dev/null | grep -m1 "0000:")
-        [ -f "$pwr_file" ] && cat "$pwr_file" || echo "unknown"
-    fi
-}
-
-get_gpu_usage() {
-    usage=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null)
-    [ -n "$usage" ] && echo "${usage}%" || exit 1
-}
-
-get_gpu_temp() {
-    temp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null)
-    [ -n "$temp" ] && echo "${temp}°C" || exit 1
-}
-
-get_gpu_vram() {
-    vram=$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null)
-    if [ -n "$vram" ]; then
-        echo "$vram" | awk -F',' '{printf "%.1f/%.1fGiB\n", $1/1024, $2/1024}'
-    else
-        exit 1
-    fi
-}
-
 icon="🎮"
-# icon="GPU"
 
-# Check if GPU is sleeping/suspended (Hybrid Mode D3cold)
-PWR_STATE=$(get_gpu_pwr_state)
-if [ "$PWR_STATE" = "suspended" ]; then
+# 3. CRUCIAL GATE: If not active, print OFF and stop immediately
+if [ "$PWR_STATE" != "active" ]; then
     echo "$icon OFF"
     exit 0
 fi
 
-# Render active GPU stats when dGPU is awake
+# 4. Only execute nvidia-smi if something else already woke the card
+MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
+
 case "$MODE" in
 "temp")
-    val=$(get_gpu_temp) || exit 0
-    echo "$icon:$val"
+    temp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null)
+    [ -n "$temp" ] && echo "$icon:${temp}°C" || echo "$icon ON"
     ;;
 "vram")
-    val=$(get_gpu_vram) || exit 0
-    echo "$icon:$val"
+    vram=$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null)
+    if [ -n "$vram" ]; then
+        echo "$vram" | awk -F',' -v ic="$icon" '{printf "%s:%.1f/%.1fGiB\n", ic, $1/1024, $2/1024}'
+    else
+        echo "$icon ON"
+    fi
     ;;
 *)
-    val=$(get_gpu_usage) || exit 0
-    echo "$icon:$val"
+    usage=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null)
+    [ -n "$usage" ] && echo "$icon:${usage}%" || echo "$icon ON"
     ;;
 esac
