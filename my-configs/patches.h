@@ -600,7 +600,7 @@
  * the parent window, rather than at the center of the screen. This takes
  * precedence over the above patch.
  */
-#define CENTER_TRANSIENT_WINDOWS_BY_PARENT_PATCH 0
+#define CENTER_TRANSIENT_WINDOWS_BY_PARENT_PATCH 1
 
 /* This patch provides the ability to assign different weights to clients in
  * their respective stack in tiled layout.
