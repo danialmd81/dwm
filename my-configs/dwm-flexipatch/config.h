@@ -130,10 +130,9 @@ static const Rule rules[] = {
      *  _NET_WM_WINDOW_TYPE(ATOM) = wintype
 	 */
 
-    RULE(.wintype = WTYPE "DIALOG",        .isfloating = 1, .floatpos = "-1x -1y")
-    RULE(.wintype = WTYPE "UTILITY",       .isfloating = 1, .floatpos = "-1x -1y")
-    RULE(.wintype = WTYPE "TOOLBAR",       .isfloating = 1, .floatpos = "-1x -1y")
-    RULE(.wintype = WTYPE "SPLASH",        .isfloating = 1, .floatpos = "-1x -1y")
+    RULE(.wintype = WTYPE "UTILITY", .isfloating = 1, .floatpos = "-2x -2y")
+    RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1, .floatpos = "-2x -2y")
+    RULE(.wintype = WTYPE "SPLASH",  .isfloating = 1, .floatpos = "-2x -2y")
 
     /* Tag 1: Web (Browsers) */
     // RULE(.class = "Firefox",          .tags = 1 << 0)
@@ -143,7 +142,7 @@ static const Rule rules[] = {
     // RULE(.class = "code",             .tags = 1 << 1)
     // RULE(.class = "dev.zed.Zed",      .tags = 1 << 1)
     // RULE(.class = "QtCreator",        .tags = 1 << 1)
-    // RULE(.class = "draw-io",           .tags = 1 << 1)
+    // RULE(.class = "draw-io",          .tags = 1 << 1)
 
     /* Tag 3: Net & Chat (Mail, Messages, Proxies & VPNs) */
     // RULE(.class = "Mailspring",       .tags = 1 << 2)
