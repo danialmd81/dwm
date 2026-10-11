@@ -69,7 +69,7 @@ if [ -n "$XDG_RUNTIME_DIR" ]; then
         -exec rm -rf {} + 2>/dev/null
 fi
 
-pipewire &
+run pipewire
 
 # ------------------------------------------------------------------------------
 # Desktop services
@@ -105,7 +105,7 @@ run mailspring --password-store="gnome-libsecret" --background
 pkill -u "$USER" -x dwmblocks 2>/dev/null
 wait_for_stop dwmblocks
 
-dwmblocks &
+run dwmblocks
 
 # ------------------------------------------------------------------------------
 # Local AI Proxy
@@ -113,5 +113,5 @@ dwmblocks &
 # node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
 # node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
 
-# node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
+# run node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
 #   serve --no-open --tray --host 127.0.0.1 &

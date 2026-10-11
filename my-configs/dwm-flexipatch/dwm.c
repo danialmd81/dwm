@@ -1445,6 +1445,8 @@ manage(Window w, XWindowAttributes *wa)
 		c->mon = t->mon;
 		c->tags = t->tags;
 		c->bw = borderpx;
+		c->x = t->x + WIDTH(t) / 2 - WIDTH(c) / 2;
+		c->y = t->y + HEIGHT(t) / 2 - HEIGHT(c) / 2;
 	} else {
 		c->mon = selmon;
 		c->bw = borderpx;
