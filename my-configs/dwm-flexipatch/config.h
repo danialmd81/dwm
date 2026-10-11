@@ -137,7 +137,7 @@ static const Rule rules[] = {
 
     /* Tag 1: Web (Browsers) */
     // RULE(.class = "Firefox",          .tags = 1 << 0)
-    RULE(.class = "Google-chrome",    .tags = 1 << 0)
+    // RULE(.class = "Google-chrome",    .tags = 1 << 0)
 
     /* Tag 2: Code (IDEs & Editors) */
     // RULE(.class = "code",             .tags = 1 << 1)
@@ -211,8 +211,8 @@ static const Layout layouts[] = {
 /* commands */
 static char dmenumon[2] = "0";
 static const char *dmenucmd[] = { "j4-dmenu-desktop", "--dmenu=dmenu -i -p 'Apps:'", NULL };
-static const char *termcmd[] = { "kitty", NULL };
-static const char *lockcmd[] = { "xsecurelock", NULL };
+static const char *termcmd[] = { "tilix", NULL };
+// static const char *lockcmd[] = { "xsecurelock", NULL };
 static const char *powercmd[] = { "/home/danial/.local/bin/powermenu", NULL };
 static const char *windowcmd[] = { "/home/danial/.local/bin/window_switcher", NULL };
 
@@ -246,7 +246,7 @@ static const Key keys[] = {
     { MODKEY,                       XK_p,          spawn,                  {.v = dmenucmd } },
     { MODKEY,                       XK_w,          spawn,                  {.v = windowcmd } },
     { MODKEY,                       XK_Return,     spawn,                  {.v = termcmd } },
-    { MODKEY,                       XK_Escape,     spawn,                  {.v = lockcmd } },
+    // { MODKEY,                       XK_Escape,     spawn,                  {.v = lockcmd } },
     { MODKEY,                       XK_Delete,     spawn,                  {.v = powercmd } },
     { MODKEY,                       XK_e,          spawn,                  SHCMD("mailspring --password-store=\"gnome-libsecret\"") },
     { MODKEY,                       XK_f,          spawn,                  SHCMD("nautilus") },
