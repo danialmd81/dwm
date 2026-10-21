@@ -25,9 +25,16 @@ wait_for_stop() {
 }
 
 # ------------------------------------------------------------------------------
+# GNOME Keyring Daemon
+# ------------------------------------------------------------------------------
+if [ -z "$GNOME_KEYRING_CONTROL" ]; then
+    eval $(/usr/bin/gnome-keyring-daemon --start --components=secrets,ssh)
+    export GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
+fi
+
+# ------------------------------------------------------------------------------
 # Input & Display Settings
 # ------------------------------------------------------------------------------
-# Keyboard layout
 setxkbmap -layout "us,ir" \
     -option "grp:win_space_toggle"
 
@@ -98,7 +105,7 @@ run monitor-caps-num-lock
 run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
 run /home/danial/.local/bin/ABDownloadManager --background
-run mailspring --password-store="gnome-libsecret" --background
+run mailspring --background
 
 # ------------------------------------------------------------------------------
 # Status Bar
