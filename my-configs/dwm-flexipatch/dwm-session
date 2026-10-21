@@ -1,5 +1,12 @@
 #!/bin/sh
 
-dbus-update-activation-environment --all
+export XDG_CURRENT_DESKTOP=dwm
+export XDG_SESSION_DESKTOP=dwm
+
+dbus-update-activation-environment --systemd --all 2>/dev/null || dbus-update-activation-environment --all
+
+if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
+fi
 
 exec /usr/local/bin/dwm >/tmp/dwm.log 2>&1

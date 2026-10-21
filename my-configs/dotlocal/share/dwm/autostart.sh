@@ -25,11 +25,10 @@ wait_for_stop() {
 }
 
 # ------------------------------------------------------------------------------
-# GNOME Keyring Daemon
+# Provide live XSettings to GTK/X11 apps
 # ------------------------------------------------------------------------------
-if [ -z "$GNOME_KEYRING_CONTROL" ]; then
-    eval $(/usr/bin/gnome-keyring-daemon --start --components=secrets,ssh)
-    export GNOME_KEYRING_CONTROL SSH_AUTH_SOCK
+if ! pgrep -x "xsettingsd" >/dev/null; then
+    xsettingsd &
 fi
 
 # ------------------------------------------------------------------------------

@@ -1,0 +1,13 @@
+#!/bin/sh
+# Find the newest drawio AppImage in ~/.app (version-aware sort)
+APPIMAGE=$(printf '%s\n' "$HOME"/.app/drawio-x86_64-*.AppImage 2>/dev/null | sort -V | tail -n1)
+
+if [ -z "$APPIMAGE" ] || [ ! -f "$APPIMAGE" ]; then
+    echo "drawio: no AppImage found in ~/.app/" >&2
+    exit 1
+fi
+
+# Ensure it is executable
+[ -x "$APPIMAGE" ] || chmod +x "$APPIMAGE"
+
+exec "$APPIMAGE" "$@"
