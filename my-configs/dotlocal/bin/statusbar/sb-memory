@@ -4,14 +4,14 @@ SIGNAL=6
 STATE_FILE="/tmp/dwmblocks_mem_mode"
 CLICK_BUTTON="${BUTTON:-$BLOCK_BUTTON}"
 
-# Helper function to spawn btop sorted by Memory in kitty
+# Helper function to spawn btop sorted by Memory in tilix
 spawn_monitor() {
     if command -v btop >/dev/null 2>&1; then
-        setsid -f kitty -e btop -p 2 >/dev/null 2>&1
+        setsid -f tilix -e btop -p 2 >/dev/null 2>&1
     elif command -v htop >/dev/null 2>&1; then
-        setsid -f kitty -e htop -s PERCENT_MEM >/dev/null 2>&1
+        setsid -f tilix -e htop -s PERCENT_MEM >/dev/null 2>&1
     elif command -v top >/dev/null 2>&1; then
-        setsid -f kitty -e top >/dev/null 2>&1
+        setsid -f tilix -e top >/dev/null 2>&1
     fi
 }
 
