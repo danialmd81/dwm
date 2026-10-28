@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WORK_DIR=$(mktemp -d /tmp/vscode-update.XXXXXX)
+trap 'rm -rf "${WORK_DIR}"' EXIT
+
+cd "${WORK_DIR}"
+
+echo "==> Downloading latest official VS Code .deb release..."
+curl -L -o vscode.deb "https://code.visualstudio.com/sha/download?build=stable&os=linux-deb-x64"
+
+echo "==> Converting .deb to XBPS package..."
+xdeb -Sedf vscode.deb
+
+if [ -f "/usr/share/code/bin/code" ] && [ ! -f "/usr/bin/code" ]; then
+	sudo ln -sf /usr/share/code/bin/code /usr/bin/code
+fi

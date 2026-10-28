@@ -1,0 +1,39 @@
+#!/bin/sh
+
+XORG_CONF="/etc/X11/xorg.conf.d/20-intel.conf"
+MODPROBE_CONF="/etc/modprobe.d/nvidia.conf"
+
+case "$1" in
+power)
+    echo "Configuring for 0W D3cold (Mobile Mode)..."
+
+    # Force Intel only and block secondary GPU probing
+    sudo tee "$XORG_CONF" >/dev/null <<'EOF'
+Section "ServerFlags"
+    Option "AutoAddGPU" "false"
+EndSection
+
+Section "Device"
+    Identifier "Intel-iGPU"
+    Driver "modesetting"
+    BusID "PCI:0:2:0"
+    Option "PrimaryGPU" "true"
+EndSection
+EOF
+
+    echo "Done. Please restart your display manager."
+    ;;
+
+display)
+    echo "Configuring for HDMI/Tablet Output..."
+
+    # Allow secondary GPUs in Xorg
+    sudo rm -f "$XORG_CONF"
+
+    echo "Done. Please restart your display manager."
+    ;;
+
+*)
+    echo "Usage: gpu-mode {power|display}"
+    ;;
+esac
