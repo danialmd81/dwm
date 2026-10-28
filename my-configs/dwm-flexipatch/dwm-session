@@ -9,4 +9,27 @@ if [ -z "$DBUS_SESSION_BUS_ADDRESS" ]; then
     export DBUS_SESSION_BUS_ADDRESS="unix:path=/run/user/$(id -u)/bus"
 fi
 
-exec /usr/local/bin/dwm >/tmp/dwm.log 2>&1
+# ------------------------------------------------------------------------------
+# D-Bus diagnostics — capture session-bus lifecycle for crash forensics
+# ------------------------------------------------------------------------------
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/dwm"
+mkdir -p "$LOG_DIR"
+
+echo "--- dbus-diag: DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+echo "--- dbus-diag: daemon: $(pgrep -x dbus-daemon -a 2>/dev/null || echo 'not found')"
+
+# NameOwnerChanged fires for every service that appears/disappears on the bus.
+# That's exactly what you want to see around a crash — the last few lines
+# before the bus died show which service was the trigger.
+if command -v dbus-monitor >/dev/null 2>&1; then
+    {
+        echo "--- dbus-events start $(date -Iseconds)"
+        echo "--- DBUS_SESSION_BUS_ADDRESS=$DBUS_SESSION_BUS_ADDRESS"
+    } >>"$LOG_DIR/dbus-events.log"
+
+    dbus-monitor --session \
+        "type='signal',interface='org.freedesktop.DBus',member='NameOwnerChanged'" \
+        >>"$LOG_DIR/dbus-events.log" 2>&1 &
+fi
+
+exec /usr/local/bin/dwm

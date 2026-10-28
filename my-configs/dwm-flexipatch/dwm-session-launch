@@ -1,0 +1,36 @@
+#!/bin/sh
+# /usr/local/bin/dwm-session-launch
+
+LOG_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/dwm"
+mkdir -p "$LOG_DIR"
+LOG_FILE="$LOG_DIR/session.log"
+
+# --- rotate if > 50 MiB ---
+MAX=$((50 * 1024 * 1024))
+if [ -f "$LOG_FILE" ] && [ "$(stat -c%s "$LOG_FILE" 2>/dev/null || echo 0)" -gt "$MAX" ]; then
+    mv "$LOG_FILE" "$LOG_FILE.$(date +%Y%m%d-%H%M%S).old"
+fi
+
+# --- session header ---
+{
+    echo
+    echo "=================================================================="
+    echo "===== SESSION START $(date -Iseconds)"
+    echo "===== kernel:      $(uname -r)"
+    echo "===== uptime:      $(uptime)"
+    echo "===== DISPLAY=     ${DISPLAY:-<unset>}"
+    echo "===== XDG_SESSION_ID=${XDG_SESSION_ID:-<unset>}"
+    echo "===== user:        $(id)"
+    echo "=================================================================="
+    free -h 2>&1
+} >>"$LOG_FILE"
+
+# --- run the actual session; EVERYTHING inherits this fd ---
+dbus-run-session -- /usr/local/bin/dwm-session >>"$LOG_FILE" 2>&1
+rc=$?
+
+# --- session footer (only reached if dwm exits normally, not on X crash) ---
+{
+    echo "===== SESSION END $(date -Iseconds) (rc=$rc)"
+    echo
+} >>"$LOG_FILE"
