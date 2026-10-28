@@ -55,7 +55,7 @@ done
 # ------------------------------------------------------------------------------
 # Screen Locking & Idle Management
 # ------------------------------------------------------------------------------
-# LOCK_WRAPPER='sh -c "xsecurelock; brightnessctl -r"'
+# LOCK_WRAPPER='sh -c "xsecurelock; brillo -O; brillo -I"'
 # run xss-lock --transfer-sleep-lock -- sh -c "$LOCK_WRAPPER"
 # run xautolock -time 20 -notify 10 \
 #     -notifier "/home/danial/.local/share/dwm/notify-dim.sh" \
@@ -127,7 +127,6 @@ run node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
 # ------------------------------------------------------------------------------
 SEARXNG_DIR="$HOME/searxng"
 if [ -d "$SEARXNG_DIR" ]; then
-    # Check if the SearXNG container is currently running
     if ! podman ps --format '{{.Names}}' | grep -qx "searxng_searxng_1"; then
         (cd "$SEARXNG_DIR" && podman-compose up -d >/dev/null 2>&1) &
     fi
