@@ -1,0 +1,60 @@
+# Sourcing local path manager script
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
+
+# XDG Base Directories
+export XDG_CONFIG_HOME="$HOME/.config"
+export XDG_CACHE_HOME="$HOME/.cache"
+export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_STATE_HOME="$HOME/.local/state"
+
+# Runtime directory check for Void Linux / non-systemd environments
+if [ -z "$XDG_RUNTIME_DIR" ]; then
+	export XDG_RUNTIME_DIR="/run/user/$(id -u)"
+fi
+
+# Single Source of Truth for Global $PATH
+export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/cuda/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.rbenv/bin:$HOME/zig-x86_64-linux-0.14.1:$HOME/.npm-global/bin:$HOME/.fzf/bin:$HOME/.app/nekoray:$HOME/.opencode/bin:$PATH"
+
+# CUDA Libraries
+if [ -d "/usr/local/cuda/lib64" ]; then
+	export LD_LIBRARY_PATH="/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}"
+fi
+
+# VA-API & Hardware Video Acceleration (Intel Iris Xe)
+export LIBVA_DRIVER_NAME="iHD"
+export MOZ_DISABLE_RDD_SANDBOX=1
+
+# Display Backend Setup (X11 vs Wayland context)
+if [ "$XDG_SESSION_TYPE" = "x11" ] || [ -n "$DISPLAY" ]; then
+	export QT_QPA_PLATFORM="xcb"
+	export GDK_BACKEND="x11"
+	export MOZ_X11_EGL=1
+	export MOZ_ENABLE_WAYLAND=0
+	unset ELECTRON_OZONE_PLATFORM_HINT
+else
+	export QT_QPA_PLATFORM="wayland;xcb"
+	export GDK_BACKEND="wayland,x11,*"
+	export ELECTRON_OZONE_PLATFORM_HINT="auto"
+	export MOZ_ENABLE_WAYLAND=1
+fi
+
+# Hybrid Graphics / Power Management (Force Intel by default to preserve D3cold)
+export DRI_PRIME=0
+export __GLX_VENDOR_LIBRARY_NAME="mesa"
+export __EGL_VENDOR_LIBRARY_FILENAMES="/usr/share/glvnd/egl_vendor.d/50_mesa.json"
+export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/intel_icd.x86_64.json"
+
+# Qt / QML Scene Graph Stability (Prevents QSGRenderThread i915 GuC GPU hangs)
+export QSG_RHI_BACKEND="opengl"
+export QSG_RENDER_LOOP="basic"
+
+# GTK / Qt Theme Integration
+export QT_QPA_PLATFORMTHEME="qt5ct"
+
+# Cursor Theme Consistency
+export XCURSOR_THEME="Adwaita"
+export XCURSOR_SIZE="24"
+
+# Application Specific Configurations
+export PODMAN_COMPOSE_WARNING_LOGS="false"
+export XDEB_PKGROOT="${HOME}/.config/xde"
