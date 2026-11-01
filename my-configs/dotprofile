@@ -39,7 +39,6 @@ else
 fi
 
 # Hybrid Graphics / Power Management (Force Intel by default to preserve D3cold)
-export DRI_PRIME=0
 export __GLX_VENDOR_LIBRARY_NAME="mesa"
 export __EGL_VENDOR_LIBRARY_FILENAMES="/usr/share/glvnd/egl_vendor.d/50_mesa.json"
 export VK_ICD_FILENAMES="/usr/share/vulkan/icd.d/intel_icd.x86_64.json"
