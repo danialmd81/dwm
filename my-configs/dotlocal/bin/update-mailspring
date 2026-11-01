@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WORK_DIR=$(mktemp -d /tmp/mailspring-update.XXXXXX)
+trap 'rm -rf "${WORK_DIR}"' EXIT
+
+cd "${WORK_DIR}"
+
+echo "==> Downloading latest official Mailspring .deb release..."
+curl -L -o mailspring.deb "https://updates.getmailspring.com/download?platform=linuxDeb"
+
+echo "==> Converting .deb to XBPS package..."
+xdeb -Sedf mailspring.deb

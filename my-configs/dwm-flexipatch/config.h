@@ -247,7 +247,7 @@ static const Key keys[] = {
     { MODKEY,                       XK_Return,     spawn,                  {.v = termcmd } },
     // { MODKEY,                       XK_Escape,     spawn,                  {.v = lockcmd } },
     { MODKEY,                       XK_Delete,     spawn,                  {.v = powercmd } },
-    { MODKEY,                       XK_e,          spawn,                  SHCMD("mailspring --password-store=\"gnome-libsecret\"") },
+    { MODKEY,                       XK_e,          spawn,                  SHCMD("mailspring") },
     { MODKEY,                       XK_f,          spawn,                  SHCMD("nautilus") },
     { MODKEY,                       XK_c,          spawn,                  SHCMD("google-chrome-stable") },
     { MODKEY,                       XK_r,          spawn,                  SHCMD("firefox") },

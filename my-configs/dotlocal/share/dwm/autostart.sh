@@ -25,11 +25,31 @@ wait_for_stop() {
 }
 
 # ------------------------------------------------------------------------------
+# Provide live XSettings to GTK/X11 apps
+# ------------------------------------------------------------------------------
+if ! pgrep -x "xsettingsd" >/dev/null; then
+    xsettingsd &
+fi
+
+# ------------------------------------------------------------------------------
 # Input & Display Settings
 # ------------------------------------------------------------------------------
-# Keyboard layout
 setxkbmap -layout "us,ir" \
     -option "grp:win_space_toggle"
+
+# Restore previous NumLock state
+NUMLOCK_STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/numlock_state"
+if [ -f "$NUMLOCK_STATE_FILE" ]; then
+    STATE=$(cat "$NUMLOCK_STATE_FILE" 2>/dev/null)
+    if [ "$STATE" = "on" ]; then
+        numlockx on
+    else
+        numlockx off
+    fi
+else
+    # Default to on if no previous state exists
+    numlockx on
+fi
 
 # ------------------------------------------------------------------------------
 # Polkit authentication agent
@@ -45,15 +65,6 @@ for agent in \
         break
     fi
 done
-
-# ------------------------------------------------------------------------------
-# Screen Locking & Idle Management
-# ------------------------------------------------------------------------------
-# LOCK_WRAPPER='sh -c "xsecurelock; brightnessctl -r"'
-# run xss-lock --transfer-sleep-lock -- sh -c "$LOCK_WRAPPER"
-# run xautolock -time 20 -notify 10 \
-#     -notifier "/home/danial/.local/share/dwm/notify-dim.sh" \
-#     -locker "$LOCK_WRAPPER" -corners "----"
 
 # ------------------------------------------------------------------------------
 # Audio Daemon (PipeWire)
@@ -97,7 +108,7 @@ run monitor-kbd-layout
 # run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
 run /home/danial/.local/bin/ABDownloadManager --background
-run mailspring --password-store="gnome-libsecret" --background
+run mailspring --background
 
 # ------------------------------------------------------------------------------
 # Status Bar
@@ -106,12 +117,3 @@ pkill -u "$USER" -x dwmblocks 2>/dev/null
 wait_for_stop dwmblocks
 
 run dwmblocks
-
-# ------------------------------------------------------------------------------
-# Local AI Proxy
-# ------------------------------------------------------------------------------
-# node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
-# node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
-
-# run node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
-#   serve --no-open --tray --host 127.0.0.1 &

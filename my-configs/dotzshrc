@@ -1,0 +1,222 @@
+# Author: Danial
+
+# Ensure ~/.profile is loaded if running in a shell where it wasn't inherited
+[[ -z "$XDG_CONFIG_HOME" && -f "$HOME/.profile" ]] && source "$HOME/.profile"
+
+###############################################
+# Zinit bootstrap
+###############################################
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [ ! -d "$ZINIT_HOME" ]; then
+	mkdir -p "$(dirname $ZINIT_HOME)"
+	git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "$ZINIT_HOME/zinit.zsh"
+
+###############################################
+# Load colors
+###############################################
+autoload -U colors && colors
+
+###############################################
+# History
+###############################################
+HISTSIZE=5000
+HISTFILE="$HOME/.zsh_history"
+SAVEHIST=$HISTSIZE
+setopt appendhistory
+setopt sharehistory
+setopt hist_ignore_space
+setopt hist_ignore_all_dups
+setopt hist_save_no_dups
+setopt hist_ignore_dups
+setopt hist_find_no_dups
+HIST_STAMPS="dd/mm/yyyy"
+
+###############################################
+# ZSH options
+###############################################
+setopt autocd
+setopt correct
+setopt interactivecomments
+setopt magicequalsubst
+setopt nonomatch
+setopt notify
+setopt numericglobsort
+setopt promptsubst
+
+###############################################
+# Zinit annexes & Plugins
+###############################################
+zinit light-mode for \
+	zdharma-continuum/zinit-annex-as-monitor \
+	zdharma-continuum/zinit-annex-bin-gem-node \
+	zdharma-continuum/zinit-annex-patch-dl \
+	zdharma-continuum/zinit-annex-rust
+
+# Pure prompt
+zinit ice pick"async.zsh" src"pure.zsh"
+zinit light sindresorhus/pure
+
+# Oh-My-Zsh libraries & plugins
+zinit snippet OMZL::clipboard.zsh
+zinit snippet OMZL::completion.zsh
+zinit snippet OMZL::history.zsh
+zinit snippet OMZL::key-bindings.zsh
+
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::command-not-found
+zinit snippet OMZP::colored-man-pages
+
+# Syntax & Autosuggestions
+zinit light zdharma-continuum/fast-syntax-highlighting
+zinit light zdharma-continuum/history-search-multi-word
+zinit light zsh-users/zsh-autosuggestions
+zinit light zsh-users/zsh-completions
+
+# LS_COLORS
+zinit ice atclone"dircolors -b LS_COLORS > clrs.zsh" \
+	atpull'%atclone' pick"clrs.zsh" nocompile'!' \
+	atload'zstyle ":completion:*" list-colors "${(s.:.)LS_COLORS}"'
+zinit light trapd00r/LS_COLORS
+
+###############################################
+# Completion & fzf
+###############################################
+fpath=(~/.zfunc $fpath)
+
+autoload -Uz compinit
+compinit
+zinit cdreplay -q
+zinit light Aloxaf/fzf-tab
+
+# Set up fzf key bindings
+source <(fzf --zsh)
+
+if [[ -x "$(command -v fzf)" ]]; then
+	export FZF_DEFAULT_OPTS=" \
+        --height=40% \
+        --info=inline-right \
+        --ansi --layout=reverse \
+        --border=rounded \
+        --color=border:#27a1b9 \
+        --color=fg:#c0caf5 \
+        --color=gutter:#16161e \
+        --color=header:#ff9e64 \
+        --color=hl+:#2ac3de \
+        --color=hl:#2ac3de \
+        --color=info:#545c7e \
+        --color=marker:#ff007c \
+        --color=pointer:#ff007c \
+        --color=prompt:#2ac3de \
+        --color=query:#c0caf5:regular \
+        --color=scrollbar:#27a1b9 \
+        --color=separator:#ff9e64 \
+        --color=spinner:#ff007c"
+fi
+
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${LS_COLORS:-}"
+zstyle ':completion:*' menu no
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
+zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
+zstyle ':completion:*:*:docker:*' option-stacking yes
+zstyle ':completion:*:*:docker-*:*' option-stacking yes
+zstyle ':completion:*:*:podman:*' option-stacking yes
+zstyle ':completion:*:*:podman-*:*' option-stacking yes
+
+###############################################
+# Key bindings
+###############################################
+bindkey "^[[A" history-beginning-search-backward
+bindkey "^[[B" history-beginning-search-forward
+bindkey '^H' backward-delete-word
+bindkey '^[[3;5~' kill-word
+bindkey '\e[1;5C' forward-word
+bindkey '\e[1;5D' backward-word
+
+###############################################
+# Deferred / Lazy Integrations
+###############################################
+# VS Code Shell Integration
+[[ "$TERM_PROGRAM" == "vscode" ]] && . "/usr/share/code/resources/app/out/vs/workbench/contrib/terminal/common/scripts/shellIntegration-rc.zsh"
+
+export ARCHFLAGS="-arch $(uname -m)"
+
+# Lazy-load NVM to prevent terminal lag
+export NVM_DIR="$HOME/.config/nvm"
+nvm() {
+	unset -f nvm node npm npx
+	[[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+	[[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+	nvm "$@"
+}
+node() {
+	nvm >/dev/null 2>&1
+	node "$@"
+}
+npm() {
+	nvm >/dev/null 2>&1
+	npm "$@"
+}
+npx() {
+	nvm >/dev/null 2>&1
+	npx "$@"
+}
+
+###############################################
+# Aliases
+###############################################
+alias sudo='doas'
+# alias _='doas '
+alias l='ls -lah'
+alias ls='ls --color=tty'
+alias la='ls -lAh'
+alias ll='ls -lh'
+alias md='mkdir -p'
+alias rd='rmdir'
+alias which-command='whence'
+alias cls="clear"
+
+alias zshconfig="code ~/.zshrc"
+
+# R
+alias r="radian"
+
+# Qt Ecosystem
+if [[ -d "$HOME/Qt" ]]; then
+	Qt6="$HOME/Qt/6.10.2/gcc_64"
+	Qt5="$HOME/Qt/5.15.2/gcc_64"
+
+	if [[ -d "$HOME/Qt/Tools/CMake" ]]; then
+		alias qt-cmake="$HOME/Qt/Tools/CMake/bin/cmake"
+		alias qt-cmake-gui="nohup $HOME/Qt/Tools/CMake/bin/cmake-gui &"
+	fi
+
+	alias qml6="$Qt6/bin/qml"
+	alias assistant6="nohup $Qt6/bin/assistant > /dev/null 2>&1 &"
+	alias designer6="nohup $Qt6/bin/designer > /dev/null 2>&1 &"
+	alias linguist6="nohup $Qt6/bin/linguist > /dev/null 2>&1 &"
+
+	alias qml5="$Qt5/bin/qml"
+	alias qmlscene5="$Qt5/bin/qmlscene"
+	alias assistant5="nohup $Qt5/bin/assistant > /dev/null 2>&1 &"
+	alias designer5="nohup $Qt5/bin/designer > /dev/null 2>&1 &"
+	alias linguist5="nohup $Qt5/bin/linguist > /dev/null 2>&1 &"
+
+	alias setqt5='export CMAKE_PREFIX_PATH="/home/danial/Qt/5.15.2/gcc_64/lib/cmake/Qt5"'
+	alias setqt6='export CMAKE_PREFIX_PATH="/home/danial/Qt/6.10.2/gcc_64/lib/cmake/Qt6"'
+fi
+
+alias find-cmake="find . -name 'CMakeLists.txt' -exec dirname {} \; | xargs -I{} readlink -f {} | jq -R . | jq -s '{ \"cmake.sourceDirectory\": . }'"
+
+# Network & Proxy
+alias setproxy='export http_proxy="http://127.0.0.1:2080" https_proxy="http://127.0.0.1:2080" HTTP_PROXY="http://127.0.0.1:2080" HTTPS_PROXY="http://127.0.0.1:2080"'
+alias unsetproxy='unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY SOCKS_PROXY'
+
+# System Utilities
+alias installfont='sudo cp *.ttf /usr/share/fonts/truetype/ && sudo fc-cache -fv'
+alias cn="$HOME/.npm-global/bin/cn"
+
+. "$HOME/.local/share/../bin/env"

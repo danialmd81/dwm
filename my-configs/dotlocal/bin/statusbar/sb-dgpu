@@ -18,9 +18,9 @@ PWR_STATE=$(cat "$PWR_FILE" 2>/dev/null || echo "unknown")
 # Helper to spawn process monitor
 spawn_monitor() {
     if command -v nvtop >/dev/null 2>&1; then
-        setsid -f kitty -e nvtop >/dev/null 2>&1
+        setsid -f tilix -e nvtop >/dev/null 2>&1
     elif command -v btop >/dev/null 2>&1; then
-        setsid -f kitty -e btop >/dev/null 2>&1
+        setsid -f tilix -e btop >/dev/null 2>&1
     fi
 }
 

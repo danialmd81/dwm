@@ -6,6 +6,11 @@ pgrep -x -f "$0" | grep -v $$ && exit 1
 LAST_CAPS=""
 LAST_NUM=""
 
+# State file location
+STATE_DIR="${XDG_STATE_HOME:-$HOME/.local/state}"
+STATE_FILE="$STATE_DIR/numlock_state"
+mkdir -p "$STATE_DIR"
+
 while true; do
     # Query X11 keyboard status
     XSET_OUT=$(xset q)
@@ -22,12 +27,18 @@ while true; do
         fi
     fi
 
-    # Check Num Lock change
-    if [ -n "$LAST_NUM" ] && [ "$NUM" != "$LAST_NUM" ]; then
-        if [ "$NUM" = "on" ]; then
-            notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "ON"
-        else
-            notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "OFF"
+    # Check Num Lock change and persist state
+    if [ "$NUM" != "$LAST_NUM" ]; then
+        # Save state to file
+        echo "$NUM" >"$STATE_FILE"
+
+        # Skip notification on initial script startup
+        if [ -n "$LAST_NUM" ]; then
+            if [ "$NUM" = "on" ]; then
+                notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "ON"
+            else
+                notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "OFF"
+            fi
         fi
     fi
 

@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WORK_DIR=$(mktemp -d /tmp/chrome-update.XXXXXX)
+trap 'rm -rf "${WORK_DIR}"' EXIT
+
+cd "${WORK_DIR}"
+
+echo "==> Downloading latest Google Chrome .deb release..."
+curl -L -o google-chrome-stable.deb "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb"
+
+echo "==> Converting .deb to XBPS package..."
+xdeb -Sedf google-chrome-stable.deb
