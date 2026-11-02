@@ -50,7 +50,7 @@ int click_flexwintitle(Bar* bar, Arg* arg, BarArg* a)
 Client* flextitledrawarea(Monitor* m, Client* c, int x, int r, int w, int max_clients, int scheme, int draw_tiled, int draw_hidden, int draw_floating, int passx, void (*tabfn)(Monitor*, Client*, int, int, int, int, Arg* arg, BarArg* barg), Arg* arg, BarArg* barg)
 {
   int i;
-  for (i = 0; c && i < max_clients; c = c->next)
+  for (i = 0; c && i < max_clients; c = c->snext)
   {
     if (ISVISIBLE(c) && ((draw_tiled && !c->isfloating && !HIDDEN(c)) || (draw_floating && c->isfloating && !HIDDEN(c)) || (draw_hidden && HIDDEN(c))))
     {
@@ -165,7 +165,7 @@ int flextitlecalculate(Monitor* m, int offx, int tabw, int passx, void (*tabfn)(
   int mas_x = offx, st1_x = offx, st2_x = offx, hid_x = offx, flt_x = offx;
   int mas_w, st1_w, st2_w, hid_w;
 
-  for (i = 0, c = m->clients; c; c = c->next)
+  for (i = 0, c = m->stack; c; c = c->snext)
   {
     if (!ISVISIBLE(c))
       continue;
@@ -219,7 +219,7 @@ int flextitlecalculate(Monitor* m, int offx, int tabw, int passx, void (*tabfn)(
     fulllayout = 1;
 
   num = tabw;
-  c = m->clients;
+  c = m->stack;
 
   /* floating mode */
   if ((fulllayout && FLEXWINTITLE_FLOATWEIGHT > 0) || clientsnmaster + clientsnstack == 0 || !m->lt[m->sellt]->arrange)
@@ -314,9 +314,9 @@ int flextitlecalculate(Monitor* m, int offx, int tabw, int passx, void (*tabfn)(
       c = flextitledrawarea(m, c, st2_x, rr, w * FLEXWINTITLE_STACKWEIGHT + rw, clientsnstack2, SCHEMEFOR(GRP_STACK2), 1, 0, 0, passx, tabfn, arg, barg); // stack2
       rr -= clientsnstack2;
     }
-    c = flextitledrawarea(m, m->clients, hid_x, rr, w * FLEXWINTITLE_HIDDENWEIGHT + rw, clientsnhidden, SCHEMEFOR(GRP_HIDDEN), 0, 1, 0, passx, tabfn, arg, barg); // hidden
+    c = flextitledrawarea(m, m->stack, hid_x, rr, w * FLEXWINTITLE_HIDDENWEIGHT + rw, clientsnhidden, SCHEMEFOR(GRP_HIDDEN), 0, 1, 0, passx, tabfn, arg, barg); // hidden
     rr -= clientsnhidden;
-    c = flextitledrawarea(m, m->clients, flt_x, rr, w * FLEXWINTITLE_FLOATWEIGHT + rw, clientsnfloating, SCHEMEFOR(GRP_FLOAT), 0, 0, 1, passx, tabfn, arg, barg); // floating
+    c = flextitledrawarea(m, m->stack, flt_x, rr, w * FLEXWINTITLE_FLOATWEIGHT + rw, clientsnfloating, SCHEMEFOR(GRP_FLOAT), 0, 0, 1, passx, tabfn, arg, barg); // floating
   }
   return 1;
 }
