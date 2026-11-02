@@ -1,2 +1,2 @@
-static void resizemousescroll(const Arg *arg);
+static void resizemousescroll(const Arg* arg);
 

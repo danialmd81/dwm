@@ -1,3 +1,3 @@
 static int getstatusbarpid();
-static void sigstatusbar(const Arg *arg);
+static void sigstatusbar(const Arg* arg);
 

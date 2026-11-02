@@ -1,2 +1,2 @@
-static void monocle(Monitor *m);
+static void monocle(Monitor* m);
 
