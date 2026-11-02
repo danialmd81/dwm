@@ -112,22 +112,6 @@ run uget-gtk
 run mailspring --background
 
 # ------------------------------------------------------------------------------
-# Local AI Proxy
-# ------------------------------------------------------------------------------
-run node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
-    serve --no-open --tray --host 127.0.0.1
-
-# ------------------------------------------------------------------------------
-# Local Metasearch Engine (SearXNG)
-# ------------------------------------------------------------------------------
-SEARXNG_DIR="$HOME/searxng"
-if [ -d "$SEARXNG_DIR" ]; then
-    if ! podman ps --format '{{.Names}}' | grep -qx "searxng_searxng_1"; then
-        (cd "$SEARXNG_DIR" && podman-compose up -d >/dev/null 2>&1) &
-    fi
-fi
-
-# ------------------------------------------------------------------------------
 # Status Bar
 # ------------------------------------------------------------------------------
 pkill -u "$USER" -x dwmblocks 2>/dev/null
