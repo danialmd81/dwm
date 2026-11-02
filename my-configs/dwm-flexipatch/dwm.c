@@ -1007,7 +1007,6 @@ Monitor* createmon(void)
   m->pertag->curtag = 1;
   for (i = 0; i <= NUMTAGS; i++)
   {
-
     /* init nmaster */
     m->pertag->nmasters[i] = m->nmaster;
 
@@ -1921,7 +1920,6 @@ void run(void)
   XSync(dpy, False);
   while (running && !XNextEvent(dpy, &ev))
   {
-
     if (handler[ev.type])
       handler[ev.type](&ev); /* call handler */
   }
@@ -2243,7 +2241,6 @@ void spawn(const Arg* arg)
 
 void tag(const Arg* arg)
 {
-
   if (selmon->sel && arg->ui & TAGMASK)
   {
     selmon->sel->tags = arg->ui & TAGMASK;
@@ -2429,7 +2426,6 @@ void updatebars(void)
 
 void updatebarpos(Monitor* m)
 {
-
   m->wx = m->mx;
   m->wy = m->my;
   m->ww = m->mw;
@@ -2641,7 +2637,6 @@ void updatestatus(void)
 
 void updatetitle(Client* c)
 {
-
   if (!gettextprop(c->win, netatom[NetWMName], c->name, sizeof c->name))
     gettextprop(c->win, XA_WM_NAME, c->name, sizeof c->name);
   if (c->name[0] == '\0') /* hack to mark broken clients */
@@ -2785,4 +2780,3 @@ int main(int argc, char* argv[])
   XCloseDisplay(dpy);
   return EXIT_SUCCESS;
 }
-

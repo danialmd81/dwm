@@ -38,4 +38,3 @@ void sigstatusbar(const Arg* arg)
   sv.sival_int = arg->i;
   sigqueue(statuspid, SIGRTMIN + statussig, sv);
 }
-

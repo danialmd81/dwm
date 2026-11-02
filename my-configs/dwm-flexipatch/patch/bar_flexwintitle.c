@@ -320,4 +320,3 @@ int flextitlecalculate(Monitor* m, int offx, int tabw, int passx, void (*tabfn)(
   }
   return 1;
 }
-

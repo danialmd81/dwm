@@ -1,6 +1,5 @@
 void hide(Client* c)
 {
-
   Client* n;
   if (!c || HIDDEN(c))
     return;

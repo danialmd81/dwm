@@ -5,4 +5,3 @@ char* tagicon(Monitor* m, int tag)
     tagindex = tagindex % LENGTH(tagicons[DEFAULT_TAGS]);
   return tagicons[DEFAULT_TAGS][tagindex];
 }
-

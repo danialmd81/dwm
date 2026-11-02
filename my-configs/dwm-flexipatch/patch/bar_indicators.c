@@ -96,4 +96,3 @@ void drawstateindicator(Monitor* m, Client* c, unsigned int occ, int x, int y, i
   else
     drawindicator(m, c, occ, x, y, w, h, tag, filled, invert, tiledindicatortype);
 }
-

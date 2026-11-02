@@ -44,4 +44,3 @@ static void resizerequest(XEvent* e);
 static void updatesystrayicongeom(Client* i, int w, int h);
 static void updatesystrayiconstate(Client* i, XPropertyEvent* ev);
 static Client* wintosystrayicon(Window w);
-

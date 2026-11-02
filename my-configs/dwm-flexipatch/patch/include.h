@@ -24,4 +24,3 @@
 /* Layouts */
 #include "layout_monocle.h"
 #include "layout_tile.h"
-

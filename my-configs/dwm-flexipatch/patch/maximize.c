@@ -47,4 +47,3 @@ void togglehorizontalmax(const Arg* arg)
 {
   maximize(selmon->wx, selmon->sel->y, selmon->ww - 2 * borderpx, selmon->sel->h);
 }
-

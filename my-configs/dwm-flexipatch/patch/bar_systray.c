@@ -194,4 +194,3 @@ Client* wintosystrayicon(Window w)
     ;
   return i;
 }
-

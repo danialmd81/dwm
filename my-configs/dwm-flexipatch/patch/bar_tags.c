@@ -71,6 +71,5 @@ int click_tags(Bar* bar, Arg* arg, BarArg* a)
 
 int hover_tags(Bar* bar, BarArg* a, XMotionEvent* ev)
 {
-
   return 1;
 }

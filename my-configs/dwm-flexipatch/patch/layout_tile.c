@@ -39,4 +39,3 @@ static void tile(Monitor* m)
       sy += HEIGHT(c);
     }
 }
-
