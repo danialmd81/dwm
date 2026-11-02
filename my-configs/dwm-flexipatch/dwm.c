@@ -1292,6 +1292,7 @@ void focus(Client* c)
     attachstack(c);
     grabbuttons(c, 1);
     setfocus(c);
+    XRaiseWindow(dpy, c->win);
   }
   else
   {
@@ -1908,6 +1909,8 @@ void restack(Monitor* m)
         wc.sibling = c->win;
       }
   }
+  if (m->sel)
+    XRaiseWindow(dpy, m->sel->win);
   XSync(dpy, False);
   while (XCheckMaskEvent(dpy, EnterWindowMask, &ev))
     ;
