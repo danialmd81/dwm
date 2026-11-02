@@ -53,13 +53,14 @@ void alttabend()
     alttabwin = 0;
   }
 
-  /* Reorder dwm's MRU stack list once and focus */
+  /* Reorder dwm's MRU stack list once, focus and raise */
   if (c)
   {
     detachstack(c);
     attachstack(c);
     focus(c);
     restack(m);
+    XRaiseWindow(dpy, c->win);
   }
 }
 

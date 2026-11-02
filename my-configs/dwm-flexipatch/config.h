@@ -182,33 +182,7 @@ static char* colors[][ColCount] = {
   [SchemeFlexSelFloat] = {titleselfgcolor, selfloatbgcolor, selfloatbgcolor, c000000},
 };
 
-/* Tags
- * In a traditional dwm the number of tags in use can be changed simply by changing the number
- * of strings in the tags array. This build does things a bit different which has some added
- * benefits. If you need to change the number of tags here then change the NUMTAGS macro in dwm.c.
- *
- * Examples:
- *
- *  1) static char *tagicons[][NUMTAGS*2] = {
- *         [DEFAULT_TAGS] = { "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", "I" },
- *     }
- *
- *  2) static char *tagicons[][1] = {
- *         [DEFAULT_TAGS] = { "•" },
- *     }
- *
- * The first example would result in the tags on the first monitor to be 1 through 9, while the
- * tags for the second monitor would be named A through I. A third monitor would start again at
- * 1 through 9 while the tags on a fourth monitor would also be named A through I. Note the tags
- * count of NUMTAGS*2 in the array initialiser which defines how many tag text / icon exists in
- * the array. This can be changed to *3 to add separate icons for a third monitor.
- *
- * For the second example each tag would be represented as a bullet point. Both cases work the
- * same from a technical standpoint - the icon index is derived from the tag index and the monitor
- * index. If the icon index is is greater than the number of tag icons then it will wrap around
- * until it an icon matches. Similarly if there are two tag icons then it would alternate between
- * them. This works seamlessly with alternative tags and alttagsdecoration patches.
- */
+/* Tags */
 static char* tagicons[][NUMTAGS] = {
   /* 1:Web | 2:Code | 3:Net | 4:Hub | 5:Office | 6:Downloads | 7:Design | 8:Sys | 9:Misc */
   [DEFAULT_TAGS] = {"1:🌐", "2:💻", "3:💬", "4", "5", "6", "7", "8", "9"},
@@ -249,6 +223,16 @@ static const Rule rules[] = {
   RULE(.class = "copyq", .isfloating = 1, .floatpos = "1400X 2X 520W 500H")
 };
 
+/* Spacer helper for top bar margin between title and right modules */
+static int width_spacer(Bar* bar, BarArg* a)
+{
+  return 12;
+}
+static int draw_spacer(Bar* bar, BarArg* a)
+{
+  return 12;
+}
+
 /* Bar rules */
 static const BarRule barrules[] = {
   /* monitor   bar    alignment         widthfunc                 drawfunc                clickfunc                hoverfunc                name */
@@ -256,6 +240,7 @@ static const BarRule barrules[] = {
   {statusmon, 0, BAR_ALIGN_RIGHT, width_systray, draw_systray, click_systray, NULL, "systray"},
   {statusmon, 0, BAR_ALIGN_LEFT, width_ltsymbol, draw_ltsymbol, click_ltsymbol, NULL, "layout"},
   {statusmon, 0, BAR_ALIGN_RIGHT, width_status2d, draw_status2d, click_statuscmd, NULL, "status2d"},
+  {statusmon, 0, BAR_ALIGN_RIGHT, width_spacer, draw_spacer, NULL, NULL, "spacer"},
   {statusmon, 0, BAR_ALIGN_NONE, width_flexwintitle, draw_flexwintitle, click_flexwintitle, NULL, "flexwintitle"},
 };
 
@@ -298,8 +283,8 @@ static const Layout layouts[] = {
 #define TAGKEYS(KEY, TAG) {MODKEY, KEY, view, {.ui = 1 << TAG}}, {MODKEY | ControlMask, KEY, toggleview, {.ui = 1 << TAG}}, {MODKEY | ShiftMask, KEY, tag, {.ui = 1 << TAG}}, {MODKEY | ControlMask | ShiftMask, KEY, toggletag, {.ui = 1 << TAG}},
 
 /* commands */
-static char dmenumon[2] = "0";
-static const char* dmenucmd[] = { "j4-dmenu-desktop", "--dmenu=dmenu -i -p 'Apps:'", NULL };
+static char dmenumon[8] = "0";
+static const char* dmenucmd[] = {"sh", "-c", "exec j4-dmenu-desktop --dmenu=\"dmenu -i -p 'Apps:' -m \\\"$0\\\" -fn \\\"$1\\\" -nb \\\"$2\\\" -nf \\\"$3\\\" -sb \\\"$4\\\" -sf \\\"$5\\\"\"", dmenumon, dmenufont, normbgcolor, normfgcolor, selbgcolor, selfgcolor, NULL};
 static const char* termcmd[] = {"tilix", NULL};
 // static const char* lockcmd[] = {"xsecurelock", NULL};
 static const char* powercmd[] = {"/home/danial/.local/bin/powermenu", NULL};
@@ -307,13 +292,6 @@ static const char* windowcmd[] = {"/home/danial/.local/bin/window_switcher", NUL
 
 /* This defines the name of the executable that handles the bar (used for signalling purposes) */
 #define STATUSBAR "dwmblocks"
-
-/* Status bar click signals (statuscmd) */
-static const StatusCmd statuscmds[] = {
-  { "notify-send Volume$BUTTON", 1 },
-  { "notify-send CPU$BUTTON", 2 },
-  { "notify-send Battery$BUTTON", 3 },
-};
 
 static const Key keys[] = {
   /* modifier                     key            function                argument */
@@ -348,6 +326,7 @@ static const Key keys[] = {
   {Mod1Mask, XK_Tab, alttabstart, {.i = +2}},
 
   {MODKEY, XK_s, setlayout, {0}},
+  {MODKEY | ShiftMask, XK_s, cyclelayout, {.i = +1}},
   {MODKEY | ControlMask | ShiftMask, XK_h, togglehorizontalmax, {0}},
   {MODKEY | ControlMask | ShiftMask, XK_l, togglehorizontalmax, {0}},
   {MODKEY | ControlMask | ShiftMask, XK_j, toggleverticalmax, {0}},
@@ -402,4 +381,3 @@ static const Button buttons[] = {
   {ClkTagBar, MODKEY, Button1, tag, {0}},
   {ClkTagBar, MODKEY, Button3, toggletag, {0}},
 };
-

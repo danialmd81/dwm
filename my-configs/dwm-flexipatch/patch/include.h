@@ -17,6 +17,7 @@
 /* Other patches */
 #include "alttab.h"
 #include "autostart.h"
+#include "cyclelayouts.h"
 #include "floatpos.h"
 #include "maximize.h"
 #include "pertag.h"
