@@ -27,9 +27,9 @@ static const char autostartblocksh[] = "autostart_blocking.sh";
 static const char autostartsh[] = "autostart.sh";
 static const char dwmdir[] = "dwm";
 static const char localshare[] = ".local/share";
-static const int showbar = 1;    /* 0 means no bar */
-static const int topbar = 1;     /* 0 means bottom bar */
-static const int bar_height = 0; /* 0 means derive from font, >= 1 explicit height */
+static const int showbar = 1;     /* 0 means no bar */
+static const int topbar = 1;      /* 0 means bottom bar */
+static const int bar_height = 24; /* 0 means derive from font, >= 1 explicit height */
 static const int focusonwheel = 0;
 static int floatposgrid_x = 5; /* float grid columns */
 static int floatposgrid_y = 5; /* float grid rows */
@@ -77,8 +77,8 @@ static char titlenormbgcolor[] = "#222222";
 static char titlenormbordercolor[] = "#444444";
 static char titlenormfloatcolor[] = "#db8fd9";
 
-static char titleselfgcolor[] = "#eeeeee";
-static char titleselbgcolor[] = "#005577";
+static char titleselfgcolor[] = "#bbbbbb";
+static char titleselbgcolor[] = "#444444";
 static char titleselbordercolor[] = "#005577";
 static char titleselfloatcolor[] = "#005577";
 
@@ -87,8 +87,8 @@ static char tagsnormbgcolor[] = "#222222";
 static char tagsnormbordercolor[] = "#444444";
 static char tagsnormfloatcolor[] = "#db8fd9";
 
-static char tagsselfgcolor[] = "#eeeeee";
-static char tagsselbgcolor[] = "#005577";
+static char tagsselfgcolor[] = "#bbbbbb";
+static char tagsselbgcolor[] = "#444444";
 static char tagsselbordercolor[] = "#005577";
 static char tagsselfloatcolor[] = "#005577";
 
@@ -153,7 +153,7 @@ static const Rule rules[] = {
   // RULE(.class = "v2rayN",           .tags = 1 << 2)
 
   /* Floating Utilities */
-  RULE(.class = "copyq", .isfloating = 1, .floatpos = "1400X 2X 520W 500H")
+  RULE(.class = "copyq", .isfloating = 1, .floatpos = "1400X 0X 520W 500H")
 };
 
 /* Spacer helper for top bar margin between title and right modules */

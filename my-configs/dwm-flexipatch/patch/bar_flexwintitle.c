@@ -1,6 +1,6 @@
 /* Flexwintitle properties, you can override these in your config.h if you want. */
 #ifndef FLEXWINTITLE_BORDERS
-#define FLEXWINTITLE_BORDERS 1 // 0 = off, 1 = on
+#define FLEXWINTITLE_BORDERS 0 // 0 = off, 1 = on
 #endif
 #ifndef FLEXWINTITLE_SHOWFLOATING
 #define FLEXWINTITLE_SHOWFLOATING 0 // whether to show titles for floating windows, hidden clients are always shown
