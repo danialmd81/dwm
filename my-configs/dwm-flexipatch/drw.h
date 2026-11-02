@@ -1,3 +1,4 @@
+#pragma once
 /* See LICENSE file for copyright and license details. */
 
 typedef struct
