@@ -3,7 +3,7 @@ void barhover(XEvent* e, Bar* bar)
   const BarRule* br;
   Monitor* m = bar->mon;
   XMotionEvent* ev = &e->xmotion;
-  BarArg barg = { 0, 0, 0, 0 };
+  BarArg barg = {0, 0, 0, 0};
   int r;
 
   for (r = 0; r < LENGTH(barrules); r++)

@@ -74,7 +74,7 @@ void drawalttab(int nwins, int first, Monitor* m)
 
   if (first)
   {
-    XSetWindowAttributes wa = { .override_redirect = True, .background_pixmap = ParentRelative, .event_mask = ButtonPressMask | ExposureMask };
+    XSetWindowAttributes wa = {.override_redirect = True, .background_pixmap = ParentRelative, .event_mask = ButtonPressMask | ExposureMask};
 
     /* calculate total height based on number of items */
     totalheight = ntabs * htabitem;
@@ -174,7 +174,7 @@ void alttabstart(const Arg* arg)
   drawalttab(ntabs, 1, m);
 
   /* Grab keyboard */
-  struct timespec ts = { .tv_sec = 0, .tv_nsec = 1000000 };
+  struct timespec ts = {.tv_sec = 0, .tv_nsec = 1000000};
   grabbed = 1;
   for (i = 0; i < 1000; i++)
   {

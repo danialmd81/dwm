@@ -42,8 +42,8 @@ static int utf8decode(const char* s_in, long* u, int* err)
     /* 11110 */ 4,
     /* 11111 */ 0, /* invalid */
   };
-  static const unsigned char leading_mask[] = { 0x7F, 0x1F, 0x0F, 0x07 };
-  static const unsigned int overlong[] = { 0x0, 0x80, 0x0800, 0x10000 };
+  static const unsigned char leading_mask[] = {0x7F, 0x1F, 0x0F, 0x07};
+  static const unsigned int overlong[] = {0x0, 0x80, 0x0800, 0x10000};
 
   const unsigned char* s = (const unsigned char*)s_in;
   int len = lens[*s >> 3];
