@@ -106,24 +106,14 @@ run monitor-caps-num-lock
 # ------------------------------------------------------------------------------
 # Applications
 # ------------------------------------------------------------------------------
-run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
-run /home/danial/.local/bin/ABDownloadManager --background
+run Telegram -autostart
+run uget-gtk
 run mailspring --background
-
-# ------------------------------------------------------------------------------
-# Status Bar
-# ------------------------------------------------------------------------------
-pkill -u "$USER" -x dwmblocks 2>/dev/null
-wait_for_stop dwmblocks
-
-run dwmblocks
 
 # ------------------------------------------------------------------------------
 # Local AI Proxy
 # ------------------------------------------------------------------------------
-# node /home/danial/.npm-global/lib/node_modules/omniroute/bin/omniroute.mjs serve --no-open --tray
-# node /home/danial/.npm-global/lib/node_modules/9router/cli.js serve --no-open --tray &
 run node /home/danial/.npm-global/lib/node_modules/9router/cli.js \
     serve --no-open --tray --host 127.0.0.1
 
@@ -136,3 +126,11 @@ if [ -d "$SEARXNG_DIR" ]; then
         (cd "$SEARXNG_DIR" && podman-compose up -d >/dev/null 2>&1) &
     fi
 fi
+
+# ------------------------------------------------------------------------------
+# Status Bar
+# ------------------------------------------------------------------------------
+pkill -u "$USER" -x dwmblocks 2>/dev/null
+wait_for_stop dwmblocks
+
+run dwmblocks
