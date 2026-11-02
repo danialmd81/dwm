@@ -25,7 +25,7 @@ void alttab()
   drawalttab(ntabs, 0, m);
 }
 
-void alttabend()
+void alttabend(void)
 {
   Monitor* m = selmon;
   Client* c = NULL;
@@ -53,14 +53,15 @@ void alttabend()
     alttabwin = 0;
   }
 
-  /* Reorder dwm's MRU stack list once, focus and raise */
-  if (c)
+  if (c && ISVISIBLE(c))
   {
-    detachstack(c);
-    attachstack(c);
     focus(c);
     restack(m);
-    XRaiseWindow(dpy, c->win);
+  }
+  else
+  {
+    focus(NULL);
+    restack(m);
   }
 }
 
