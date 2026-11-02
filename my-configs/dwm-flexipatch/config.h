@@ -102,40 +102,6 @@ static char urgbgcolor[] = "#222222";
 static char urgbordercolor[] = "#ff0000";
 static char urgfloatcolor[] = "#db8fd9";
 
-static char normTTBbgcolor[] = "#330000";
-static char normLTRbgcolor[] = "#330033";
-static char normMONObgcolor[] = "#000033";
-static char normGRIDbgcolor[] = "#003300";
-static char normGRD1bgcolor[] = "#003300";
-static char normGRD2bgcolor[] = "#003300";
-static char normGRDMbgcolor[] = "#506600";
-static char normHGRDbgcolor[] = "#b96600";
-static char normDWDLbgcolor[] = "#003333";
-static char normSPRLbgcolor[] = "#333300";
-static char normfloatbgcolor[] = "#115577";
-static char actTTBbgcolor[] = "#440000";
-static char actLTRbgcolor[] = "#440044";
-static char actMONObgcolor[] = "#000044";
-static char actGRIDbgcolor[] = "#004400";
-static char actGRD1bgcolor[] = "#004400";
-static char actGRD2bgcolor[] = "#004400";
-static char actGRDMbgcolor[] = "#507711";
-static char actHGRDbgcolor[] = "#b97711";
-static char actDWDLbgcolor[] = "#004444";
-static char actSPRLbgcolor[] = "#444400";
-static char actfloatbgcolor[] = "#116688";
-static char selTTBbgcolor[] = "#550000";
-static char selLTRbgcolor[] = "#550055";
-static char selMONObgcolor[] = "#212171";
-static char selGRIDbgcolor[] = "#005500";
-static char selGRD1bgcolor[] = "#005500";
-static char selGRD2bgcolor[] = "#005500";
-static char selGRDMbgcolor[] = "#508822";
-static char selHGRDbgcolor[] = "#b98822";
-static char selDWDLbgcolor[] = "#005555";
-static char selSPRLbgcolor[] = "#555500";
-static char selfloatbgcolor[] = "#117799";
-
 static char* colors[][ColCount] = {
   /*                       fg                bg                border                float */
   [SchemeNorm] = {normfgcolor, normbgcolor, normbordercolor, normfloatcolor},
@@ -147,39 +113,6 @@ static char* colors[][ColCount] = {
   [SchemeHidNorm] = {hidnormfgcolor, hidnormbgcolor, c000000, c000000},
   [SchemeHidSel] = {hidselfgcolor, hidselbgcolor, c000000, c000000},
   [SchemeUrg] = {urgfgcolor, urgbgcolor, urgbordercolor, urgfloatcolor},
-  [SchemeFlexActTTB] = {titleselfgcolor, actTTBbgcolor, actTTBbgcolor, c000000},
-  [SchemeFlexActLTR] = {titleselfgcolor, actLTRbgcolor, actLTRbgcolor, c000000},
-  [SchemeFlexActMONO] = {titleselfgcolor, actMONObgcolor, actMONObgcolor, c000000},
-  [SchemeFlexActGRID] = {titleselfgcolor, actGRIDbgcolor, actGRIDbgcolor, c000000},
-  [SchemeFlexActGRD1] = {titleselfgcolor, actGRD1bgcolor, actGRD1bgcolor, c000000},
-  [SchemeFlexActGRD2] = {titleselfgcolor, actGRD2bgcolor, actGRD2bgcolor, c000000},
-  [SchemeFlexActGRDM] = {titleselfgcolor, actGRDMbgcolor, actGRDMbgcolor, c000000},
-  [SchemeFlexActHGRD] = {titleselfgcolor, actHGRDbgcolor, actHGRDbgcolor, c000000},
-  [SchemeFlexActDWDL] = {titleselfgcolor, actDWDLbgcolor, actDWDLbgcolor, c000000},
-  [SchemeFlexActSPRL] = {titleselfgcolor, actSPRLbgcolor, actSPRLbgcolor, c000000},
-  [SchemeFlexActFloat] = {titleselfgcolor, actfloatbgcolor, actfloatbgcolor, c000000},
-  [SchemeFlexInaTTB] = {titlenormfgcolor, normTTBbgcolor, normTTBbgcolor, c000000},
-  [SchemeFlexInaLTR] = {titlenormfgcolor, normLTRbgcolor, normLTRbgcolor, c000000},
-  [SchemeFlexInaMONO] = {titlenormfgcolor, normMONObgcolor, normMONObgcolor, c000000},
-  [SchemeFlexInaGRID] = {titlenormfgcolor, normGRIDbgcolor, normGRIDbgcolor, c000000},
-  [SchemeFlexInaGRD1] = {titlenormfgcolor, normGRD1bgcolor, normGRD1bgcolor, c000000},
-  [SchemeFlexInaGRD2] = {titlenormfgcolor, normGRD2bgcolor, normGRD2bgcolor, c000000},
-  [SchemeFlexInaGRDM] = {titlenormfgcolor, normGRDMbgcolor, normGRDMbgcolor, c000000},
-  [SchemeFlexInaHGRD] = {titlenormfgcolor, normHGRDbgcolor, normHGRDbgcolor, c000000},
-  [SchemeFlexInaDWDL] = {titlenormfgcolor, normDWDLbgcolor, normDWDLbgcolor, c000000},
-  [SchemeFlexInaSPRL] = {titlenormfgcolor, normSPRLbgcolor, normSPRLbgcolor, c000000},
-  [SchemeFlexInaFloat] = {titlenormfgcolor, normfloatbgcolor, normfloatbgcolor, c000000},
-  [SchemeFlexSelTTB] = {titleselfgcolor, selTTBbgcolor, selTTBbgcolor, c000000},
-  [SchemeFlexSelLTR] = {titleselfgcolor, selLTRbgcolor, selLTRbgcolor, c000000},
-  [SchemeFlexSelMONO] = {titleselfgcolor, selMONObgcolor, selMONObgcolor, c000000},
-  [SchemeFlexSelGRID] = {titleselfgcolor, selGRIDbgcolor, selGRIDbgcolor, c000000},
-  [SchemeFlexSelGRD1] = {titleselfgcolor, selGRD1bgcolor, selGRD1bgcolor, c000000},
-  [SchemeFlexSelGRD2] = {titleselfgcolor, selGRD2bgcolor, selGRD2bgcolor, c000000},
-  [SchemeFlexSelGRDM] = {titleselfgcolor, selGRDMbgcolor, selGRDMbgcolor, c000000},
-  [SchemeFlexSelHGRD] = {titleselfgcolor, selHGRDbgcolor, selHGRDbgcolor, c000000},
-  [SchemeFlexSelDWDL] = {titleselfgcolor, selDWDLbgcolor, selDWDLbgcolor, c000000},
-  [SchemeFlexSelSPRL] = {titleselfgcolor, selSPRLbgcolor, selSPRLbgcolor, c000000},
-  [SchemeFlexSelFloat] = {titleselfgcolor, selfloatbgcolor, selfloatbgcolor, c000000},
 };
 
 /* Tags */
@@ -271,22 +204,12 @@ static const Layout layouts[] = {
 
 /* key definitions */
 #define MODKEY Mod4Mask /* Super / Logo key */
-/*
- * TAGKEYS Macro: Generates 4 fundamental workspace actions for a given number key.
- * Uses bitwise left-shifts (1 << TAG) to target the specific tag bitmask.
- *
- *   1. Super + Key            -> Focus workspace
- *   2. Super + Ctrl + Key     -> Multi-view (toggle view of workspace alongside active ones)
- *   3. Super + Shift + Key    -> Move active window to workspace
- *   4. Super + Ctrl + Shift   -> Pin active window to appear on multiple workspaces
- */
 #define TAGKEYS(KEY, TAG) {MODKEY, KEY, view, {.ui = 1 << TAG}}, {MODKEY | ControlMask, KEY, toggleview, {.ui = 1 << TAG}}, {MODKEY | ShiftMask, KEY, tag, {.ui = 1 << TAG}}, {MODKEY | ControlMask | ShiftMask, KEY, toggletag, {.ui = 1 << TAG}},
 
 /* commands */
 static char dmenumon[8] = "0";
 static const char* dmenucmd[] = {"sh", "-c", "exec j4-dmenu-desktop --dmenu=\"dmenu -i -p 'Apps:' -m \\\"$0\\\" -fn \\\"$1\\\" -nb \\\"$2\\\" -nf \\\"$3\\\" -sb \\\"$4\\\" -sf \\\"$5\\\"\"", dmenumon, dmenufont, normbgcolor, normfgcolor, selbgcolor, selfgcolor, NULL};
 static const char* termcmd[] = {"tilix", NULL};
-// static const char* lockcmd[] = {"xsecurelock", NULL};
 static const char* powercmd[] = {"/home/danial/.local/bin/powermenu", NULL};
 static const char* windowcmd[] = {"/home/danial/.local/bin/window_switcher", NULL};
 
