@@ -40,14 +40,14 @@ setxkbmap -layout "us,ir" \
 # Restore previous NumLock state
 NUMLOCK_STATE_FILE="${XDG_STATE_HOME:-$HOME/.local/state}/numlock_state"
 if [ -f "$NUMLOCK_STATE_FILE" ]; then
-    STATE=$(cat "$NUMLOCK_STATE_FILE" 2>/dev/null)
-    if [ "$STATE" = "on" ]; then
-        numlockx on
-    else
-        numlockx off
-    fi
+    STATE=$(head -n1 "$NUMLOCK_STATE_FILE" 2>/dev/null)
+    case "$STATE" in
+    on) numlockx on ;;
+    off) numlockx off ;;
+    *) numlockx on ;;
+    esac
 else
-    # Default to on if no previous state exists
+    # unknown/corrupt → sensible default
     numlockx on
 fi
 
@@ -105,9 +105,9 @@ run monitor-kbd-layout
 # ------------------------------------------------------------------------------
 # Applications
 # ------------------------------------------------------------------------------
-# run Telegram -autostart
 run /home/danial/.app/Throne/Throne -tray
-run /home/danial/.local/bin/ABDownloadManager --background
+run Telegram -autostart
+run uget-gtk
 run mailspring --background
 
 # ------------------------------------------------------------------------------

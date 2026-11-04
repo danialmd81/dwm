@@ -1,3 +1,6 @@
+.cache/
+
+compile_commands.json
 my-configs/dwm-flexipatch/dwm
 my-configs/dwm-flexipatch/dwm.o
 my-configs/dwm-flexipatch/drw.o

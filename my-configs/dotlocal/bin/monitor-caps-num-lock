@@ -1,7 +1,9 @@
 #!/bin/sh
 
 # Prevent multiple instances
-pgrep -x -f "$0" | grep -v $$ && exit 1
+if pgrep -f -u "$USER" "$0" | grep -qv "^$$\$"; then
+    exit 1
+fi
 
 LAST_CAPS=""
 LAST_NUM=""
@@ -15,8 +17,8 @@ while true; do
     # Query X11 keyboard status
     XSET_OUT=$(xset q)
 
-    CAPS=$(echo "$XSET_OUT" | awk '/Caps Lock:/ {print $4}')
-    NUM=$(echo "$XSET_OUT" | awk '/Num Lock:/ {print $8}')
+    CAPS=$(printf '%s\n' "$XSET_OUT" | awk '/Caps Lock:/ {print $4; exit}')
+    NUM=$(printf '%s\n' "$XSET_OUT" | awk '/01: Num Lock:/ {print $8; exit}')
 
     # Check Caps Lock change (skip initial loop run)
     if [ -n "$LAST_CAPS" ] && [ "$CAPS" != "$LAST_CAPS" ]; then
@@ -27,18 +29,14 @@ while true; do
         fi
     fi
 
-    # Check Num Lock change and persist state
-    if [ "$NUM" != "$LAST_NUM" ]; then
-        # Save state to file
-        echo "$NUM" >"$STATE_FILE"
+    # Check Num Lock change and persist state.
+    if [ -n "$LAST_NUM" ] && [ "$NUM" != "$LAST_NUM" ]; then
+        printf '%s\n' "$NUM" >"$STATE_FILE"
 
-        # Skip notification on initial script startup
-        if [ -n "$LAST_NUM" ]; then
-            if [ "$NUM" = "on" ]; then
-                notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "ON"
-            else
-                notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "OFF"
-            fi
+        if [ "$NUM" = "on" ]; then
+            notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "ON"
+        else
+            notify-send -h string:x-canonical-private-synchronous:num -u low -t 1000 "Num Lock" "OFF"
         fi
     fi
 
