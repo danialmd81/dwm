@@ -217,6 +217,5 @@ alias unsetproxy='unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY SOCKS_PROX
 
 # System Utilities
 alias installfont='sudo cp *.ttf /usr/share/fonts/truetype/ && sudo fc-cache -fv'
+alias docker='podman'
 alias cn="$HOME/.npm-global/bin/cn"
-
-. "$HOME/.local/share/../bin/env"

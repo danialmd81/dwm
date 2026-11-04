@@ -12,8 +12,13 @@ if [ -z "$XDG_RUNTIME_DIR" ]; then
 	export XDG_RUNTIME_DIR="/run/user/$(id -u)"
 fi
 
+# Java & Android SDK Configuration
+export JAVA_HOME="/usr/lib/jvm/openjdk17"
+export ANDROID_HOME="$HOME/Android/Sdk"
+export ANDROID_SDK_ROOT="$HOME/Android/Sdk"
+
 # Single Source of Truth for Global $PATH
-export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/cuda/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.rbenv/bin:$HOME/zig-x86_64-linux-0.14.1:$HOME/.npm-global/bin:$HOME/.fzf/bin:$HOME/.app/nekoray:$HOME/.opencode/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/bin:/usr/local/cuda/bin:$HOME/.cargo/bin:$HOME/go/bin:$HOME/.rbenv/bin:$HOME/zig-x86_64-linux-0.14.1:$HOME/.npm-global/bin:$HOME/.fzf/bin:$HOME/.app/nekoray:$HOME/.opencode/bin:$JAVA_HOME/bin:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$PATH"
 
 # CUDA Libraries
 if [ -d "/usr/local/cuda/lib64" ]; then
