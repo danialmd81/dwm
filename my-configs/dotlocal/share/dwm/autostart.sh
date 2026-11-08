@@ -100,6 +100,7 @@ run copyq
 run flameshot
 
 run monitor-caps-num-lock
+run monitor-fan
 run monitor-kbd-layout
 
 # ------------------------------------------------------------------------------
