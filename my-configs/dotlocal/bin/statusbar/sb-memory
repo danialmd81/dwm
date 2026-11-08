@@ -51,8 +51,8 @@ MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "percent")
 # Data Collection & Output
 # ------------------------------------------------------------------------------
 
-icon="🧠"
-# icon="RAM"
+# icon="🧠"
+icon="R"
 
 mem_total=$(awk '/MemTotal:/ {print $2}' /proc/meminfo)
 mem_available=$(awk '/MemAvailable:/ {print $2}' /proc/meminfo)
