@@ -17,6 +17,9 @@ int drawstatusbar(BarArg* a, char* stext)
   char* text;
   char* p;
   Clr oldbg, oldfg;
+  Clr sep_clr;
+  drw_clr_create(drw, &sep_clr, sepcolor);
+
   len = strlen(stext);
   if (!(text = (char*)malloc(sizeof(char) * (len + 1))))
     die("malloc");
@@ -42,7 +45,7 @@ int drawstatusbar(BarArg* a, char* stext)
 
       x += w;
 
-      /* process code */
+      /* process formatting codes */
       while (text[++i] != '^')
       {
         if (text[i] == 'c')
@@ -114,6 +117,16 @@ int drawstatusbar(BarArg* a, char* stext)
             rx = 0;
 
           drw_rect(drw, rx + x, y + ry, rw, rh, 1, 0);
+        }
+        else if (text[i] == 's')
+        {
+          /* Draw native separator line using config parameters */
+          if (sep_width > 0)
+          {
+            XSetForeground(drw->dpy, drw->gc, sep_clr.pixel);
+            XFillRectangle(drw->dpy, drw->drawable, drw->gc, x, y + sep_padding, sep_width, (bh > 2 * sep_padding ? bh - (2 * sep_padding) : bh));
+            x += sep_width;
+          }
         }
         else if (text[i] == 'f')
         {

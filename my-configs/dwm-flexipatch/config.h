@@ -51,6 +51,11 @@ static int tagindicatortype = INDICATOR_TOP_LEFT_SQUARE;
 static int tiledindicatortype = INDICATOR_NONE;
 static int floatindicatortype = INDICATOR_TOP_LEFT_SQUARE;
 
+/* Separator settings */
+static char sepcolor[] = "#444444";        /* Separator line color */
+static const unsigned int sep_width = 1;   /* Line width in pixels */
+static const unsigned int sep_padding = 4; /* Top/bottom vertical padding in pixels */
+
 /* Fonts */
 static const char* fonts[] = {
   /* Primary text font (size 11) */
