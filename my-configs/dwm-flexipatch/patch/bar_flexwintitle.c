@@ -101,11 +101,13 @@ void flextitledraw(Monitor* m, Client* c, int unused, int x, int w, int tabschem
   drw_text(drw, tx, a->y, tw, a->h, 0, c->name, 0, False);
   drawstateindicator(m, c, 1, x + 2, a->y, w, a->h, 0, 0, 0);
 
-  /* Draw vertical separator on inactive windows only */
-  if (c != selmon->sel)
+  /* Draw vertical separator on inactive window titles */
+  if (c != selmon->sel && sep_width > 0)
   {
-    XSetForeground(drw->dpy, drw->gc, scheme[SchemeTitleNorm][ColBorder].pixel);
-    XFillRectangle(drw->dpy, drw->drawable, drw->gc, x + w - 1, a->y + 3, 2, a->h - 6);
+    Clr sep_clr;
+    drw_clr_create(drw, &sep_clr, sepcolor);
+    XSetForeground(drw->dpy, drw->gc, sep_clr.pixel);
+    XFillRectangle(drw->dpy, drw->drawable, drw->gc, x + w - sep_width, a->y + sep_padding, sep_width, (a->h > 2 * sep_padding ? a->h - (2 * sep_padding) : a->h));
   }
 
   /* Optional tags icons */

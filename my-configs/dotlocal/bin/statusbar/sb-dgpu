@@ -49,7 +49,9 @@ case "$CLICK_BUTTON" in
 esac
 
 # icon="🎮"
-icon="G"
+# icon="G"
+# icon="󰢮"
+icon="󰾲"
 
 # 3. CRUCIAL GATE: If not active, print OFF and stop immediately
 if [ "$PWR_STATE" != "active" ]; then
@@ -63,7 +65,7 @@ MODE=$(cat "$STATE_FILE" 2>/dev/null || echo "usage")
 case "$MODE" in
 "temp")
     temp=$(nvidia-smi --query-gpu=temperature.gpu --format=csv,noheader,nounits 2>/dev/null)
-    [ -n "$temp" ] && echo "$icon:${temp}°C" || echo "$icon ON"
+    [ -n "$temp" ] && echo "$icon ${temp}°C" || echo "$icon ON"
     ;;
 "vram")
     vram=$(nvidia-smi --query-gpu=memory.used,memory.total --format=csv,noheader,nounits 2>/dev/null)
@@ -75,6 +77,6 @@ case "$MODE" in
     ;;
 *)
     usage=$(nvidia-smi --query-gpu=utilization.gpu --format=csv,noheader,nounits 2>/dev/null)
-    [ -n "$usage" ] && echo "$icon:${usage}%" || echo "$icon ON"
+    [ -n "$usage" ] && echo "$icon ${usage}%" || echo "$icon ON"
     ;;
 esac
