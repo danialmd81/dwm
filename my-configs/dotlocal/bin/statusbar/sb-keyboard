@@ -30,8 +30,8 @@ else
 fi
 
 case "$layout" in
-us*) label="US" ;;
-ir*) label="IR" ;;
+us*) label="En" ;;
+ir*) label="Fa" ;;
 *) label=$(echo "$layout" | cut -c1-2 | tr '[:lower:]' '[:upper:]') ;;
 esac
 
