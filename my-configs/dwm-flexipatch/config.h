@@ -53,8 +53,14 @@ static int floatindicatortype = INDICATOR_TOP_LEFT_SQUARE;
 
 /* Fonts */
 static const char* fonts[] = {
-  "JetBrainsMono NFM:size=11:style=Bold:antialias=true:autohint=true",
-  "CaskaydiaCove NFM:size=11:style=Bold:antialias=true:autohint=true",
+  /* Primary text font (size 11) */
+  "JetBrainsMono NF:size=11:style=Bold:antialias=true:autohint=true",
+
+  /* Dedicated larger symbol fallback for Nerd Font glyphs */
+  "Symbols Nerd Font:size=16:antialias=true:autohint=true",
+
+  /* Fallbacks */
+  "CaskaydiaCove NF:size=11:style=Bold:antialias=true:autohint=true",
   "Noto Color Emoji:size=11:style=Bold:antialias=true:autohint=true",
   "Vazirmatn:size=11:style=Bold:antialias=true:autohint=true",
 };
@@ -117,8 +123,9 @@ static char* colors[][ColCount] = {
 
 /* Tags */
 static char* tagicons[][NUMTAGS] = {
-  /* 1:Web | 2:Code | 3:Net | 4:Hub | 5:Office | 6:Downloads | 7:Design | 8:Sys | 9:Misc */
-  [DEFAULT_TAGS] = {"1:Web", "2:Code", "3:Net", "4:Hub", "5:...", "6", "7", "8", "9"},
+  [DEFAULT_TAGS] = {"1:󰨞", "2:", "3:󰢹", "4:", "5:...", "6", "7", "8", "9"},
+  // [DEFAULT_TAGS] = {"1:DEV", "2:DIR", "3:RDP", "4:WEB", "5:...", "6", "7", "8", "9"},
+  // [DEFAULT_TAGS] = {"1:CORE", "2:DATA", "3:CORP", "4:IDLE", "5:...", "6", "7", "8", "9"},
   [ALTERNATIVE_TAGS] = {"A", "B", "C", "D", "E", "F", "G", "H", "I"},
   [ALT_TAGS_DECORATION] = {"<1>", "<2>", "<3>", "<4>", "<5>", "<6>", "<7>", "<8>", "<9>"},
 };
@@ -134,23 +141,16 @@ static const Rule rules[] = {
 
   RULE(.wintype = WTYPE "DIALOG", .isfloating = 1, .floatpos = "-2x -2y") RULE(.wintype = WTYPE "UTILITY", .isfloating = 1, .floatpos = "-2x -2y") RULE(.wintype = WTYPE "TOOLBAR", .isfloating = 1, .floatpos = "-2x -2y") RULE(.wintype = WTYPE "SPLASH", .isfloating = 1, .floatpos = "-2x -2y")
 
-  /* Tag 1: Web (Browsers) */
-  // RULE(.class = "Firefox",          .tags = 1 << 0)
-  // RULE(.class = "Google-chrome",    .tags = 1 << 0)
+  // google-chrome
+  RULE(.class = "Google-chrome", .tags = 1 << 0)
+  // vscode
+  RULE(.class = "code", .tags = 1 << 0)
 
-  /* Tag 2: Code (IDEs & Editors) */
-  // RULE(.class = "code",             .tags = 1 << 1)
-  // RULE(.class = "dev.zed.Zed",      .tags = 1 << 1)
-  // RULE(.class = "QtCreator",        .tags = 1 << 1)
-  // RULE(.class = "draw-io",          .tags = 1 << 1)
+  // Nautilus
+  RULE(.class = "org.gnome.Nautilus", .tags = 1 << 1)
 
-  /* Tag 3: Net & Chat (Mail, Messages, Proxies & VPNs) */
-  // RULE(.class = "Mailspring",       .tags = 1 << 2)
-  // RULE(.class = "TelegramDesktop",  .tags = 1 << 2)
-  // RULE(.class = "Throne",           .tags = 1 << 2)
-  // RULE(.class = "nekobox",          .tags = 1 << 2)
-  // RULE(.class = "GUI.for.SingBox",  .tags = 1 << 2)
-  // RULE(.class = "v2rayN",           .tags = 1 << 2)
+  // Remmina
+  RULE(.class = "org.remmina.Remmina", .tags = 1 << 2)
 
   /* Floating Utilities */
   RULE(.class = "copyq", .isfloating = 1, .floatpos = "1400X 0X 520W 500H")

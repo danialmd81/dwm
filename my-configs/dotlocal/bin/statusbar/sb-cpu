@@ -86,7 +86,8 @@ get_cpu_freq() {
 }
 
 # icon="CPU"
-icon="⚙️"
+icon="C"
+# icon="⚙️"
 
 case "$MODE" in
 "temp")

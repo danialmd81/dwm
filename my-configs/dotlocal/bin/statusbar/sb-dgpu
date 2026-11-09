@@ -48,11 +48,12 @@ case "$CLICK_BUTTON" in
     ;;
 esac
 
-icon="🎮"
+# icon="🎮"
+icon="G"
 
 # 3. CRUCIAL GATE: If not active, print OFF and stop immediately
 if [ "$PWR_STATE" != "active" ]; then
-    echo "$icon OFF"
+    echo "$icon:OFF"
     exit 0
 fi
 
