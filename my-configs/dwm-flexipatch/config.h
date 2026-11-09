@@ -148,8 +148,8 @@ static const Rule rules[] = {
 
   // google-chrome
   RULE(.class = "Google-chrome", .tags = 1 << 0)
-  // vscode
-  RULE(.class = "code", .tags = 1 << 0)
+  // // vscode
+  // RULE(.class = "com.microsoft.vscode", .tags = 1 << 0)
 
   // Nautilus
   RULE(.class = "org.gnome.Nautilus", .tags = 1 << 1)
