@@ -1,0 +1,16 @@
+#!/usr/bin/env sh
+
+# Disable Xorg screen saver blanking timer and DPMS power-saving
+xset s off
+xset -dpms
+xset s noblank
+
+# # Disable Linux virtual terminal blanking timer if accessible
+# if command -v setterm >/dev/null 2>&1; then
+#     setterm --blank 0 --powerdown 0 2>/dev/null || true
+# fi
+
+# Visual feedback
+if command -v notify-send >/dev/null 2>&1; then
+    notify-send -u low -t 2000 "Display Power" "Screen blanking DISABLED (Always On)"
+fi

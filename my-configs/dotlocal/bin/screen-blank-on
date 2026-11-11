@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+# Re-enable DPMS and set timeouts: Standby, Suspend, Off after 600s (10 min)
+xset +dpms
+xset dpms 600 600 600
+
+# Re-enable Xorg screen saver with blanking
+xset s on
+xset s blank
+xset s 600 600
+
+# # Restore Linux virtual terminal blanking timer if accessible
+# if command -v setterm >/dev/null 2>&1; then
+#     setterm --blank 10 --powerdown 10 2>/dev/null || true
+# fi
+
+# Visual feedback
+if command -v notify-send >/dev/null 2>&1; then
+    notify-send -u low -t 2000 "Display Power" "Screen blanking ENABLED (10 min timeout)"
+fi
